@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h6>重置用户密码</h6>
+</div>
+<div class="modal-body scroll-custom">
+    <div class="row">
+        <div class="col-lg-12">
+            <form class="form-horizontal" name="setUserPwdForm" method="post">
+                <div class="form-group text-center">
+                    <label class="control-label label-custom-modal width85" for="J_userPwdName">用户名：</label>
+                    <div class="input-custom input-custom-lg">
+                        <input class="form-control" type="text" autocomplete="off" id="J_userPwdName" ng-model="userPwdForm.username" readonly>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <label class="control-label label-custom-modal width85" for="J_userPwdUpdate_new">新密码：</label>
+                    <div class="input-custom input-custom-lg">
+                        <input class="form-control" type="password" name="setNewPwd" autocomplete="off" id="J_userPwdUpdate_new" ng-model="userPwdForm.newPwd" ng-change="clearErrMessage()">
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <label class="control-label label-custom-modal width85" for="J_userPwdUpdate_repeat">请再次输入：</label>
+                    <div class="input-custom input-custom-lg">
+                        <input class="form-control" type="password" name="setRepeatPwd" autocomplete="off" id="J_userPwdUpdate_repeat" ng-model="userPwdForm.repeatPwd" ng-change="clearErrMessage()">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+	<div class="alert-section">
+	    <div class="alert alert-danger text-left pl50" role="alert" ng-show="errorMsg!='' && successMsg==''">
+			{{errorMsg}}
+		</div>
+		<div class="alert alert-success text-center" role="alert" ng-show="successMsg!='' && errorMsg==''">
+			{{successMsg}}
+		</div>
+	</div>
+    <!-- button class="btn btn-primary btn-md" data-text="取消" data-dismiss="modal" aria-hidden="true">取消</button> -->
+    <button class="btn btn-primary btn-md" data-text="确定" ng-click="modifyHash($event,'modal')">确定</button>
+</div>

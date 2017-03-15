@@ -1,0 +1,19 @@
+<div class="modal-header">
+	<button type="button" class="close"  aria-hidden="true" data-dismiss="modal">×</button>
+	<h6>{{modalTitle}}</h6>
+</div>
+<div class="modal-body">
+	<p class="text-center">{{modalInfo}}</p>
+</div>
+<div class="modal-footer">
+	<div class="alert-section">
+		<div class="alert alert-danger text-left pl50" role="alert" ng-show="errorMsg!='' && successMsg==''">
+			{{errorMsg}}
+		</div>
+		<div class="alert alert-success text-center" role="alert" ng-show="successMsg!='' && errorMsg==''">
+			{{successMsg}}
+		</div>
+	</div>
+	<button class="btn btn-primary btn-md" ng-click="confirmOpr()">确定</button>
+	<button class="btn btn-primary btn-md" ng-hide="oprType=='closeModal'" aria-hidden="true" data-dismiss="modal" >取消</button>
+</div>

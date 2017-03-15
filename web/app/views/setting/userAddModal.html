@@ -1,0 +1,177 @@
+
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h6>{{modalTitle}}用户配置</h6>
+</div>
+<div class="modal-body scroll-custom">
+	<div class="row ">
+		<div class="col-lg-12">
+			<form class="form-horizontal" name="addUserForm" method="post">
+			    <div ng-hide="selected.indexOf(1)>-1||selected.indexOf(2)>-1||selected.indexOf(3)>-1">
+	                <div class="form-group text-center">
+	                    <label class="control-label label-custom-modal width100" for="J_username"><span class="txt-impt">*</span>用户名称：</label>
+	                    <div class="input-custom input-custom-lg">
+	                        <input class="form-control" type="text" autocomplete="off" id="J_username" ng-model="userForm.username" ng-change="clearErrMessage()" required>
+	                    </div>
+	                </div>
+	                <div class="form-group text-center" ng-hide="actionType==='update'">
+	                    <label class="control-label label-custom-modal width100" for="J_pwd"><span class="txt-impt">*</span>用户密码：</label>
+	                    <div class="input-custom input-custom-lg">
+	                        <input class="form-control" type="password" autocomplete="off" id="J_pwd" ng-model="userForm.pwd" ng-change="clearErrMessage()" required>
+	                    </div>
+	                </div>
+	                <div class="form-group text-center">
+	                    <label class="control-label label-custom-modal width100" for="J_roleselect"><span class="txt-impt">*</span>用户角色：</label>
+	                    <div class="input-custom input-custom-lg">
+	                        <select class="form-control" id="J_roleselect" ng-model="userForm.roleselect" ng-options="role.id as role.name for role in partRoleList" ng-change="getBusinessGroupOptions(userForm.roleselect)">
+	                            <option value="">--------------------------------请选择--------------------------------</option>
+	                        </select>
+	                    </div>
+	                </div>
+	                <div ng-show="userForm.roleselect >= 3" class="form-group text-center">
+	                    <label class="control-label label-custom-modal width100" for="J_groupselect"><span class="txt-impt">*</span>所属单位：</label>
+	                    <div class="input-custom input-custom-lg">
+	                        <select class="form-control" id="J_groupselect" ng-model="userForm.groupselect" ng-options="businessGroup.id as businessGroup.bgname for businessGroup in businessGroupOptions" ng-change="clearErrMessage()">
+	                            <option value="">--------------------------------请选择--------------------------------</option>
+	                        </select>
+	                    </div>
+	                </div>
+	               <!-- 角色审核时需加上 -->
+	               <!--  
+	               <div class="form-group text-center" ng-show="actionType === 'update'">
+	                    <label class="control-label label-custom-modal width100" for="J_roleselect"><span class="txt-impt">*</span>用户角色：</label>
+	                    <div class="input-custom input-custom-lg">
+	                        <input class="form-control" type="text" autocomplete="off" id="J_roleselect" ng-model="userForm.rolename" ng-change="getBusinessGroupOptions(userForm.roleselect)" disabled readonly/>
+	                    </div>
+	                </div>
+	                <div class="form-group text-center" ng-hide="actionType === 'update'">
+	                    <label class="control-label label-custom-modal width100" for="J_roleselect"><span class="txt-impt">*</span>用户角色：</label>
+	                    <div class="input-custom input-custom-lg">
+	                        <select class="form-control" id="J_roleselect" ng-model="userForm.roleselect" ng-options="role.id as role.name for role in partRoleList" ng-change="getBusinessGroupOptions(userForm.roleselect)">
+	                            <option value="">--------------------------------请选择--------------------------------</option>
+	                        </select>
+	                    </div>
+	                </div>
+	                <div class="form-group text-center" ng-hide="parseInt(userForm.roleselect) < 0 || actionType === 'add'">
+	                    <label class="control-label label-custom-modal width100" for="J_roleapply">选择申请角色：</label>
+	                    <div class="input-custom input-custom-lg">
+	                        <select class="form-control" id="J_roleapply" ng-model="userForm.roleapply" ng-options="role.id as role.name for role in partRoleList" ng-change="getBusinessGroupOptions(userForm.roleapply,'roleapply')">
+	                            <option value="">--------------------------------请选择--------------------------------</option>
+	                        </select>
+	                    </div>
+	                </div>
+	                <div ng-show="actionType === 'add' && userForm.roleselect >= 3" class="form-group text-center">
+	                    <label class="control-label label-custom-modal width100" for="J_groupselect">所属单位：</label>
+	                    <div class="input-custom input-custom-lg">
+	                        <select class="form-control" id="J_groupselect" ng-model="userForm.groupselect" ng-options="businessGroup.id as businessGroup.bgname for businessGroup in businessGroupOptions" ng-change="clearErrMessage()">
+	                            <option value="">--------------------------------请选择--------------------------------</option>
+	                        </select>
+	                    </div>
+	                </div>
+	                <div ng-show="( actionType === 'update' && (userForm.roleapply >= 3 || (userForm.groupselect>0 && userForm.roleselect >= 3)) && !handleBusinessGroupShow ) || ( actionType === 'update' &&  handleBusinessGroupShow )" class="form-group text-center">
+	                    <label class="control-label label-custom-modal width100" for="J_groupapply">所属单位：</label>
+	                    <div class="input-custom input-custom-lg">
+	                        <select class="form-control" id="J_groupapply" ng-model="userForm.groupselect" ng-options="businessGroup.id as businessGroup.bgname for businessGroup in businessGroupOptions" ng-change="clearErrMessage()">
+	                            <option value="">--------------------------------请选择--------------------------------</option>
+	                        </select>
+	                    </div>
+	                </div> 
+	                -->
+                </div>
+                <div class="form-group text-center" ng-show="actionType==='update' && userForm.roleselect!=-1">
+                    <label class="control-label label-custom-modal width100" for="J_userstatus">用户状态：</label>
+                    <div class="input-custom input-custom-lg">
+                        <select class="form-control" id="J_userstatus" ng-model="userForm.userstatus" ng-disabled="parseInt(userForm.roleselect) < 0" ng-readonly="parseInt(userForm.roleselect) < 0">
+                            <option value="1">正常</option>
+                            <option value="0">锁定</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group text-center">
+                    <label class="control-label label-custom-modal width100" for="J_userIp">客户端IP：</label>
+                    <div class="input-custom input-custom-54" ng-show="!userForm.isIpLimited">
+                        <input class="form-control" type="text" autocomplete="off" id="J_userIp" ng-model="userForm.ip" ng-change="clearErrMessage()" required>
+                    </div>
+                    <div class="input-custom input-custom-54 disabled-input" ng-show="userForm.isIpLimited">
+                        <input class="form-control" type="text" autocomplete="off" id="J_userIp" ng-model="userForm.ip" disabled>
+                    </div>
+                    <label class="control-label checkbox-inline input-custom-16 text-left">
+                        <input id="J_isIpLimited" type="checkbox" ng-checked="userForm.isIpLimited" ng-click="updateIpLimited()"><label class="custom-checkbox" for="J_isIpLimited"></label>&nbsp;&nbsp;不限制
+                    </label>
+                </div>
+                <div class="form-group error-msg error-msg-inline text-center" ng-if="!userForm.isIpLimited && !userForm.ip">若不填写客户端IP，则默认该用户不能访问系统</div>
+                <div class="form-group text-center">
+                    <div class="input-group date j-form-time col-lg-12" data-date="" data-date-format="hh:ii:ss" data-link-format="hh:ii:ss" data-link-field="J_beginTime">
+                         <label class="control-label label-custom-modal width100 ex-lab" for="J_beginTime">访问开始时间：</label>
+                         <div class="input-custom input-custom-39" ng-class="{'disabled-input':userForm.isTimeLimited}">
+                             <input class="form-control" id="J_beginTime" ng-model="userForm.beginTime" type="text" autocomplete="off" ng-change="clearErrMessage()" placeholder="请选择开始时间" ng-disabled="userForm.isTimeLimited" readonly >
+                         </div>
+                         <div class="input-custom input-custom-15" ng-class="{'disabled-input':userForm.isTimeLimited}">
+                             <span class="input-group-addon bl0 br0" ng-hide="userForm.isTimeLimited"><span class="glyphicon glyphicon-remove"></span></span>
+                             <span class="input-group-addon bl0" ng-hide="userForm.isTimeLimited"><span class="glyphicon glyphicon-th"></span></span>
+                             <span class="input-group-disabled bl0 br0" ng-show="userForm.isTimeLimited"><span class="glyphicon glyphicon-remove"></span></span>
+                             <span class="input-group-disabled bl0" ng-show="userForm.isTimeLimited"><span class="glyphicon glyphicon-th"></span></span>
+                         </div>
+                         <label class="control-label checkbox-inline input-custom-16 text-left ex-lab">
+	                         <input id="J_isTimeLimited" type="checkbox" ng-checked="userForm.isTimeLimited" ng-click="updateTimeLimited()"><label class="custom-checkbox" for="J_isTimeLimited"></label>&nbsp;&nbsp;不限制
+	                     </label>
+                     </div>
+                </div>
+                <div class="form-group text-center">
+                    <div class="input-group date j-form-time col-lg-12" data-date="" data-date-format="hh:ii:ss" data-link-format="hh:ii:ss" data-link-field="J_endTime">
+                         <label class="control-label label-custom-modal width100 ex-lab" for="J_endTime">访问结束时间：</label>
+                         <div class="input-custom input-custom-50" ng-class="{'disabled-input':userForm.isTimeLimited}">
+                             <input class="form-control" id="J_endTime" ng-model="userForm.endTime" type="text" autocomplete="off" ng-change="clearErrMessage()" placeholder="请选择结束时间" ng-disabled="userForm.isTimeLimited" readonly >
+                         </div>
+                         <div class="input-custom input-custom-20" ng-class="{'disabled-input':userForm.isTimeLimited}">
+                             <span class="input-group-addon bl0 br0" ng-hide="userForm.isTimeLimited"><span class="glyphicon glyphicon-remove"></span></span>
+                             <span class="input-group-addon bl0" ng-hide="userForm.isTimeLimited"><span class="glyphicon glyphicon-th"></span></span>
+                             <span class="input-group-disabled bl0 br0" ng-show="userForm.isTimeLimited"><span class="glyphicon glyphicon-remove"></span></span>
+                             <span class="input-group-disabled bl0" ng-show="userForm.isTimeLimited"><span class="glyphicon glyphicon-th"></span></span>
+                         </div>
+                     </div>
+                </div>
+                <div class="form-group error-msg error-msg-inline text-center" ng-if="!userForm.isTimeLimited && !userForm.beginTime && !userForm.endTime">若不选择访问时间，则默认该用户不能访问系统</div>
+                <div class="form-group text-center">
+                    <label class="control-label label-custom-modal width100" for="J_telnum"><span class="txt-impt">*</span>联系方式：</label>
+                    <div class="input-custom input-custom-lg">
+                        <input class="form-control" type="text" autocomplete="off" id="J_telnum" ng-model="userForm.telnum" ng-change="clearErrMessage()" required>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <label class="control-label label-custom-modal width100" for="J_emails"><span class="txt-impt">*</span>电子邮箱：</label>
+                    <div class="input-custom input-custom-lg">
+                        <input class="form-control" type="text" autocomplete="off" id="J_emails" ng-model="userForm.emails" ng-change="clearErrMessage()">
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <label class="control-label label-custom-modal width100" for="J_isSend">邮件通知：</label>
+                    <div class="input-custom input-custom-lg">
+                        <select class="form-control" id="J_isSend" ng-model="userForm.issend">
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                	<label for="J_roledesc" class="control-label label-custom-modal label-custom-hg width100 ex-lab">角色描述：</label>
+                	<div class="input-custom input-custom-lg">
+                        <textarea class="form-control" name="roleDesc" id="J_roledesc" ng-model="userForm.roledesc"></textarea>
+                  </div>
+                </div>
+            </form>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<div class="alert-section">
+		<div class="alert alert-danger text-left pl50" role="alert" ng-show="errorMsg!='' && successMsg==''">
+			{{errorMsg}}
+		</div>
+		<div class="alert alert-success text-center" role="alert" ng-show="successMsg!='' && errorMsg==''">
+			{{successMsg}}
+		</div>
+	</div>	
+	<button class="btn btn-primary btn-md" data-text="确定" ng-click="addUser(actionType,$event)">确定</button>
+</div>

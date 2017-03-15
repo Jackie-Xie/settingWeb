@@ -1,0 +1,256 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h6 id="J_addUserLabel">{{ modalInfo.modalTitle }}用户</h6>
+</div>
+<div>
+    <div class="modal-body md-modal-body">
+        <div class="row">
+            <div class="col-lg-6">
+                <form class="form-horizontal" novalidate>
+                    <div class="form-group clear-mrgb" ng-class="{'has-error': validate.user.account.dirty && validate.user.account.invalid,'has-success':validate.user.account.dirty && validate.user.account.valid}">
+                        <label class="control-label col-lg-3 modal-col-20">账号<span class="sign-must">*</span></label>
+                        <div class="col-lg-7 modal-col-70">
+                            <input class="form-control" type="text" ng-model="userModalForm.account" placeholder="请输入账号" ng-change="changeStatus('account')">
+                            <div class="validate-container">
+                                <span ng-if="validate.user.account.dirty && validate.user.account.error.required">
+                                    账号不能为空
+                                </span>
+                                <span ng-if="validate.user.account.dirty && validate.user.account.error.format">
+                                    账号是不超过10个字符的英文字母
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 modal-col-10">
+                            <img ng-if="validate.user.account.dirty && validate.user.account.invalid" ng-src="./src/images/validate-fail.png">
+                            <img ng-if="validate.user.account.dirty && validate.user.account.valid" ng-src="./src/images/validate-right.png">
+                        </div>
+                    </div>
+                    <div class="form-group clear-mrgb" ng-class="{'has-error': validate.user.name.dirty && validate.user.name.invalid,'has-success':validate.user.name.dirty && validate.user.name.valid}">
+                        <label class="control-label col-lg-3 modal-col-20">用户姓名<span class="sign-must">*</span></label>
+                        <div class="col-lg-7 modal-col-70">
+                            <input class="form-control" type="text" ng-model="userModalForm.name" placeholder="请输入姓名" ng-change="changeStatus('name')">
+                            <div class="validate-container">
+                                <span ng-if="validate.user.name.dirty && validate.user.name.error.required">
+                                    用户姓名不能为空
+                                </span>
+                                <span ng-if="validate.user.name.dirty && validate.user.name.error.format">
+                                    用户姓名不超过10个字符
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 modal-col-10">
+                            <img ng-if="validate.user.name.dirty && validate.user.name.invalid" ng-src="./src/images/validate-fail.png">
+                            <img ng-if="validate.user.name.dirty && validate.user.name.valid" ng-src="./src/images/validate-right.png">
+                        </div>
+                    </div>
+                     <div class="form-group clear-mrgb" ng-class="{'has-error': validate.user.password.dirty && validate.user.password.invalid,'has-success':validate.user.password.dirty && validate.user.password.valid}" ng-if="!isUpdate">
+                        <label class="control-label col-lg-3 modal-col-20">密码<span class="sign-must">*</span></label>
+                        <div class="col-lg-7 modal-col-70">
+                            <input class="form-control" type="password" ng-model="userModalForm.password" placeholder="请输入初始密码" ng-change="changeStatus('password')">
+                             <div class="validate-container">
+                                <span ng-if="validate.user.password.dirty && validate.user.password.error.required">
+                                    密码不能为空
+                                </span>
+                                <span ng-if="validate.user.password.dirty && validate.user.password.error.format">
+                                    密码为8-20位数字和字母组合
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 modal-col-10">
+                            <img ng-if="validate.user.password.dirty && validate.user.password.invalid" ng-src="./src/images/validate-fail.png">
+                            <img ng-if="validate.user.password.dirty && validate.user.password.valid" ng-src="./src/images/validate-right.png">
+                        </div>
+                    </div>
+                    <div class="form-group clear-mrgb" ng-class="{'has-error': validate.user.confirmPassword.dirty && validate.user.confirmPassword.invalid,'has-success':validate.user.confirmPassword.dirty && validate.user.confirmPassword.valid}" ng-if="!isUpdate">
+                        <label class="control-label col-lg-3 modal-col-20">确认密码<span class="sign-must">*</span></label>
+                        <div class="col-lg-7 modal-col-70">
+                            <input class="form-control" type="password" ng-model="userModalForm.confirmPassword" placeholder="请再次输入密码" ng-change="changeStatus('userComfirmPassword')">
+                             <div class="validate-container">
+                                <span ng-if="validate.user.confirmPassword.dirty && validate.user.confirmPassword.error.required">
+                                    请输入确认密码
+                                </span>
+                                <span ng-if="validate.user.confirmPassword.dirty && validate.user.confirmPassword.error.format">
+                                    两次密码输入不一致
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 modal-col-10">
+                            <img ng-if="validate.user.confirmPassword.dirty && validate.user.confirmPassword.invalid" ng-src="./src/images/validate-fail.png">
+                            <img ng-if="validate.user.confirmPassword.dirty && validate.user.confirmPassword.valid" ng-src="./src/images/validate-right.png">
+                        </div>
+                    </div>
+                    <div class="form-group clear-mrgb" ng-class="{'has-error': validate.user.phone.dirty && validate.user.phone.invalid,'has-success':validate.user.phone.dirty && validate.user.phone.valid}" ng-if="isUpdate">
+                        <label class="control-label col-lg-3 modal-col-20">联系电话</label>
+                        <div class="col-lg-7 modal-col-70">
+                            <input class="form-control" type="text" ng-model="userModalForm.phone" ng-change="changeStatus('phone')">
+                             <div class="validate-container">
+                                <span ng-if="validate.user.phone.dirty && validate.user.phone.error.format">
+                                    请填写手机号码或固定电话（当地区号 - 电话号码）
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 modal-col-10">
+                            <img ng-if="validate.user.phone.dirty && validate.user.phone.invalid" ng-src="./src/images/validate-fail.png">
+                            <img ng-if="validate.user.phone.dirty && validate.user.phone.valid" ng-src="./src/images/validate-right.png">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <form class="form-horizontal" novalidate>
+                   <div class="form-group clear-mrgb" ng-class="{'has-error': validate.user.departmentId.dirty && validate.user.departmentId.invalid,'has-success':validate.user.departmentId.dirty && validate.user.departmentId.valid}" >
+                        <label class="control-label col-lg-3 modal-col-20">所属部门<span class="sign-must">*</span></label>
+                        <div class="col-lg-7 modal-col-70">
+                            <select class="form-control" ng-model="userModalForm.departmentId" ng-options="dt.id as dt.name for dt in departmentOptions" ng-change="changeStatus('departmentId')">
+                                <option value="">请选择</option>
+                            </select>
+                             <div class="validate-container">
+                                <span ng-if="validate.user.departmentId.dirty && validate.user.departmentId.error.required">
+                                    请选择一个部门
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 modal-col-10">
+                            <img ng-if="validate.user.departmentId.dirty && validate.user.departmentId.invalid" ng-src="./src/images/validate-fail.png">
+                            <img ng-if="validate.user.departmentId.dirty && validate.user.departmentId.valid" ng-src="./src/images/validate-right.png">
+                        </div>
+                    </div>
+                     <div class="form-group clear-mrgb" ng-class="{'has-error': validate.user.roleId.dirty && validate.user.roleId.invalid,'has-success':validate.user.roleId.dirty && validate.user.roleId.valid}" >
+                        <label class="control-label col-lg-3 modal-col-20">角色<span class="sign-must">*</span></label>
+                        <div class="col-lg-7 modal-col-70">
+                            <select class="form-control" ng-model="userModalForm.roleId" ng-options="ro.id as ro.name for ro in roleOptions" ng-change="changeStatus('roleId')">
+                                <option value="">请选择</option>
+                            </select>
+                             <div class="validate-container">
+                                <span ng-if="validate.user.roleId.dirty && validate.user.roleId.error.required">
+                                    请选择一个角色
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 modal-col-10">
+                            <img ng-if="validate.user.roleId.dirty && validate.user.roleId.invalid" ng-src="./src/images/validate-fail.png">
+                            <img ng-if="validate.user.roleId.dirty && validate.user.roleId.valid" ng-src="./src/images/validate-right.png">
+                        </div>
+                    </div>
+                    <div class="form-group clear-mrgb" ng-class="{'has-error': validate.user.phone.dirty && validate.user.phone.invalid,'has-success':validate.user.phone.dirty && validate.user.phone.valid}" ng-if="!isUpdate">
+                        <label class="control-label col-lg-3 modal-col-20">联系电话</label>
+                        <div class="col-lg-7 modal-col-70">
+                             <input class="form-control" type="text" ng-model="userModalForm.phone" ng-change="changeStatus('phone')">
+                             <div class="validate-container">
+                                <span ng-if="validate.user.phone.dirty && validate.user.phone.error.format">
+                                    请填写手机号码或固定电话（当地区号 - 电话号码）
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-1 modal-col-10">
+                            <img ng-if="validate.user.phone.dirty && validate.user.phone.invalid" ng-src="./src/images/validate-fail.png">
+                            <img ng-if="validate.user.phone.dirty && validate.user.phone.valid" ng-src="./src/images/validate-right.png">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-12">
+                <form class="form-horizontal">
+                   <div class="form-group">
+                        <label class="control-label col-lg-3 modal-col-10">视图权限</label>
+                        <div class="col-lg-8 modal-col-85">
+                            <div class="col-lg-6 modal-col-50 pdl0 pdr10">
+                                <div class='back-ser form-control'>视图列表</div>
+                                <div class='back-ser form-control user-mgr'>
+                                    <div class="col-lg-6 modal-col-50 pdl0 pdr5">
+                                        <select class="form-control select-low" ng-model="userModalForm.containerSelect" ng-options="item for item in containerDataList" ng-change="getMdModel()">
+                                            <option value="">数据容器</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-6 modal-col-50 pdr0 pdl5">
+                                        <select class="form-control select-low" ng-model="userModalForm.modelSelect" ng-options="item for item in modelDataList" ng-change="getViewOptions()">
+                                            <option value="">数据模型</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-control serv-select modal-select h147" multiple="true">
+                                    <ul class="list-group" ng-if="dataViewList.length === 0">
+                                        <li class="list-item checkbox text-center">
+                                            <label title="请先选择数据容器和模型" ng-show="getViewOptStatus=='start'">
+                                                请先选择数据容器和模型
+                                            </label>
+                                            <label title="loading" ng-show="getViewOptStatus=='loading'">
+                                                <div class="loading"></div>
+                                            </label>
+                                            <label title="暂无可选视图" ng-show="getViewOptStatus=='success'">
+                                                暂无可选视图
+                                            </label>
+                                        </li>
+                                    </ul>
+                                    <ul class="list-group" ng-if="dataViewList.length !== 0">
+                                        <li class="list-item checkbox">
+                                            <label>
+                                                <input type="checkbox" name="selection" ng-checked="selectedSingle.indexOf(0) > -1" ng-click="updateSelection($event,0,'',dataViewList) " />全选/全不选
+                                            </label>
+                                        </li>
+                                        <li class="list-item checkbox" ng-repeat="v in dataViewList">
+                                            <label title="{{v.showLabel}}">
+                                                <input type="checkbox" name="selection" ng-checked="selectedSingle.indexOf(v.showId) > -1" ng-click="updateSelection($event,v.showId,v.showName,dataViewList) " />{{v.showLabel}}
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+                        </div>
+                            <div class="col-lg-6 modal-col-50 pdl10 pdr0">
+                                <div class='back-ser form-control'>已选视图</div>
+                                <div class="form-control serv-select modal-select" ng-model="userModalForm.selectedView" multiple="true">
+                                    <ul class="list-group" ng-if="selectedTotal.length === 0">
+                                        <li class="list-item checkbox text-center">
+                                            <label title="loading" ng-show="!noSelected">
+                                                <div class="loading"></div>
+                                            </label>
+                                            <label title="暂无已选视图" ng-show="noSelected">
+                                                暂无已选视图
+                                            </label>
+                                        </li>
+                                    </ul>
+                                    <ul class="list-group" ng-if="selectedTotal.length !== 0">
+                                        <li class="list-item checkbox">
+                                            <label>
+                                                <input type="checkbox" name="selected" ng-checked="1 == 0" ng-click="updateSelected($event,-1,selectedDataViewList)" />全选
+                                            </label>
+                                        </li>
+                                        <li class="list-item checkbox" ng-repeat="v in selectedDataViewList" ng-show="totalSelectedIds.indexOf(v.showId) > -1">
+                                            <label title="{{v.showLabel}}">
+                                                <input type="checkbox" name="selected" ng-checked="totalSelectedIds.indexOf(v.showId) == -1" ng-click="updateSelected($event,v.showId,selectedDataViewList)" />{{v.showLabel}}
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <form class="form-horizontal">
+                   <div class="form-group">
+                        <label class="control-label col-lg-3 modal-col-20">是否启用</label>
+                        <div class="col-lg-8 modal-col-80">
+                            <div class="radio">
+                                <label>
+                                  <input type="radio" name="userRadios" value="1" ng-checked="!!userModalForm.enable" ng-click="userModalForm.enable = 1"> 启用
+                                </label>
+                                <label>
+                                  <input type="radio" name="userRadios" value="0" ng-checked="!userModalForm.enable" ng-click="userModalForm.enable = 0"> 禁用
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="alert alert-danger text-center" role="alert" ng-show="errorMsg!=''">
+            {{errorMsg}}
+        </div>
+        <button class="btn btn-orange btn-inline" data-text="保存" ng-click="clickUserOk($event)">保存</button>
+        <button class="btn btn-gray btn-inline" data-text="保存并继续新增" ng-if="actionType == 'add'" ng-click="clickUserOk($event,true)">保存并继续新增</button>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+<div class="j-body">
+<div class="header" ng-controller='NavCtrl' ng-init="init()" ng-include="'views/mod/header.html'"></div>
+<div class="main modify-pwd">
+    <div class="container-fluid">
+        <div class="row wrap">
+            <!-- 子菜单 b -->
+            <div class="clearfix col-lg-3" ng-controller='SideNavCtrl' ng-init="init()" ng-include="'views/setting/subNav.html'"></div>
+            <!-- 子菜单 e -->
+            <div class="col-lg-9" style="height:{{mainHeight}}px;overflow-y:auto;" ng-init="init()">
+                <div class="panel panel-primary mh-28">
+					<div class="panel-heading">
+					    <h3 class="panel-title">在线用户列表</h3>
+					</div>
+					<div class="panel-body">
+                        <!-- 查询结果 b -->
+
+                        <!-- 查询结果 e -->
+            			<!-- 数据表格 b -->
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-striped table-hover table-custom">
+                                <thead>
+                                    <tr>
+    									<th>编号</th>
+                                        <th class="tl">用户名</th>
+                                        <th class="tl">所属角色</th>
+                                        <th class="tl">所属单位</th>
+                                        <th class="tl">登录时间</th>
+                                        <th class="tl">终端地址</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   <tr class="loading text-center" ng-show="loading">
+    	                                <td colspan="6">loading...</td>
+    	                            </tr>
+    								<tr class="loading text-center" ng-show="auditList.length==0 && !loading && getListSuccess == true">
+    									<td colspan="6">数据为空</td>
+    								</tr>
+    								<tr class="loading text-center" ng-show="errorMsg != '' && getListSuccess == false">
+    									<td colspan="6">{{errorMsg}}</td>
+    								</tr>
+                                    <tr ng-repeat="item in auditList">
+    									<td>{{$index+1}}</td>
+                                        <td class="tl">{{item.userName}}</td>
+                                        <td class="tl">{{item.role.name}}</td>
+                                        <td class="tl">
+                                        	<span ng-if="item.businessGroup != null && item.businessGroup != ''">{{item.businessGroup.cnName || item.businessGroup.name}}</span>
+    										<span ng-if="item.businessGroup == null || item.businessGroup == ''">--</span>
+    									</td>
+                                        <td class="tl">
+                                        	<span ng-if="item.loginTime != null && item.loginTime != ''">{{item.loginTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+    										<span ng-if="item.loginTime == null || item.loginTime == ''">--</span>
+    									</td>
+    									<td class="tl">
+                                        	<span ng-if="item.loginIP != null && item.loginIP != ''">{{item.loginIP}}</span>
+    										<span ng-if="item.loginIP == null || item.loginIP == ''">--</span>
+    									</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- 数据表格 e -->
+            			<!-- 分页 start -->
+            			<div class="clearfix j-navPager navPager-rb" ng-include="'views/mod/pagination.html'"></div>
+            			<!-- 分页 e -->
+					</div>
+				</div>
+                <div class="footer" ng-include="'views/mod/footer.html'"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

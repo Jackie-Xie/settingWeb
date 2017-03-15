@@ -1,0 +1,118 @@
+<div class="header" ng-controller='NavCtrl' ng-init="init()" ng-include="'views/mod/header.html'"></div>
+<div class="main modify-pwd">
+    <div class="container-fluid">
+        <div class="row wrap">
+            <!-- 子菜单 b -->
+            <div class="clearfix col-lg-3" ng-controller='SideNavCtrl' ng-init="init()" ng-include="'views/setting/subNav.html'"></div>
+            <!-- 子菜单 e -->
+            <div class="col-lg-9 " style="height:{{mainHeight}}px;overflow-y:auto;" ng-init="init()">
+                <div class="panel panel-primary mh-28">
+					<div class="panel-heading">
+					    <h3 class="panel-title">系统安全配置</h3>
+					</div>
+					<div class="panel-body">
+                        <form class="form-horizontal" name="updateSafetyForm" method="post">
+                           <div class="col-lg-12 form-group text-left">
+                               <label class="control-label label-custom-modal width150" for="J_updateSessionTime_new">会话有效时长：</label>
+                               <div class="input-custom input-custom-30">
+                                   <input class="form-control" type="text" name="sessionTime" autocomplete="off" id="J_updateSessionTime_new" ng-change="clearErrMessage()" ng-blur="resetSafetyInfo()" ng-value="updateSafetyForm.oldSessionTime" ng-model="updateSafetyForm.newSessionTime">
+                               </div>
+                               <div class="input-custom input-custom-xs text-left">
+                                   &nbsp;&nbsp;分
+                               </div>
+                               <div class="input-custom input-custom-30 error-msg">
+                                   <div class="static-msg">
+                                                              会话有效时长为  1-30 的整数
+                                   </div>
+                               </div>
+                           </div>
+
+                           <div class="col-lg-12 form-group text-left">
+                               <label class="control-label label-custom-modal width150" for="J_updateSessionNum_new">最多在线用户数：</label>
+                               <div class="input-custom input-custom-30">
+                                   <input class="form-control" type="text" name="sessionNum" autocomplete="off" id="J_updateSessionNum_new" ng-change="clearErrMessage()" ng-blur="resetSafetyInfo()" ng-value="updateSafetyForm.oldSessionNum" ng-model="updateSafetyForm.newSessionNum">
+                               </div>
+                               <div class="input-custom input-custom-xs text-left">
+                                   &nbsp;&nbsp;个
+                               </div>
+                               <div class="input-custom input-custom-30 error-msg">
+                                   <div class="static-msg">
+                                                                                                 最多在线用户数为  5-1000 的整数
+                                   </div>
+                               </div>
+                           </div>
+                           <div class="col-lg-12 form-group text-left">
+                               <label class="control-label label-custom-modal width150" for="J_updatePwdTime_new">密码有效时长：</label>
+                               <div class="input-custom input-custom-30">
+                                   <input class="form-control" type="text" name="pwdTime" autocomplete="off" id="J_updatePwdTime_new" ng-change="clearErrMessage()" ng-blur="resetSafetyInfo()" ng-value="updateSafetyForm.oldPwdTime" ng-model="updateSafetyForm.newPwdTime">
+                               </div>
+                               <div class="input-custom input-custom-xs text-left">
+                                   &nbsp;&nbsp;天
+                               </div>
+                               <div class="input-custom input-custom-30 error-msg">
+                                   <div class="static-msg">
+                                                                                                密码有效时长为  1-90 的整数
+                                   </div>
+                               </div>
+                           </div>
+                           <div class="col-lg-12 form-group text-left">
+                               <label class="control-label label-custom-modal width150" for="J_updatePwdNum_new">密码允许错误次数：</label>
+                               <div class="input-custom input-custom-30">
+                                   <input class="form-control" type="text" name="pwdNum" autocomplete="off" id="J_updatePwdNum_new" ng-change="clearErrMessage()" ng-blur="resetSafetyInfo()" ng-value="updateSafetyForm.oldPwdNum" ng-model="updateSafetyForm.newPwdNum">
+                               </div>
+                               <div class="input-custom input-custom-xs text-left">
+                                   &nbsp;&nbsp;次
+                               </div>
+                               <div class="input-custom input-custom-30 error-msg">
+                                   <div class="static-msg">
+                                                                                                 密码允许错误次数为  1-20 的整数
+                                   </div>
+                               </div>
+                           </div>
+                           <div class="col-lg-12 form-group text-left">
+                               <label class="control-label label-custom-modal width150" for="J_unLoginLockTime_new">用户未登录锁定时长：</label>
+                               <div class="input-custom input-custom-30">
+                                   <input class="form-control" type="text" name="unLoginLockTime" autocomplete="off" id="J_unLoginLockTime_new" ng-change="clearErrMessage()" ng-blur="resetSafetyInfo()" ng-value="updateSafetyForm.oldUnLoginLockTime" ng-model="updateSafetyForm.newUnLoginLockTime">
+                               </div>
+                               <div class="input-custom input-custom-xs text-left">
+                                  &nbsp;&nbsp;天
+                               </div>
+                               <div class="input-custom input-custom-30 error-msg">
+                                   <div class="static-msg">
+                                                                                                 用户未登录锁定时长为  1-30 的整数
+                                   </div>
+                               </div>
+                           </div>
+                           <div class="col-lg-12 form-group text-left">
+                               <label class="control-label label-custom-modal width150" for="J_updateLockTime_new">用户锁定时长：</label>
+                               <div class="input-custom input-custom-30">
+                                   <input class="form-control" type="text" name="lockTime" autocomplete="off" id="J_updateLockTime_new" ng-change="clearErrMessage()" ng-blur="resetSafetyInfo()" ng-value="updateSafetyForm.oldLockTime" ng-model="updateSafetyForm.newLockTime">
+                               </div>
+                               <div class="input-custom input-custom-xs text-left">
+                                  &nbsp;&nbsp;分
+                               </div>
+                               <div class="input-custom input-custom-30 error-msg">
+                                   <div class="static-msg">
+                                                                                                 用户锁定时长为 10及以上 的整数
+                                   </div>
+                               </div>
+                           </div>
+                           <div class="col-lg-12 form-group text-left">
+                               <div class="alert-section">
+                                   <div class="alert alert-danger text-left" role="alert" ng-show="errorMsg!=''">
+                                        {{errorMsg}}
+                                   </div>
+                                   <div class="alert alert-success text-left" role="alert" ng-show="successMsg!=''">
+                                        {{successMsg}}
+                                   </div>
+                               </div>
+                               <button class="btn btn-primary btn-md modify-btn mgl-rem10" data-text="保存" ng-click="updateSafetyInfo( $event )">保存</button>
+                           </div>
+                       </form>
+					</div>
+				</div>
+                <div class="footer" ng-include="'views/mod/footer.html'"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,214 @@
+<div class="j-body">
+<div class="header" ng-controller='NavCtrl' ng-init="init()" ng-include="'views/mod/header.html'"></div>
+<div class="main modify-pwd">
+    <div class="container-fluid">
+    	<!-- modal -->
+        <div id="J_auditAnalyConfirm" class="modal fade" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close"  aria-hidden="true" data-dismiss="modal">×</button>
+                        <h6>系统提示</h6>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-center">导出成功，请<a role="button" class="j-export" href="{{exportHref}}" target="_blank">点击此处下载</a>.</p>
+                    </div>
+                    <div class="modal-footer">
+                    	<div class="alert alert-danger text-left pl50" role="alert" ng-show="errorMsg!='' && successMsg==''">
+							{{errorMsg}}
+						</div>
+						<div class="alert alert-success text-center" role="alert" ng-show="successMsg!='' && errorMsg==''">
+							{{successMsg}}
+						</div>
+					    <button class="btn btn-primary btn-md" aria-hidden="true" data-dismiss="modal" >关 闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- modal -->
+
+        <div class="row wrap">
+            <!-- 子菜单 b -->
+            <div class="clearfix col-lg-3" ng-controller='SideNavCtrl' ng-init="init()" ng-include="'views/setting/subNav.html'"></div>
+            <!-- 子菜单 e -->
+            <div class="col-lg-9" style="height:{{mainHeight}}px;overflow-y:auto;" ng-init="init()">
+                <div class="panel panel-primary mh-7">
+					<div class="panel-heading">
+					    <h3 class="panel-title">统计条件</h3>
+					</div>
+					<div class="panel-body">
+                        <!-- 查询表单 b -->
+            			<form class="clearfix form-custom" method="post">
+                            <div class="col-lg-11 search-forms">
+                               <div class="col-lg-6 form-group">
+    	                           <div class="input-group date j-form-time col-lg-12" id="J_beginTime" data-date="" data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd" data-link-field="J_beginTime">
+    			                         <label class="control-label label-custom label-custom-audit width80 text-right" for="J_beginTime">开始时间：</label>
+    			                         <div class="input-custom input-custom-50 input-custom-audit">
+    			                             <input class="form-control" ng-model="searchPara.beginTime" type="text" autocomplete="off" placeholder="请输入统计开始时间">
+    			                             <div class="input-custom error-msg search-form-error-msg col-lg-12" ng-show="!!errorMsgBeginTime">
+    				                         	{{errorMsgBeginTime}}
+    				                         </div>
+    			                         </div>
+    			                         <div class="input-custom input-custom-20">
+    			                             <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+    			                             <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+    			                         </div>
+    			                    </div>
+    		                    </div>
+    		                    <div class="col-lg-6 form-group">
+    			                    <div class="input-group date j-form-time col-lg-12" id="J_endTime" data-date="" data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd" data-link-field="J_endTime">
+    			                         <label class="control-label label-custom label-custom-audit width80 text-right" for="J_endTime">结束时间：</label>
+    			                         <div class="input-custom input-custom-50 input-custom-audit">
+    			                             <input class="form-control" ng-model="searchPara.endTime" type="text" autocomplete="off" placeholder="请输入统计结束时间">
+    			                             <div class="input-custom error-msg search-form-error-msg col-lg-12" ng-show="!!errorMsgEndTime">
+    				                         	{{errorMsgEndTime}}
+    				                         </div>
+    			                         </div>
+    			                         <div class="input-custom input-custom-20">
+    			                             <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+    			                             <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+    			                         </div>
+    			                    </div>
+    		                    </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="control-label label-custom width80 text-right" for="J_groupName">用户：</label>
+                                    <div class="input-custom input-custom-lg">
+                                        <select class="form-control" id="J_userId" ng-model="searchPara.userId" ng-options="item.id as item.userName for item in userList">
+                                            <option value="">全部</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="control-label label-custom width80 text-right" for="J_groupName">事件类型：</label>
+                                    <div class="input-custom input-custom-lg">
+                                        <select class="form-control" id="J_sortID" ng-model="searchPara.auditIypeId" ng-options="item.id as item.cn_name for item in auditTypeList">
+                                            <option value="">----请选择----</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 search-btn mgt60">
+                                <a role="button" class="btn btn-primary btn-md j-searchPara">查询</a>
+                            </div>
+                        </form>
+            			<!-- 查询表单 e -->
+					</div>
+				</div>
+
+                <div class="panel panel-primary mh-20">
+					<div class="panel-heading">
+					    <h3 class="panel-title">统计结果</h3>
+					</div>
+					<div class="panel-body">
+                        <!-- 查询结果 b -->
+                        <div class="clearfix col-lg-6 search-result" ng-include="'views/mod/searchResult.html'"></div>
+                        <div class="col-lg-6 text-right">
+    						<a role="button" class="btn btn-success btn-md j-getExport" ng-hide="pager.total==0">导出</a>
+    					</div>
+                        <!-- 查询结果 e -->
+            			<!-- 数据表格 b -->
+                        <div class="col-lg-12 table-responsive table-audit scroll-custom">
+                            <table class="table table-condensed table-striped table-hover table-custom">
+                                <thead>
+                                    <tr>
+    									<th>编号</th>
+    									<!--
+    									<div ng-repeat="item in eventList">
+    										<th>{{item.cnName}}</th>
+                                        </div>
+    									-->
+    									<th>日期</th>
+    									<th>用户登录</th>
+                                        <th>用户退出</th>
+                                        <th>添加用户</th>
+                                        <th>删除用户</th>
+                                        <th>修改用户</th>
+                                        <th>密码重置</th>
+                                        <th>修改安全配置</th>
+                                        <th>越权访问</th>
+                                        <th>IP地址异常</th>
+                                        <th>登录失败</th>
+                                        <th>服务启停</th>
+                                        <th>切换</th>
+                                        <th>闪回</th>
+    									<th>用户被锁定</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   <tr class="loading text-center" ng-show="loading">
+    	                                <td colspan="16">loading...</td>
+    	                            </tr>
+    								<tr class="loading text-center" ng-show="analyList.length==0 && !loading && getListSuccess == true">
+    									<td colspan="16">数据为空</td>
+    								</tr>
+    								<tr class="loading text-center" ng-show="errorMsg != '' && getListSuccess == false">
+    									<td colspan="16">{{errorMsg}}</td>
+    								</tr>
+                                    <tr ng-repeat="item in analyList">
+    									<td>{{$index+1}}</td>
+    									<!--
+    									<div ng-repeat="event in analyList.eventList">
+    										<th>{{event.sum}}</th>
+                                        </div>
+    									-->
+    									<td>
+                                        	{{item.createTime | date:'yyyy-MM-dd'}}
+                                        </td>
+                                        <td>
+                                        	{{item.userLogin}}
+                                        </td>
+                                        <td>
+                                        	{{item.userLogout}}
+                                        </td>
+                                        <td>
+                                        	{{item.addUser}}
+                                        </td>
+                                        <td>
+                                        	{{item.deleteUser}}
+                                        </td>
+                                        <td>
+                                        	{{item.updateUser}}
+                                        </td>
+                                        <td>
+                                        	{{item.reset}}
+                                        </td>
+                                        <td>
+                                        	{{item.securityConfigure}}
+                                        </td>
+                                        <td>
+                                        	{{item.access}}
+                                        </td>
+                                        <td>
+                                        	{{item.ipChange}}
+                                        </td>
+                                        <td>
+                                        	{{item.loginFailure}}
+                                        </td>
+                                        <td>
+                                        	{{item.service}}
+                                        </td>
+                                        <td>
+                                        	{{item.switchSeivice}}
+                                        </td>
+                                        <td>
+                                        	{{item.flashBcak}}
+                                        </td>
+                                        <td>
+                                        	{{item.userLock}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- 数据表格 e -->
+            			<!-- 分页 start -->
+            			<div class="col-lg-12 clearfix j-navPager navPager-rb" ng-include="'views/mod/pagination.html'"></div>
+            			<!-- 分页 e -->
+					</div>
+				</div>
+                <div class="footer" ng-include="'views/mod/footer.html'"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

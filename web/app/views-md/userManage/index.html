@@ -1,0 +1,97 @@
+<div class="header" ng-controller='HeaderCtrl' ng-init="init()" ng-include="'views/mod/header.html'" ng-cloak></div>
+<div class="container-fluid wrap">
+	<div class="row">
+	    <!-- sider con s -->
+	    <div class="col-lg-2 pdl0 pdr0" ng-controller='SideNavCtrl' ng-init="init()" ng-include="'views/mod/sideNav.html'" ng-cloak></div>
+	    <!-- sider con e -->
+	    <!-- main con s -->
+	    <div class="col-lg-10 pdr0" ng-init="init()">
+	        <div class="main">
+	            <!-- action s -->
+	            <div class="row list-top-row list-top-ex pdl16 pdb0 pdt0" ng-controller='UserTabCtrl' ng-init="init()" ng-include="'views/userManage/tab.html'" ng-cloak></div>
+	            <div class="manage-section" ng-if="pathStr.indexOf('userManage/user')>-1" ng-include="'views/userManage/user.html'" ng-cloak>
+				</div>
+	            <div class="manage-section" ng-if="pathStr.indexOf('userManage/role')>-1" ng-include="'views/userManage/role.html'" ng-cloak>
+	            </div>
+	            <div class="manage-section" ng-if="pathStr.indexOf('userManage/authority')>-1" ng-include="'views/userManage/authority.html'" ng-cloak>
+	            </div>
+	            <div class="manage-section" ng-if="pathStr.indexOf('userManage/department')>-1" ng-include="'views/userManage/department.html'" ng-cloak>
+	            </div>
+
+	            <!-- modal s -->
+				<!-- 添加用户 -->
+				<div id="J_addUser" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="J_addUserLabel" ng-if="pathStr.indexOf('userManage/user')>-1">
+				    <div class="modal-dialog modal-huge" role="document">
+				        <div class="modal-content md-modal-content" ng-include="'views/userManage/addUserModal.html'" ng-cloak  ng-init="initModal()"></div>
+				    </div>
+				</div>
+				<!-- 添加角色 -->
+				<div id="J_addRole" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="J_addRoleLabel" ng-if="pathStr.indexOf('userManage/role')>-1">
+				    <div class="modal-dialog modal-middle" role="document">
+				        <div class="modal-content md-modal-content" ng-include="'views/userManage/addRoleModal.html'" ng-cloak  ng-init="initModal()"></div>
+				    </div>
+				</div>
+				<!-- 添加部门 -->
+				<div id="J_addDepartment" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="J_addDepartmentLabel" ng-if="pathStr.indexOf('userManage/department')>-1">
+				    <div class="modal-dialog modal-middle" role="document">
+				        <div class="modal-content md-modal-content" ng-include="'views/userManage/addDepartmentModal.html'" ng-cloak  ng-init="initModal()"></div>
+				    </div>
+				</div>
+				<!-- 视图权限管理 -->
+				<div id="J_viewManage" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="J_viewManageLabel" ng-if="pathStr.indexOf('userManage/authority')>-1">
+				    <div class="modal-dialog modal-large" role="document">
+				        <div class="modal-content md-modal-content" ng-include="'views/userManage/addViewModal.html'" ng-cloak  ng-init="initModal()"></div>
+				    </div>
+				</div>
+
+				<!-- 重置密码 -->
+				<div id="J_resetPwd" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="J_resetPwdLabel" ng-if="pathStr.indexOf('userManage/user')>-1">
+				    <div class="modal-dialog modal-small" role="document">
+				        <div class="modal-content md-modal-content" ng-include="'views/userManage/resetPwdModal.html'" ng-cloak  ng-init="initModal()"></div>
+				    </div>
+				</div>
+
+				<!-- 删除用户确认 -->
+				<div id="J_delUser" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="J_delUserLabel" ng-if="pathStr.indexOf('userManage/user')>-1">
+				    <div class="modal-dialog modal-confirm" role="document">
+				        <div class="modal-content md-modal-content" ng-include="'views/mod/delConfirmModal.html'" ng-cloak  ng-init="initModal()"></div>
+				    </div>
+				</div>
+
+				<!-- 删除角色确认 -->
+				<div id="J_delRole" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="J_delRoleLabel" ng-if="pathStr.indexOf('userManage/role')>-1">
+				    <div class="modal-dialog modal-confirm" role="document">
+				        <div class="modal-content md-modal-content" ng-include="'views/mod/delConfirmModal.html'" ng-cloak  ng-init="initModal()"></div>
+				    </div>
+				</div>
+
+				<!-- 删除部门确认 -->
+				<div id="J_delDepartment" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="J_delDepartmentLabel" ng-if="pathStr.indexOf('userManage/department')>-1">
+				    <div class="modal-dialog modal-confirm" role="document">
+				        <div class="modal-content md-modal-content" ng-include="'views/mod/delConfirmModal.html'" ng-cloak  ng-init="initModal()"></div>
+				    </div>
+				</div>
+
+				<!-- 删除视图权限确认 -->
+				<div id="J_delViewAuth" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="J_delViewAuthLabel" ng-if="pathStr.indexOf('userManage/authority')>-1">
+				    <div class="modal-dialog modal-confirm" role="document">
+				        <div class="modal-content md-modal-content" ng-include="'views/mod/delConfirmModal.html'" ng-cloak  ng-init="initModal()"></div>
+				    </div>
+				</div>
+
+				<!-- 系统提示弹框 -->
+				<err-div msg="sysError"></err-div>
+
+				<!-- 提交信息弹框 -->
+				<div id="J_userSubmitMsg" class="modal fade" role="dialog" tabindex="-1">
+				    <div class="modal-dialog modal-msg" role="document">
+				        <div class="modal-content md-modal-content" ng-include="'views/mod/submitMsgModal.html'" ng-cloak  ng-init="initModal()"></div>
+				    </div>
+				</div>
+				<!-- modal e -->
+	        </div>
+	    </div>
+	    <!-- main con e -->
+	</div>
+</div>
+<div class="footer" ng-include="'views/mod/footer.html'" ng-cloak></div>

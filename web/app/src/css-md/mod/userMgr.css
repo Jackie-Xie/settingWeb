@@ -1,0 +1,37 @@
+/* user manage modal */
+.user-mgr{
+    border-radius: 0;
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+}
+.modal-select{
+    height: 180px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.modal-select .checkbox label,
+.modal-select .radio label {
+    width: auto;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.form-horizontal .modal-select .checkbox, 
+.form-horizontal .modal-select .checkbox-inline, 
+.form-horizontal .modal-select .radio, 
+.form-horizontal .modal-select .radio-inline {
+    padding-top: 3px;
+}
+.h147{
+    height: 147px;
+}
+.w300{
+    min-width: 300px;
+}
+.select-role{
+    height: auto;
+    margin-bottom: 0;
+}
+.user-disable{
+    color: #f86f4b;
+}

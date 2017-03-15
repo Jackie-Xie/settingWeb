@@ -1,0 +1,44 @@
+<div class="main" ng-init="init()">
+	<div class="container-fluid login">
+		<div class="row">
+			<div class="col-md-12">
+			    <!-- 页面内容 b -->
+				<section>
+					<div class="login-logo"></div>
+					<div class="login-box-extend">
+					    <div class="login-sysname">
+					         <span class="name-ch">美创科技某某平台</span>
+					         <span class="name-en">MMPT</span>
+					    </div>
+						<form id="J_login" method="post">
+							<div class="login-user">
+								<label for="username">用户名称</label>
+								<input type="text" ng-model="userName" autocomplete="off"/>
+							</div>
+							<div class="login-pass">
+								<label for="code">用户密码</label>
+								<input type="password" ng-model="code" autocomplete="off"/>
+							</div>
+							<div class="login-checkcode">
+								<label for="checkcode">验证码</label>
+								<input type="text" name="checkcode" ng-model="checkcode" autocomplete="off"/>								
+								<img id="J_checkCode" class="code-img" ng-click="createCode()" src="{{codeValue}}" alt="验证码"/>
+							</div>
+							<div class="login-info">
+								<div class="msg-wrap">
+									<span class="msg error" ng-show="loginError">提示：{{errorMsg}}</span>
+								</div>
+								<a class="btn btn-success btn-login" ng-click="clickLogin()" href="javascript:;">登&nbsp;&nbsp;录</a>
+							</div>
+						</form>
+					</div>
+					<div class="login-footer">
+					          版权所有  Copyright @ 2005-2017 杭州美创科技有限公司  All right reserved.
+					</div>
+				</section>
+				<!-- 页面内容 e -->
+	        </div>
+		</div>
+	</div>
+</div>
+

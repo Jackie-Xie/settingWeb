@@ -1,0 +1,37 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h6 id="J_addDepartmentLabel">{{ modalInfo.modalTitle }}部门</h6>
+</div>
+<div class="modal-body md-modal-body">
+    <div class="row">
+        <div class="col-lg-12">
+            <form class="form-horizontal" novalidate>
+                <div class="form-group clear-mrgb" ng-class="{'has-error': validate.department.name.dirty && validate.department.name.invalid,'has-success':validate.department.name.dirty && validate.department.name.valid}" >
+                    <label class="control-label col-lg-3 modal-col-20">部门名称<span class="sign-must">*</span></label>
+                    <div class="col-lg-8 modal-col-70">
+                        <input class="form-control" type="text" ng-model="departmentModalForm.name" placeholder="请输入部门名称" ng-change="changeStatus('name')">
+                        <div class="validate-container">
+                            <span ng-if="validate.department.name.dirty && validate.department.name.error.required">
+                                部门名称不能为空
+                            </span>
+                            <span ng-if="validate.department.name.dirty && validate.department.name.error.format">
+                               部门名称不超过20个字符
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 modal-col-10">
+                        <img ng-if="validate.department.name.dirty && validate.department.name.invalid" ng-src="./src/images/validate-fail.png">
+                        <img ng-if="validate.department.name.dirty && validate.department.name.valid" ng-src="./src/images/validate-right.png">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <div class="alert alert-danger text-center" role="alert" ng-show="errorMsg!=''">
+            {{errorMsg}}
+    </div>
+    <button class="btn btn-orange btn-inline" data-text="保存" ng-click="clickUserOk($event)">保存</button>
+    <button class="btn btn-gray btn-inline" data-text="保存并继续新增" ng-hide="actionType == 'edit'" ng-click="clickUserOk($event,true)">保存并继续新增</button>
+</div>

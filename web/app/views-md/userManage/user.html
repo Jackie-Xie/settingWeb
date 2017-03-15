@@ -1,0 +1,104 @@
+<div class="row">
+    <div class="panel panel-default section-panel">
+       <!--  <div class="panel-heading">
+            <div class="row">
+                <span class="serv-title-text">查询条件</span>
+            </div>            
+        </div> -->
+        <div class="panel-body">
+            <div class="row search-form">
+                <form>
+                    <div class="col-lg-10 pdl0">
+                        <div class="form-group col-lg-3 control-bottom">
+                            <select class="form-control" ng-model="userSearchForm.departmentId" ng-options="d.id as d.name for d in departmentOptions">
+                                <option value="">请选择部门--</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-3 control-bottom">
+                            <select class="form-control" ng-model="userSearchForm.roleId" ng-options="r.id as r.name for r in roleOptions">
+                                <option value="">请选择角色--</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-3 control-bottom">
+                            <select class="form-control" ng-model="userSearchForm.enable" ng-options="s.value as s.name for s in statusOptions">
+                                <option value="">请选择启用状态--</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-3 control-bottom">
+                            <input type="text" class="form-control input-control" ng-model="userSearchForm.searchValue" placeholder="输入账号或用户姓名">
+                        </div>
+                    </div>
+                    <div class="form-btn col-lg-2 pdl0">
+                        <a href="javascript:void(0)" class="btn btn-warning btn-control" ng-click="queryData( true )">查询</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- action e -->
+
+<!-- data section s -->
+<div class="row">
+	<div class="panel panel-default section-panel">
+        <div class="panel-heading">
+            <div class="row">
+            	<span class="serv-title-text">用户列表</span>
+                <form class="pull-right mgr15">
+                    <a href="javascript:;" class="btn btn-warning btn-sm" ng-click="clickInsert()">新增</a>
+                </form>
+            </div>            
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-condensed table-hover">
+                    <thead>
+                        <tr>
+                            <th>帐号</th>
+                            <th>用户姓名</th>
+                            <th>所属部门</th>
+                            <th>角色</th>
+                            <th>联系电话</th>
+                            <th>创建时间</th>
+                            <th>启用状态</th>
+                            <th class="operate-col">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-show="loading"> 
+                        <tr class="tr-loading text-center">
+                            <td colspan="8"><div class="loading"></div></td>
+                        </tr>
+                    </tbody>
+                    <tbody ng-hide="loading">            
+                        <tr class="tr-empty text-center" ng-show="userList.length==0">
+                            <td colspan="8" ng-if="getListError!=''">{{getListError}}</td>
+                            <td colspan="8" ng-if="getListError==''">数据为空</td>
+                        </tr>
+                        <tr ng-repeat="item in userList">
+                          	<td>{{item.account}}</td>
+                          	<td>{{item.username}}</td>
+                            <td>{{item.department}}</td>
+                          	<td>{{item.role}}</td>
+                          	<td>{{item.phone}}</td>
+                          	<td>{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                          	<td ng-class="{'user-disable': !item.enable}">{{item.enable ? '启用': '禁用'}}</td>
+                          	<td class="operate-col" data-id="{{$index}}">
+                          		<a class="btn btn-info btn-sm" ng-click="clickEdit($index)">修改</a>
+                                <a class="btn btn-danger btn-sm" ng-click="clickDelete($index)">删除</a>
+                                <a class="btn btn-warning btn-sm" ng-click="clickResetPwd($index)">重置密码</a>
+                            </td>
+                       	</tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- table e -->
+            <!-- pagination s -->
+	        <nav class="j-navPager" ng-hide="loading || userList.length==0">
+	            <div class="navPager" ng-modal="pager" ng-include="'views/mod/pagination.html'">
+	            </div>
+	        </nav>
+	        <!-- pagination e -->
+        </div>
+    </div>
+</div>
+<!-- data section e -->

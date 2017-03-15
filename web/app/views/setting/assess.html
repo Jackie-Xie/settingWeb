@@ -1,0 +1,107 @@
+<div class="j-body assess">
+<div class="header" ng-controller='NavCtrl' ng-init="init()" ng-include="'views/mod/header.html'"></div>
+<div class="main modify-pwd">
+    <div class="container-fluid">
+        <div id="J_oprConfirm" class="modal fade" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+            	<div class="modal-content">
+	                <div class="modal-header">
+	                    <button type="button" class="close" ng-click="clickOprCancel()">×</button>
+	                    <h6>{{modalTitle}}</h6>
+	                </div>
+	                <div class="modal-body">
+	                    <p class="text-center" ng-if="oprType=='pass'">确定通过这一条审核记录么？</p>
+	                    <p class="text-center" ng-if="oprType=='refuse'">确定不通过这一条审核记录么？</p>
+	                </div>
+	                <div class="modal-footer">
+	                    <div class="alert alert-danger text-left pl50" role="alert" ng-show="errorMsg!='' && successMsg==''">
+							{{errorMsg}}
+						</div>
+						<div class="alert alert-success text-center" role="alert" ng-show="successMsg!='' && errorMsg==''">
+							{{successMsg}}
+						</div>
+	                    <button class="btn btn-primary btn-md" ng-click="clickOprConfirm($event)">确定</button>
+	                    <button class="btn btn-primary btn-md" ng-click="clickOprCancel()" >取消</button>
+	                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row wrap">
+            <!-- 子菜单 b -->
+            <div class="clearfix col-lg-3" ng-controller='SideNavCtrl' ng-init="init()" ng-include="'views/setting/subNav.html'"></div>
+            <!-- 子菜单 e -->
+            <div class="col-lg-9 " style="height:{{mainHeight}}px;overflow-y:auto;" ng-init="init()">
+                <div class="panel panel-primary mh-28">
+					<div class="panel-heading">
+					    <h3 class="panel-title">审核事件列表</h3>
+					</div>
+					<div class="panel-body">
+                        <!-- 查询结果 b -->
+
+                        <!-- 查询结果 e -->
+            			<!-- 数据表格 b -->
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-striped table-hover table-custom">
+                                <thead>
+                                    <tr>
+                                        <th class="tl">时间</th>
+                                        <th class="tl">类型</th>
+                                        <th class="tl">详情</th>
+                                        <th class="tl">状态</th>
+                                        <th class="tl">审核时间</th>
+                                        <th class="tc">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   <tr class="loading text-center" ng-show="loading">
+    	                                <td colspan="4">loading...</td>
+    	                            </tr>
+    								<tr class="loading text-center" ng-show="list.length==0 && !loading && getListSuccess == true">
+    									<td colspan="4">数据为空</td>
+    								</tr>
+    								<tr class="loading text-center" ng-show="errorMsg != '' && getListSuccess == false">
+    									<td colspan="4">{{errorMsg}}</td>
+    								</tr>
+                                    <tr ng-repeat="item in list">
+                                        <td class="tl">
+                                        	{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}
+    									</td>
+                                        <td class="tl">
+                                            {{item.type}}
+                                        </td>
+                                        <td class="tl">
+                                            {{item.memo}}
+                                            <p class="as-span" ng-if="item.jsonData.businessGroup.cnName">单位：{{item.jsonData.businessGroup.cnName}}</p>
+                                            <p class="as-span" ng-if="item.jsonData.role.name">角色：{{item.jsonData.role.name}}</p>
+                                        </td>
+                                        <td class="tl">
+                                            {{statusText[item.status]}}
+                                        </td>
+                                        <td class="tl" ng-if="!item.auditTime">
+                                            --
+                                        </td>
+                                        <td class="tl" ng-if="item.auditTime">
+                                            {{item.auditTime | date:'yyyy-MM-dd HH:mm:ss'}}
+                                        </td>
+    									<td class="tc" data-id={{$index}} ng-if="item.status=='wait'">
+                                        	<a class="btn btn-link j-btnPass">通过</a>
+                                            <a class="btn btn-link j-btnRefuse">拒绝</a>
+    									</td>
+                                        <td class="tc" ng-if="item.status!='wait'"> -- </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- 数据表格 e -->
+            			<!-- 分页 start -->
+            			<div class="clearfix j-navPager" ng-include="'views/mod/pagination.html'"></div>
+            			<!-- 分页 e -->
+					</div>
+				</div>
+                <div class="footer" ng-include="'views/mod/footer.html'"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

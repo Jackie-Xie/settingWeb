@@ -1,0 +1,272 @@
+/** form **/
+/* .search-forms .form-group{
+	margin-bottom: 20px;
+}
+
+.form-horizontal .label-custom,.label-custom{
+	display: inline-block;
+    width: 90px;
+    margin-left: -40px;
+	font-size: 14px;
+	font-weight: 500;
+	text-align: right;
+}
+
+.form-horizontal .label-custom-modal, .label-custom-modal {
+	display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: right;
+}
+
+.label-custom-modal.label-custom-hg{
+	vertical-align: top;
+}
+
+.label-custom-sub{
+	font-size: 14px;
+	margin-left: 20%;
+}
+ */
+.input-custom{
+	width: 100%;
+	display: inline-block;
+}
+
+.input-custom-lg{
+	width: 70%;
+}
+
+.input-custom-lg2{
+	width: 65%;
+}
+
+.input-custom-md{
+	width: 52%;
+}
+
+.input-custom-xs{
+	width: 7%;
+}
+
+.input-custom-sm,.input-custom-10{
+	width: 10%;
+}
+.input-custom-15{
+    width: 15%;
+}
+.input-custom-16{
+    width: 16%;
+}
+.input-custom-20{
+    width: 20%;
+}
+.input-custom-30{
+    width: 30%;
+}
+.input-custom-35{
+    width: 35%;
+}
+.input-custom-39{
+    width: 39%;
+}
+.input-custom-40{
+    width: 40%;
+}
+.input-custom-50{
+    width: 50%;
+}
+.input-custom-64{
+    width: 64%;
+}
+.input-custom-60{
+	width: 60%;
+}
+.input-custom-55{
+    width: 55%;
+}
+.input-custom-54{
+    width: 54%;
+}
+.input-custom-76{
+    width: 76%;
+}
+.input-custom-79{
+	width: 79%;
+}
+.input-custom-80{
+    width: 80%;
+}
+.input-custom-90{
+    width: 90%;
+}
+.input-custom-export{
+    width: 5rem;
+}
+
+.input-export-type{
+	width:3rem;
+}
+
+.input-custom-export select.form-control,
+.input-export-type select.form-control{
+    /* height: 220px;
+    line-height: 220px; */
+}
+
+
+.input-custom .form-control{
+	/* padding: 0 10px;
+	height: 30px;
+	line-height: 28px;
+	font-size: 14px;
+	color: #68d4fb;
+    background-color: #0a1825;
+    border: 1px solid #0f6894;
+    border-radius: 4px;
+    cursor: auto;  */
+}
+
+.input-custom .form-control:focus{
+   /*  background-color: #0a397d;
+	border-color: #02feff;
+	outline:none;
+	color: #5bbae6;
+	transition:border linear .2s,box-shadow linear .5s;
+	-moz-transition:border linear .2s,box-shadow linear .5s;Firefox
+	-webkit-transition:border linear .2s,box-shadow linear .5s;Safari 和 Chrome
+	-o-transition:border linear .2s,box-shadow linear .5s; Opera
+	box-shadow:0 0 15px rgba(93,149,242,1); */
+}
+.input-custom .form-control[readonly],.input-custom .form-control:focus[readonly] {
+    /* color: #909091;
+    background-color: #0a1825;
+    box-shadow: none;
+    border-color: #0f6894; */
+}
+
+.disabled-input .form-control,.disabled-input .form-control[readonly]{
+    /* border: 1px solid #999999;*/
+    /* cursor: not-allowed; */
+}
+
+.input-custom .form-search{
+   /*  padding: 0 10px;
+    height: 30px;
+    line-height: 28px;
+    font-size: 14px;
+    color: #68d4fb;
+	background:url(../../../images/icon-search.png) no-repeat right 5px center #0a1825;
+    border: 1px solid #0f6894;
+    border-radius: 0; */
+}
+
+/* @-moz-document url-prefix(){
+    .input-custom{
+		vertical-align: bottom;
+    }
+}  */ /*  火狐浏览器需要设置 */
+
+/* 下拉框样式修改   */
+/* .input-custom select.form-control {
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    cursor: pointer;
+    background: url("../../../images/common/select-bar.png") no-repeat scroll right 7px center #0a1825;
+}
+
+.input-custom select.form-control::-ms-expand { display: none; } */
+
+/* textarea的样式   */
+/* .input-custom textarea.form-control{
+	height: 90px;
+} */
+
+/* checkbox的样式   */
+/* input[type=checkbox] {
+  	-webkit-appearance: none;
+	-moz-appearance: none;
+  	appearance: none;
+	visibility: hidden; 隐藏默认的checkbox
+} */
+
+/* .custom-checkbox,.custom-checkbox:focus{
+	vertical-align: middle;
+    padding: 8px;
+    margin-top: 3px;
+    cursor: pointer;
+    background-color: transparent;
+    outline: 1px solid #52deff;
+    outline-offset: -4px;
+    border: 1px solid transparent;
+} */
+/* radio的样式   */
+/* input[type=radio]{
+	-webkit-appearance: none;
+	-moz-appearance: none;
+  	appearance: none;
+  	visibility: hidden;
+  	display: none; 
+}
+
+.custom-radio,.custom-radio:focus{
+	display: inline-block;
+    vertical-align: middle;
+    margin-top: 3px;
+    line-height: 3px;
+    cursor: pointer;
+    padding: 2px;
+    background-color: transparent;
+    outline-offset: -4px;
+    border: 1px solid #52deff;
+    -webkit-border-radius: 9px;
+    -moz-border-radius: 9px;
+    border-radius: 9px;
+}
+.custom-radio .radio-bar,.custom-radio:focus .radio-bar{
+	display: inline-block;
+	padding: 2px;
+	background-color: transparent;
+    border: 1px solid transparent;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+} */
+
+/* input[type=checkbox]:checked + .custom-checkbox{
+	background: url("../../../images/common/check-bar.png") no-repeat center center;
+}
+
+input[type=checkbox][disabled] + .custom-checkbox{
+    cursor: not-allowed; 
+}
+
+input[type=radio]:checked + .custom-radio .radio-bar{
+	background-color: #52deff;
+} */
+
+/* .is-checked td{
+	color: #03ffff;
+}*/
+.width80{
+    width:80px;
+}
+.width85{
+    width:85px;
+}
+.width100{
+    width:100px;
+}
+.width110{
+	width:110px;
+}
+.width115{
+    width:115px;
+}
+.width125{
+    width:125px;
+}
+.error-msg{
+    color: #ff0004;
+}

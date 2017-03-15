@@ -1,0 +1,78 @@
+<div class="row">
+    <div class="panel panel-default section-panel">
+        <!-- <div class="panel-heading">
+            <div class="row">
+                <span class="serv-title-text">查询条件</span>
+            </div> 
+        </div> -->
+        <div class="panel-body">
+            <div class="row col-lg-6 search-form">
+                <form>
+                    <div class="col-lg-9 pdl0">
+                        <div class="form-group control-bottom">
+                            <input type="text" class="form-control" ng-model="authSearchForm.authority" placeholder="输入视图名称">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 form-btn pdl10">
+                        <a href="javascript:void(0)" class="btn btn-warning btn-control" ng-click="queryData( true )">查询</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- action e -->
+
+<!-- data section s -->
+<div class="row">
+  <div class="panel panel-default section-panel">
+        <div class="panel-heading">
+            <div class="row">
+              <span class="serv-title-text">视图列表</span>
+                <!-- <form class="pull-right mgr15">
+                    <a href="javascript:;" class="btn btn-warning btn-sm" ng-click="clickManage()">权限管理</a>
+                </form> -->
+            </div>            
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-condensed table-hover table-limit">
+                    <thead>
+                        <tr>
+                            <th>视图名称</th>
+                            <th>对应用户</th>
+                            <th class="operate-col">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-show="loading"> 
+                        <tr class="tr-loading text-center">
+                            <td colspan="3"><div class="loading"></div></td>
+                        </tr>
+                    </tbody>
+                    <tbody ng-hide="loading">            
+                        <tr class="tr-empty text-center" ng-show="viewList.length==0">
+                            <td colspan="3" ng-if="getListError!=''">{{getListError}}</td>
+                            <td colspan="3" ng-if="getListError==''">数据为空</td>
+                        </tr>
+                        <tr ng-repeat="item in viewList">
+                            <td title="{{item.name}}">{{item.name}}</td>
+                            <td title="{{item.users}}">{{item.users}}</td>
+                            <td class="operate-col" data-id="{{$index}}">
+                                <a class="btn btn-info btn-sm" ng-click="clickEdit($index)">修改</a>
+                                <!--<a class="btn btn-danger btn-sm" ng-click="clickDelete($index)">删除</a>-->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- table e -->
+            <!-- pagination s -->
+          <nav class="j-navPager" ng-hide="loading || viewList.length==0">
+              <div class="navPager" ng-modal="pager" ng-include="'views/mod/pagination.html'">
+              </div>
+          </nav>
+          <!-- pagination e -->
+        </div>
+    </div>
+</div>
+<!-- data section e -->

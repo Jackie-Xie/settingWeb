@@ -1,0 +1,34 @@
+<nav class="text-right" ng-hide="pager.total==0 || pager.pagesNum==0">
+    <ul class="pagination">
+        <li class="brief"><em>共  {{pager.pagesNum==0?1:pager.pagesNum}} 页，当前第  {{pager.pagesNum==0?1:pager.curPage}}/{{pager.pagesNum==0?1:pager.pagesNum}} 页</em></li>
+    </ul>
+     <ul class="pagination">
+     	<li class="prev" ng-class="{true:'disabled',false:''}[pager.curPage == 1]">
+            <a role="button" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li class="item" ng-show="pager.curPage>2"><a role="button">1</a></li>
+        <li class="item" ng-show="pager.curPage>3"><a role="button">2</a></li>
+        <li class="dot" ng-show="pager.curPage>4"><span>...</span></li>
+        <li class="item" ng-show="pager.curPage>1"><a role="button">{{pager.curPage-1}}</a></li>
+        <li class="active"><a role="button">{{pager.pagesNum==0?1:pager.curPage}}</a></li>
+        <li class="item" ng-show="pager.pagesNum>pager.curPage"><a role="button">{{pager.curPage+1}}</a></li>
+        <li class="dot" ng-show="pager.pagesNum-pager.curPage>3"><span>...</span></li>
+        <li class="item" ng-show="pager.pagesNum-pager.curPage>2"><a role="button">{{pager.pagesNum-1}}</a></li>
+        <li class="item" ng-show="pager.pagesNum-pager.curPage>1"><a role="button">{{pager.pagesNum}}</a></li>
+        <li class="next" ng-class="{true:'disabled',false:''}[pager.curPage == pager.pagesNum || pager.pagesNum == 0]">
+            <a role="button" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+     </ul>
+     <ul class="pagination">
+        <li class="brief">
+            <em style="padding:0;">&nbsp;&nbsp;跳转到&nbsp;&nbsp;
+            <input type="number" min="1" max="{{pager.pagesNum}}" placeholder="1" ng-model="jumpNum">
+            &nbsp;&nbsp;页&nbsp;&nbsp;
+            <button class="btn btn-default btn-sm" ng-click="gotoPage( jumpNum )">确定</button></em>
+        </li>
+     </ul>
+</nav>

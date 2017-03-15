@@ -1,0 +1,29 @@
+/* 自定义模态框滚动条 */
+.mCS-my-theme.mCSB_scrollTools{
+	top: 20px;
+	right: -5px;
+}
+.mCS-my-theme.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar{
+	width: 4px;
+	background-color: #1084c1;
+}
+.mCS-my-theme.mCSB_scrollTools .mCSB_draggerRail{
+	width: 6px;
+	border: none;
+	background-color: transparent;
+}
+
+/* 自定义模态框滚动条 */
+.mCS-my-theme-x.mCSB_scrollTools{
+	bottom: 40px;
+	right: -5px;
+}
+.mCS-my-theme-x.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar{
+	height: 4px;
+	background-color: #1084c1;
+}
+.mCS-my-theme-x.mCSB_scrollTools .mCSB_draggerRail{
+	height: 6px;
+	border: none;
+	background-color: transparent;
+}

@@ -1,0 +1,112 @@
+/* global */
+
+body {
+	margin: 0;
+    padding: 0;
+    background: #fff;
+    font-size: 14px;
+    color: #000;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+    font-family: 'helvetica neue',arial,'hiragino sans gb',stheiti,'wenquanyi micro hei',\5FAE\8F6F\96C5\9ED1,\5B8B\4F53,sans-serif;
+}
+
+/* clearfix  */
+.clearfix:after {
+    content: " ";
+    display: block;
+    clear: both;
+    height: 0;
+}
+.clearfix {
+    zoom: 1;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+    padding-left: 15px;
+    padding-right: 15px;
+    font-size: 14px;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+
+    /* Remove the padding we set earlier */
+    .header,
+    .marketing,
+    .footer {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    /* Space out the masthead */
+
+    .header .navbar{
+        border-radius: 0;
+    }
+    /* Remove the bottom border on the jumbotron for visual effect */
+    .jumbotron {
+        border-bottom: 0;
+    }
+
+}
+
+
+/* 通用 */
+.fs14{ font-size:14px;}
+.fs16{ font-size:16px;}
+.fs18{ font-size:18px;}
+.fs24{ font-size:24px;}
+.fs28{ font-size:28px;}
+
+.mgr10{ margin-right:10px;}
+.mgt2{ margin-top: 2px;}
+.mgt5{ margin-top: 5px;}
+.mgt20{margin-top: 20px;}
+.mgt50{margin-top: 50px;}
+.mgt60{margin-top: 60px;}
+.mgt-28{margin-top:-28px;}
+.mgb10{ margin-bottom:10px;}
+.mgb40{margin-bottom: 40px;}
+.mg10{ margin:10px;}
+.mgt120{margin-top: 120px;}
+.mgl15{margin-left: 15px;}
+.mgl10{margin-left: 10px;}
+.mgl50{margin-left: 50px;}
+.mgl70{margin-left: 70px;}
+
+.pdt10{ padding-top:10px;}
+.pd15{ padding:15px;}
+.pd5{ padding:5px !important;}
+.pdr50{ padding-right:50px;}
+.pdl0{ padding-left:0;}
+.pdr0{ padding-right:0;}
+.pd0{ padding:0;}
+.pdl14{ padding-left:14px;}
+.pdl25{ padding-left:25px;}
+.pdl5{ padding-left:5px;}
+
+.green{ color: #12f598; }
+.yellow{ color: #d2f512; }
+.red{ color: #f51212; }
+
+/* bootstrap 自带列间距去除 */
+.custom-row{
+    padding-right: 0;
+    padding-left: 0;
+}
+
+label {
+    font-weight: 500;
+}
+
+.horizon-center{
+	margin: 0 auto;
+}

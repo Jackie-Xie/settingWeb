@@ -1,0 +1,14 @@
+.loading-pos{
+    position: absolute;
+}
+
+.task-monitor .flow-name{
+    margin: 0;
+}
+
+.self-col-30{
+    width: 30%;
+}
+.self-col-70{
+    width: 70%;
+}

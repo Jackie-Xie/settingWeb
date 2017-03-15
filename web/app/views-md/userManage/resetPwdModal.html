@@ -1,0 +1,60 @@
+<div class="modal-header">
+    <button type="button" class="close"  data-dismiss="modal"  aria-hidden="true">×</button>
+    <h6>重置密码</h6>
+</div>
+<div class="modal-body md-modal-body">
+    <div class="row">
+        <div class="col-lg-12">
+            <form class="form-horizontal" novalidate>
+                <div class="form-group mgb20">
+                    <label class="control-label col-lg-6 modal-col-30">用户名</label>
+                    <div class="col-lg-6 modal-col-60">
+                        <input class="form-control" type="text" ng-model="theUser.name" readonly>
+                    </div>
+                </div>
+                <div class="form-group clear-mrgb " ng-class="{'has-error': validate.pwd.newPassword.dirty && validate.pwd.newPassword.invalid,'has-success':validate.pwd.newPassword.dirty && validate.pwd.newPassword.valid}" >
+                    <label class="control-label col-lg-6 modal-col-30">新密码<span class="sign-must">*</span></label>
+                    <div class="col-lg-6 modal-col-60">
+                        <input class="form-control" type="password" ng-model="theUser.newPassword" placeholder="请输入新密码" ng-change="changeStatus('newPassword')">
+                        <div class="validate-container">
+                            <span ng-if="validate.pwd.newPassword.dirty && validate.pwd.newPassword.error.required">
+                              新密码不能为空
+                            </span>
+                            <span ng-if="validate.pwd.newPassword.dirty && validate.pwd.newPassword.error.format">
+                              密码为8-20位数字和字母组合
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 modal-col-5">
+                        <img ng-if="validate.pwd.newPassword.dirty && validate.pwd.newPassword.invalid" ng-src="./src/images/validate-fail.png">
+                        <img ng-if="validate.pwd.newPassword.dirty && validate.pwd.newPassword.valid" ng-src="./src/images/validate-right.png">
+                    </div>
+                </div>
+                <div class="form-group clear-mrgb " ng-class="{'has-error': validate.pwd.confirmPassword.dirty && validate.pwd.confirmPassword.invalid,'has-success':validate.pwd.confirmPassword.dirty && validate.pwd.confirmPassword.valid}" >
+                    <label class="control-label col-lg-6 modal-col-30">确认新密码<span class="sign-must">*</span></label>
+                    <div class="col-lg-6 modal-col-60">
+                        <input class="form-control" type="password" ng-model="theUser.confirmPassword" placeholder="请再次输入新密码" ng-change="changeStatus('confirmPassword')">
+                        <div class="validate-container">
+                            <span ng-if="validate.pwd.confirmPassword.dirty && validate.pwd.confirmPassword.error.required">
+                                请再次输入新密码
+                            </span>
+                            <span ng-if="validate.pwd.confirmPassword.dirty && validate.pwd.confirmPassword.error.format">
+                                两次新密码输入不一致
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 modal-col-5">
+                        <img ng-if="validate.pwd.confirmPassword.dirty && validate.pwd.confirmPassword.invalid" ng-src="./src/images/validate-fail.png">
+                        <img ng-if="validate.pwd.confirmPassword.dirty && validate.pwd.confirmPassword.valid" ng-src="./src/images/validate-right.png">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="alert alert-danger text-center" role="alert" ng-show="errorMsg!=''">
+    {{errorMsg}}
+</div>
+<div class="modal-footer">
+    <button class="btn btn-orange btn-modal" ng-click="clickUserOk($event)">确定</button>
+</div>

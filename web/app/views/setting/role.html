@@ -1,0 +1,50 @@
+<div class="header" ng-controller='NavCtrl' ng-init="init()" ng-include="'views/mod/header.html'"></div>
+<div class="main setting-role">
+	<div class="container-fluid">
+		<div class="row wrap">
+			<!-- 子菜单 b -->
+			<div class="clearfix col-lg-3" ng-controller='SideNavCtrl' ng-init="init()" ng-include="'views/setting/subNav.html'"></div>
+			<!-- 子菜单 e -->
+
+            <div class="col-lg-9 " style="height:{{mainHeight}}px;overflow-y:auto;" ng-init="init()">
+				<div class="panel panel-primary mh-28">
+					<div class="panel-heading">
+					    <h3 class="panel-title">角色信息列表</h3>
+					</div>
+					<div class="panel-body">
+						<!-- 查询结果 b -->
+
+	                    <!-- 查询结果 e -->
+	        			<!-- 数据表格 b -->
+	                    <div class="table-responsive">
+	                        <table class="table table-condensed table-striped table-hover table-custom">
+	                            <thead>
+	                                <tr>
+										<th>编号</th>
+	                                    <th>角色</th>
+	                                    <th>描述</th>
+	                                </tr>
+	                            </thead>
+	                            <tbody>
+	                                <tr class="loading text-center" ng-show="roleInfoFlag!=''">
+	                                    <td colspan="3">{{roleInfoFlag}}</td>
+	                                </tr>
+	                                <tr ng-repeat="item in roleList" ng-show="roleInfoFlag==''">
+										<td>{{item.num}}</td>
+	                                    <td>{{item.name}}</td>
+	                                    <td>{{item.describe}}</td>
+	                                </tr>
+	                            </tbody>
+	                        </table>
+	                    </div>
+	                    <!-- 数据表格 e -->
+	        			<!-- 分页 b -->
+
+	        			<!-- 分页 e -->
+					</div>
+				</div>
+				<div class="footer" ng-include="'views/mod/footer.html'"></div>
+            </div>
+		</div>
+	</div>
+</div>

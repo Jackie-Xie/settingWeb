@@ -1,0 +1,42 @@
+/* layout.css 布局相关的样式 */
+/* .header{
+	position: absolute;
+	width:99%;
+	margin:0 auto;
+	width:99.6%;
+	margin:0 0.2%;
+	top:0;
+	left:0;
+	z-index:1;
+}
+
+.footer{
+	position: relative;
+	width:99%;
+	margin:0 auto;
+	color:#669999;
+	width:99.6%;
+	margin:0 0.2%;
+	height:1rem;
+	bottom:0;
+	left:0;
+	z-index:1;
+} */
+
+.main .wrap{
+	margin-top: 50px;
+	padding: 20px;
+	position: relative;
+	z-index:2;
+}
+
+.mh-28{
+	min-height: 28rem;
+}
+.mh-20{
+	min-height: 20rem;
+}
+.mh-7{
+	min-height: 7rem;
+}
+

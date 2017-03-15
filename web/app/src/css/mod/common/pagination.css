@@ -1,0 +1,25 @@
+/** 分页器 **/
+.pagination>li>em{ 
+	font-style: normal; 
+	font-size: 14px; 
+	float: left; 
+	padding: 6px 12px;
+}
+.brief>em>input{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 0 6px 5px;
+    width: 40px;
+}
+.pagination>li.dot>span:focus, 
+.pagination>li.dot>span:hover{
+    color: #337ab7;
+    background: #fff;
+}
+
+
+
+
+
+
+    

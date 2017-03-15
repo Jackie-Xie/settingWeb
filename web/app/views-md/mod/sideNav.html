@@ -1,0 +1,10 @@
+<div class="list-group menu-list mCustomScrollbar">
+    <a href="#/masterData" ng-class="{'active':pathStr.indexOf('masterData')>-1}" ng-if="pageRightList.indexOf('主数据管理')>-1" class="list-group-item menu-item"><i class="icon icon-md"></i>主数据管理</a>
+    <a href="#/flowManage" ng-class="{'active':pathStr.indexOf('flowManage')>-1}" ng-if="pageRightList.indexOf('工作流管理')>-1" class="list-group-item menu-item"><i class="icon icon-jm"></i>工作流管理</a>
+    <a href="#/taskMonitor" ng-class="{'active':pathStr.indexOf('taskMonitor')>-1}" ng-if="pageRightList.indexOf('任务监控')>-1" class="list-group-item menu-item"><i class="icon icon-tw"></i>任务监控</a>
+    <a href="#/serviceMgr" ng-class="{'active':pathStr.indexOf('serviceMgr')>-1}" ng-if="pageRightList.indexOf('服务管理')>-1" class="list-group-item menu-item"><i class="icon icon-sm"></i>服务管理</a>
+    <a href="#/userManage" ng-class="{'active':pathStr.indexOf('userManage')>-1}" ng-if="pageRightList.indexOf('用户管理')>-1" class="list-group-item menu-item"><i class="icon icon-um"></i>用户管理</a>
+    <a href="#/logList" ng-class="{'active':pathStr.indexOf('logList')>-1}" ng-if="pageRightList.indexOf('日志记录')>-1" class="list-group-item menu-item"><i class="icon icon-lr"></i>日志记录</a>
+    <a href="#/myTask" ng-class="{'active':pathStr.indexOf('myTask')>-1 || pathStr.indexOf('myFinishTask')>-1}" ng-if="pageRightList.indexOf('我的任务')>-1" class="list-group-item menu-item"><i class="icon icon-mt"></i>我的任务</a>
+    <a class="list-group-item menu-item"></a>
+</div>
