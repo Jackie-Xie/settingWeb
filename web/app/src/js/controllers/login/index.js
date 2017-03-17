@@ -1,12 +1,15 @@
 angular.module('myappApp')
   	.controller('LoginCtrl', function ($rootScope, $scope, $timeout, $location, AjaxServer, Validate) {
-  		$scope.pathStr = '';
-  		$scope.apiLoginUrl = "/account/login";  //登录接口
-  		$scope.logoutUrl = "/account/logout";  //退出登录接口
+        var viewHeight = $(window).height(),
+            mainHeight = 530,
+            footerHeight = 42,
+            headerHeight = 72;
+
   		/**
   		 * 初始化
   		 */
 	   	$scope.init = function () {
+            $scope.mainHeight = viewHeight - footerHeight - headerHeight;
 	   		$scope.postLogout();
 	   		$rootScope.userName = '';
 	   		$rootScope.onlyPwd = false;
@@ -46,16 +49,21 @@ angular.module('myappApp')
 			}
 		}
 
+        /*
+         * 自适应重绘
+         */
+        $scope.renderStyle = function(){
+            $scope.mainHeight = $(window).height() - footerHeight - headerHeight;
+            $scope.apply();
+        };
+
 		/**
 		*  事件绑定
 		*/
 		$scope.bindEvent = function(){
 			$('form').on('keypress','input',function(evt){
 		      	if (evt.keyCode == 13) {
-					if( !$scope.validForm() ){
-						return false;
-					}
-					$scope.postLogin();
+					$scope.clickLogin();
 		      	}else{
 		      		$scope.formatErrorMsg();
 		      	}
@@ -65,6 +73,9 @@ angular.module('myappApp')
 				it.value =  $.trim( it.value ) ;
 				$scope.formatErrorMsg();
 			});
+            $(window).resize(function(){
+                $scope.renderStyle();
+            });
 		}
 
 		/**
@@ -84,13 +95,10 @@ angular.module('myappApp')
 				$scope.loginError = true;
 				$scope.errorMsg = '验证码不能为空';
 			}
-
 			else{
 				$scope.formatErrorMsg();
 			}
-			if(!$scope.$$phase) {
-			  	$scope.$apply();
-			}
+			$scope.apply();
 			return !$scope.loginError;
 		};
 
