@@ -1,5 +1,5 @@
 <!-- 子菜单 -->
-<div class="list-group menu-list" ng-if="!onlyPwd" style="height:{{menuHeight}}px;overflow-y:auto;">
+<div class="list-group menu-list" style="height:{{menuHeight}}px;overflow-y:auto;">
 	<a href="#/setting/roles" role="button" class="list-group-item menu-item j-submenu" ng-class="{'active':pathStr.indexOf('roles')>-1}" ng-show="roleId === -1"><i class="icon icon-lr"></i>角色查看</a>
 	<a href="#/setting/users" role="button" class="list-group-item menu-item j-submenu" ng-class="{'active':pathStr.indexOf('users')>-1}" ng-show="roleId === -1"><i class="icon icon-um"></i>用户配置</a>
   	<a href="#/setting/safety" role="button" class="list-group-item menu-item j-submenu" ng-class="{'active':pathStr.indexOf('safety')>-1}" ng-show="roleId === -1"><i class="icon icon-md"></i>安全配置</a>
@@ -9,9 +9,5 @@
   	<a href="#/setting/activeUser" role="button" class="list-group-item menu-item j-submenu" ng-class="{'active':pathStr.indexOf('activeUser')>-1}"  ng-show="roleId === -2"><i class="icon icon-jm"></i>在线用户审计</a>
   	<a href="#/setting/auditAnaly" role="button" class="list-group-item menu-item j-submenu" ng-class="{'active':pathStr.indexOf('auditAnaly')>-1}"  ng-show="roleId === -2"><i class="icon icon-sm"></i>日志审计分析</a>
   	<a href="#/setting/modify" role="button" class="list-group-item menu-item j-submenu" ng-class="{'active':pathStr.indexOf('modify')>-1}"><i class="icon icon-um"></i>修改密码</a>
-	<a class="list-group-item menu-item"></a>
-</div>
-<div class="list-group menu-list" ng-if="onlyPwd" style="height:{{menuHeight}}px;overflow-y:auto;">
-	<a href="#/setting/modify" role="button" class="list-group-item menu-item j-submenu active"><i class="icon icon-um"></i>修改密码</a>
 	<a class="list-group-item menu-item"></a>
 </div>

@@ -16,7 +16,7 @@ angular.module('myappApp')
   		 */
   		$scope.updateSafetyInfo = function ( event ){
   			var it = $(event.currentTarget);
-  			//输入验证
+  			// 输入验证
   			if($scope.updateSafetyForm && !$scope.validateForm($scope.updateSafetyForm)){
   				return false;
   			}

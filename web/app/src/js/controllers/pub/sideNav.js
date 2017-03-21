@@ -4,7 +4,7 @@ angular.module('myappApp')
 	   	$scope.init = function () {
 	    	$scope.pathStr = $location.path();
             $scope.menuHeight = viewHeight - 48;
-            $scope.mainHeight = viewHeight - 48;
+            $rootScope.mainHeight = viewHeight - 48;
 	    	// 页面跳转后自动清除定时刷新，节省浏览器资源
 	        $('body').on('click','.nav li', function(){
 	        	if($scope.stopRefresh){
@@ -17,7 +17,7 @@ angular.module('myappApp')
 
         $scope.resetRender = function () {
             $scope.menuHeight = $(window).height() - 48;
-            $scope.mainHeight = $(window).height() - 48;
+            $rootScope.mainHeight = $(window).height() - 48;
             $scope.apply();
         };
 

@@ -1,11 +1,20 @@
+'use strict';
 angular.module('myappApp')
-  	.controller('LoginCtrl', function ($rootScope, $scope, $timeout, $location,$http,Validate) {
 
-  		/**
+  	.controller('LoginCtrl', ['$rootScope', '$scope', '$location','$http','Validate',function ($rootScope, $scope, $location,$http,Validate) {
+        var viewHeight = $(window).height(),
+            mainHeight = 530,
+            footerHeight = 42,
+            headerHeight = 72;
+
+  		/*
   		 * 初始化
   		 */
 	   	$scope.init = function () {
-	   		$scope.postLogout();
+            $scope.mainHeight = viewHeight - footerHeight - headerHeight;
+            if($rootScope.userLogStatus === 'logout'){
+                $scope.postLogout();
+            }
 	   		$rootScope.userName = '';
 	   		$scope.ajaxLoginFlag = false;
             $scope.allUser = [];
@@ -20,7 +29,7 @@ angular.module('myappApp')
 			$scope.createCode();
 	    };
 
-        /**
+        /*
 		*  生成验证码
 		*/
 	    $scope.createCode = function(){
@@ -36,7 +45,7 @@ angular.module('myappApp')
             // console.log($scope.codeStr);
 	    };
 
-		/**
+		/*
 		*  格式化错误信息
 		*/
 		$scope.formatErrorMsg = function(){
@@ -45,28 +54,36 @@ angular.module('myappApp')
 			$scope.apply();
 		}
 
-		/**
+        /*
+         * 自适应重绘
+         */
+        $scope.renderStyle = function(){
+            $scope.mainHeight = $(window).height() - footerHeight - headerHeight;
+            $scope.apply();
+        };
+
+		/*
 		*  事件绑定
 		*/
 		$scope.bindEvent = function(){
 			$('form').on('keypress','input',function(evt){
 		      	if (evt.keyCode == 13) {
-					if( !$scope.validForm() ){
-						return false;
-					}
-					$scope.postLogin();
+					$scope.clickLogin();
 		      	}else{
 		      		$scope.formatErrorMsg();
 		      	}
 			});
 			$('form').on('blur','input', function(ev){
 				var it = ev.currentTarget;
-				it.value =  $.trim( it.value ) ;
+				it.value =  $.trim( it.value );
 				$scope.formatErrorMsg();
 			});
-		}
+            $(window).resize(function(){
+                $scope.renderStyle();
+            });
+		};
 
-		/**
+		/*
 		*  表单验证
 		*/
 		$scope.validForm = function(){
@@ -86,13 +103,11 @@ angular.module('myappApp')
 			else{
 				$scope.formatErrorMsg();
 			}
-			if(!$scope.$$phase) {
-			  	$scope.$apply();
-			}
+			$scope.apply();
 			return !$scope.loginError;
 		};
 
-		/**
+		/*
 		 * 点击登录
 		 */
 		$scope.clickLogin = function(){
@@ -103,7 +118,7 @@ angular.module('myappApp')
 			$scope.postLogin();
 		};
 
-		/**
+		/*
 		*  登录提交
 		*/
 		$scope.postLogin = function(){
@@ -126,20 +141,24 @@ angular.module('myappApp')
             $scope.identify(user);
 		};
 
-        /**
+        /*
         * 判断所有用户列表是否含有用户
         */
         $scope.identify = function(user){
+            $scope.ajaxLoginFlag = false;
+            $scope.apply();
             $http.get('/data/userSetting/getUserList.json',{cache:true}).then(function success(response){
                 if(response.status === 200){
+                    var userInfo = undefined;
                     $scope.allUser = response.data;
                     if($scope.allUser){
-                        $.each($scope.allUser,function(k,v){
-                            if(v.userName === user.userName && v.hash === user.hash){
-                                $scope.loginAndThen(v);
+                        angular.forEach($scope.allUser,function(data,index,array){
+                            if(data.userName === user.userName && data.hash === user.hash){
+                                userInfo = data;
                                 return;
                             }
                         });
+                        $scope.loginAndThen(userInfo);
                     }
                     $scope.apply();
                 }
@@ -148,15 +167,17 @@ angular.module('myappApp')
             });
         };
 
-        /**
+        /*
         * 登录成功后的一些操作
         */
         $scope.loginAndThen = function(userInfo){
             if(userInfo){
+                // 密码不传前端
+                userInfo.hash = '';
                 $rootScope.userName = $scope.userName = userInfo.userName;
                 $rootScope.roleId = $scope.roleId = userInfo.roleId;
                 $rootScope.userInfo = $scope.userInfo = userInfo;
-                
+                $rootScope.userLogStatus = 'login';
                 $scope.formatErrorMsg();
                 if( $scope.roleId === -1 ){
                     $location.path('/setting/users');
@@ -180,11 +201,9 @@ angular.module('myappApp')
                 //重新生成验证码
                 $scope.createCode();
             }
-
-            $scope.ajaxLoginFlag = false;
         };
 
-		/**
+		/*
 		*  退出登录
 		*/
 		$scope.postLogout = function(){
@@ -202,4 +221,4 @@ angular.module('myappApp')
             }
         };
 
-  	});
+  	}]);

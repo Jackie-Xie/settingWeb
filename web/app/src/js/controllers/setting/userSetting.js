@@ -28,7 +28,6 @@ angular.module('myappApp')
 
 	   	$scope.init = function () {
 	   		$scope.pathStr = $location.path();
-            
 	   		$scope.roleId = null;
 	   		$scope.onlyPwd = false;
 	   		$scope.pathStr = $location.path();
