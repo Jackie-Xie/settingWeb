@@ -1,12 +1,7 @@
 'use strict';
 
 angular.module('myappApp')
-  	.controller('SafetyCtrl', function ($scope, AjaxServer, Validate, $location) {
-  		var config = {},
-			postData = {},
-  			apiUpdateSafetyInfo = '/systemconfig?cmd=update',   // 修改安全配置
-  			apiGetSafetyInfo = '/systemconfig';                 // 获取原安全配置
-  		
+  	.controller('SafetyCtrl', ['$scope', '$http', 'Validate', '$location',function ($scope, $http, Validate, $location) {
   		$scope.init = function () {
             $scope.pathStr = $location.path();
   			$scope.errorMsg = '';
@@ -15,14 +10,14 @@ angular.module('myappApp')
   			$scope.pathStr = $location.path();
   			$scope.getSafetyInfo();
   		}
-  		
+
   		/*
   		 * 修改安全配置
   		 */
   		$scope.updateSafetyInfo = function ( event ){
   			var it = $(event.currentTarget);
   			//输入验证
-  			if(!!$scope.updateSafetyForm && !$scope.validateForm($scope.updateSafetyForm)){
+  			if($scope.updateSafetyForm && !$scope.validateForm($scope.updateSafetyForm)){
   				return false;
   			}
   			postData = {
@@ -40,7 +35,7 @@ angular.module('myappApp')
   			 };
   			it.addClass('btn-custom-disabled').attr('disabled','disabled');
   			// 请求数据
-  			AjaxServer.ajaxInfo( config , function ( data ) {
+  		/*	AjaxServer.ajaxInfo( config , function ( data ) {
   				it.removeClass('btn-custom-disabled').removeAttr('disabled');
   				if(!!data){
   					if(!!data && !!data.error){
@@ -61,53 +56,53 @@ angular.module('myappApp')
   	  			$scope.successMsg = '';
   	  			$scope.apply();
   				it.removeClass('btn-custom-disabled').removeAttr('disabled');
-  			});
-  		}
-  		
+  			});*/
+  		};
+
   		/*
   		 * 获取安全配置信息
   		 */
   		$scope.getSafetyInfo = function (){
-  			config = {
-  				'method':'get',
-  				'data': {},
-  				'url':apiGetSafetyInfo
-  			 };
-  			// 请求数据
-  			AjaxServer.ajaxInfo( config , function ( data ) {
-  				for(var i=0; i < data.length; i++){
-  					switch($.trim(data[i].key)){
-  						case 'sessionLifeCycle':
-  							$scope.updateSafetyForm.oldSessionTime = data[i].value;
-  							break;
-  						case 'maxSessionCount':
-  							$scope.updateSafetyForm.oldSessionNum = data[i].value;
-  							break;
-  						case 'maxHashTime':
-  							$scope.updateSafetyForm.oldPwdTime = data[i].value;
-  							break;
-  						case 'hashErrorCount':
-  							$scope.updateSafetyForm.oldPwdNum = data[i].value;
-  							break;
-  						case 'maxUserUnLoginTime':
-  							$scope.updateSafetyForm.oldUnLoginLockTime = data[i].value;
-  							break;
-  						case 'lockTime':
-  							$scope.updateSafetyForm.oldLockTime = data[i].value;
-  							break;
-  					}
+            var promise = $http({
+                method:'GET',
+                url:"/data/systemConfig/sysConfig.json"
+            });
+  			promise.then(function (response){
+                if(response.status === 200){
+                    var d = response.data;
+                    for(var i=0,l=d.length; i < l; i++){
+      					switch($.trim(d[i].key)){
+      						case 'sessionLifeCycle':
+      							$scope.updateSafetyForm.oldSessionTime = d[i].value;
+      							break;
+      						case 'maxSessionCount':
+      							$scope.updateSafetyForm.oldSessionNum = d[i].value;
+      							break;
+      						case 'maxHashTime':
+      							$scope.updateSafetyForm.oldPwdTime = d[i].value;
+      							break;
+      						case 'hashErrorCount':
+      							$scope.updateSafetyForm.oldPwdNum = d[i].value;
+      							break;
+      						case 'maxUserUnLoginTime':
+      							$scope.updateSafetyForm.oldUnLoginLockTime = d[i].value;
+      							break;
+      						case 'lockTime':
+      							$scope.updateSafetyForm.oldLockTime = d[i].value;
+      							break;
+      					}
+                    }
   				}
+                $scope.successMsg = '';
   				$scope.errorMsg = '';
-  				$scope.apply();	
-  			},
-  			function( status ){
-  				var errorMessage = status ? '因为系统内部错误请求安全配置信息失败' : '因为网络原因请求安全配置信息失败';
-  				$scope.errorMsg = errorMessage;
+  				$scope.apply();
+            },function (){
+  				$scope.errorMsg = '因为网络原因请求安全配置信息失败';
   	  			$scope.successMsg = '';
-  	  			$scope.apply();		
-  			});
-  		}
-  		
+  	  			$scope.apply();
+            });
+  		};
+
   		/*
   		 * 验证表单数据
   		 */
@@ -153,10 +148,10 @@ angular.module('myappApp')
   				$scope.errorMsg = '用户长期未登录锁定时长为1-30的正整数，请修改';
 	  			return false;
   			}
-		
+
   			return true;
   		};
-  		
+
   		/*
   		 * 为空时自动填上原来的值
   		 */
@@ -182,7 +177,7 @@ angular.module('myappApp')
   			}
   			$scope.apply();
   		};
-  		
+
   		/*
   		 * 清空提示信息
   		 */
@@ -190,10 +185,10 @@ angular.module('myappApp')
   			$scope.errorMsg = '';
   			$scope.successMsg = '';
   		}
-  		
+
   		$scope.apply = function() {
   			if(!$scope.$$phase) {
   			    $scope.$apply();
   			}
   		};
-});
+}]);

@@ -26,8 +26,9 @@
 	                                </tr>
 	                            </thead>
 	                            <tbody>
-	                                <tr class="loading text-center" ng-show="roleInfoFlag!=''">
-	                                    <td colspan="3">{{roleInfoFlag}}</td>
+	                                <tr class="tr-loading text-center" ng-show="roleInfoFlag!=''">
+	                                    <td colspan="3" ng-if="roleInfoFlag.indexOf('loading')==-1">{{roleInfoFlag}}</td>
+										<td colspan="3" ng-if="roleInfoFlag.indexOf('loading')>-1"><div class="loading"></div></td>
 	                                </tr>
 	                                <tr ng-repeat="item in roleList" ng-show="roleInfoFlag==''">
 										<td>{{item.num}}</td>

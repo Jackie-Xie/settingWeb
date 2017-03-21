@@ -9,10 +9,15 @@ angular.module('myappApp')
     var self = this;
 
     /*
-     * 主函數獲取分頁后的數據
+     * 主函数
      */
     this.page = function(curPage,pageSize,data,search) {
+        // 筛选符合条件数据
+        var searchData = self.search(search,data);
+        // 得到分页以后数据
+        var pageData = self.getPager(curPage,pageSize,searchData);
 
+        return pageData;
     };
 
     /*
@@ -25,7 +30,7 @@ angular.module('myappApp')
                 key:k,
                 value:search[k]
             };
-            data = this.searchOne (searchOne,data);
+            data = self.searchOne (searchOne,data);
         }
         return data;
     };
@@ -43,8 +48,10 @@ angular.module('myappApp')
             aRow = data[i];
             for(var k in aRow){
                 aProVal = aRow[k];
-                if(k.indexOf(searchOneKey)>-1 && aProVal.indexOf(searchOneVal)>-1){
-                    responseData.push(data[i]);
+                if(k.indexOf(searchOneKey)>-1){
+                    if(typeof(aProVal) == 'string' ? aProVal.indexOf(searchOneVal)>-1 : aProVal == searchOneVal){
+                        responseData.push(data[i]);
+                    }
                 }
             }
         }
@@ -55,7 +62,29 @@ angular.module('myappApp')
      * 获取分页以后的数据
      */
     this.getPager = function(curPage,pageSize,data) {
+        var pageData = {},
+            startIndex = (curPage - 1) * pageSize,
+            endIndex = curPage * pageSize - 1;
+        pageData = {
+            total : data.length,
+            curPage : curPage,
+            startRow : startIndex,
+            endRow: endIndex + 1,
+            pagesNum : self.getPages(pageSize,data),
+            result: self.getPageData(startIndex,endIndex,data)
+        }
+        return pageData;
+    };
 
+    /*
+     * 获得一页的数据
+     */
+    this.getPageData = function(startIndex,endIndex,data) {
+        var tempArr = [];
+        for(var i = startIndex,len = endIndex + 1; i < len; i++){
+            tempArr.push(data[i]);
+        }
+        return tempArr;
     };
 
     /*

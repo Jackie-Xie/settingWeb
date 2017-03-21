@@ -5,12 +5,25 @@
  */
 .login.header{
 	margin-bottom:0;
-
+}
+.system-name{
+	display: inline-block;
+	margin-left: 15px;
+}
+.cn-name{
+	font-size: 20px;
+	font-weight: 600;
+	letter-spacing: 5px;
+}
+.en-name{
+    font-family: cursive;
+	font-size: 16px;
+	font-weight: 600;
 }
 .login .navbar-default{
 	background-color: #fff;
 	border:0;
-	margin-bottom: 0;
+	margin-bottom: 5px;
 	height:70px;
 	line-height: 70px;
 	border-radius: 0px;
@@ -25,7 +38,7 @@
 
 .login .ad-wrap{
 	height: 509px;
-	background: url(../../images/login-ad.png) top right no-repeat;
+	background: url(../../../images/login-ad.png) top right no-repeat;
 }
 
 .login .login-wrap{

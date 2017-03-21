@@ -1,27 +1,28 @@
 angular.module('myappApp')
-  	.controller('LoginCtrl', function ($rootScope, $scope, $timeout, $location, AjaxServer, Validate) {
-  		$scope.pathStr = '';
-  		$scope.apiLoginUrl = "/account/login";  //登录接口
-  		$scope.logoutUrl = "/account/logout";  //退出登录接口
+  	.controller('LoginCtrl', function ($rootScope, $scope, $timeout, $location,$http,Validate) {
+
   		/**
   		 * 初始化
   		 */
 	   	$scope.init = function () {
 	   		$scope.postLogout();
 	   		$rootScope.userName = '';
-	   		$rootScope.onlyPwd = false;
 	   		$scope.ajaxLoginFlag = false;
+            $scope.allUser = [];
 			$scope.userName = '';
 			$scope.code = '';
 			$scope.checkCode = '';
 			$scope.codeValue = '';
+            $scope.codeStr = '';
 			$scope.formatErrorMsg();
 			$scope.bindEvent();
-			//验证码
+			// 验证码
 			$scope.createCode();
 	    };
 
-
+        /**
+		*  生成验证码
+		*/
 	    $scope.createCode = function(){
             var authArr = ['','JEFB','YXDN','8KLT','NQET','EGVL'],
                 authNum = parseInt(Math.random()*5 + 1),
@@ -32,7 +33,7 @@ angular.module('myappApp')
             // 实际生产环境是服务器端生成验证码图片的
 	    	/*var srcValue =  window.location.protocol + '//'+ window.location.host + '/authImage?' + new Date().getTime();
 	    	$scope.codeValue = srcValue;*/
-            console.log($scope.codeStr);
+            // console.log($scope.codeStr);
 	    };
 
 		/**
@@ -41,9 +42,7 @@ angular.module('myappApp')
 		$scope.formatErrorMsg = function(){
 			$scope.loginError = false;
 			$scope.errorMsg = '';
-			if(!$scope.$$phase) {
-			  	$scope.$apply();
-			}
+			$scope.apply();
 		}
 
 		/**
@@ -84,7 +83,6 @@ angular.module('myappApp')
 				$scope.loginError = true;
 				$scope.errorMsg = '验证码不能为空';
 			}
-
 			else{
 				$scope.formatErrorMsg();
 			}
@@ -98,6 +96,7 @@ angular.module('myappApp')
 		 * 点击登录
 		 */
 		$scope.clickLogin = function(){
+            // 登录表单验证
 			if( !$scope.validForm() ){
 				return false;
 			}
@@ -113,90 +112,88 @@ angular.module('myappApp')
 			}
 			var user = {
 				'userName':$scope.userName,
-				'hash':$scope.code,
+				'hash':hex_md5($scope.code),
 				'verCode':$scope.checkcode
 			};
-            config = {
-                'method':'post',
-  				'data': user,
-  				'url':$scope.apiLoginUrl
-            };
             $scope.ajaxLoginFlag = true;
-            AjaxServer.ajaxInfo( config, function (data){
-            	$scope.ajaxLoginFlag = false;
-                if( data.result && data.result == 'success' ){
-                	$rootScope.onlyPwd = false;
-                	$rootScope.userName = $scope.userName = data.userInfo.user.userName;
-                	if( data.message && data.message.indexOf('请重置密码')>-1 ){
-	                	//console.log('重置密码');
-	                	$scope.loginError = true;
-	                	$scope.errorMsg = data.message;
-	                	$rootScope.onlyPwd = true;
-	                	if(!$scope.$$phase) {
-			  			    $scope.$apply();
-			  			}
-	                	$timeout( function(){
-	                		$location.path('/setting/modify');
-	                	},800 );
-	                	return false;
-	                }
-                	$rootScope.roleId = $scope.roleId = data.userInfo.user.roleId;
-                	$rootScope.provinceName = $scope.provinceName = data.userInfo.user.businessGroup && data.userInfo.user.businessGroup.province && data.userInfo.user.businessGroup.province.name;
-                	$rootScope.userInfo = $scope.userInfo = data.userInfo;
-    				$scope.formatErrorMsg();
-    				if( $scope.roleId == -1 ){
-    					$location.path('/setting/users');
-    					return false;
-    				}
-    				if( $scope.roleId == -2){
-    					$location.path('/setting/audit');
-    					return false;
-    				}
-    				if( $scope.roleId == -3){
-    					$location.path('/setting/assess');
-    					return false;
-    				}
-    				window.location.href = './home.html';
-    				return false;
-                }
-
-				$scope.loginError = true;
-				$scope.errorMsg = data.error;
-				//重新生成验证码
-				$scope.createCode();
-            },
-            function (status){
-            	$scope.ajaxLoginFlag = false;
-                var errorMessage = status  || '网络原因';
-				errorMessage = '因为' + errorMessage + '请求失败。';
-				$rootScope.onlyPwd = false;
-				//重新生成验证码
-				$scope.createCode();
-            });
+            // 验证码匹配
+            if(user.verCode.toUpperCase() !== $scope.codeStr){
+                $scope.loginError = true;
+                $scope.errorMsg = '验证码错误';
+                return false;
+            }
+            // 登录认证
+            $scope.identify(user);
 		};
+
+        /**
+        * 判断所有用户列表是否含有用户
+        */
+        $scope.identify = function(user){
+            $http.get('/data/userSetting/getUserList.json',{cache:true}).then(function success(response){
+                if(response.status === 200){
+                    $scope.allUser = response.data;
+                    if($scope.allUser){
+                        $.each($scope.allUser,function(k,v){
+                            if(v.userName === user.userName && v.hash === user.hash){
+                                $scope.loginAndThen(v);
+                                return;
+                            }
+                        });
+                    }
+                    $scope.apply();
+                }
+            },function error(){
+                console.log('因为网络原因请求失败');
+            });
+        };
+
+        /**
+        * 登录成功后的一些操作
+        */
+        $scope.loginAndThen = function(userInfo){
+            if(userInfo){
+                $rootScope.userName = $scope.userName = userInfo.userName;
+                $rootScope.roleId = $scope.roleId = userInfo.roleId;
+                $rootScope.userInfo = $scope.userInfo = userInfo;
+                
+                $scope.formatErrorMsg();
+                if( $scope.roleId === -1 ){
+                    $location.path('/setting/users');
+                    return false;
+                }
+                if( $scope.roleId === -2){
+                    $location.path('/setting/audit');
+                    return false;
+                }
+                if( $scope.roleId === -3){
+                    $location.path('/setting/assess');
+                    return false;
+                }
+                window.location.href = './setting';
+                return false;
+            }
+            else{
+                $scope.loginError = true;
+                $scope.errorMsg = '用户名或密码错误';
+                $scope.apply();
+                //重新生成验证码
+                $scope.createCode();
+            }
+
+            $scope.ajaxLoginFlag = false;
+        };
 
 		/**
 		*  退出登录
 		*/
 		$scope.postLogout = function(){
-            var config = {
-                'method':'post',
-                'data': '',
-  				'url':$scope.logoutUrl
-            };
-            AjaxServer.ajaxInfo( config, function (data){
-                if(data.success=='退出'){
-                	$rootScope.userName = null;
-    				$location.path('/login');
-                }else{
-                	$location.path('/login');
-                }
-            },
-            function (status){
-                var errorMessage = status  || '网络原因';
-				errorMessage = '因为' + errorMessage + '请求失败。';
-				console.log(errorMessage);
-            });
+        	$rootScope.userName = null;
+            $scope.userName = null;
+            $rootScope.roleId = $scope.roleId = null;
+            $rootScope.userInfo = $scope.userInfo = undefined;
+            $scope.apply ();
+			$location.path('/login');
 		};
 
         $scope.apply = function() {

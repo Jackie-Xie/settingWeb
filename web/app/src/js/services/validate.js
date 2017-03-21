@@ -49,7 +49,7 @@ angular.module('myappApp')
 		var regDate = /^[0-9]{4}-[0-1]?[0-9]{1}-[0-3]?[0-9]{1} ([0-2][0-9]):([0-5][0-9]):([0-5][0-9])$/;
 		return regDate.test(str);
 	};
-	
+
 	/*
 	*  validDate  日期校验
 	*  param: str 需要验证的日期
@@ -58,7 +58,7 @@ angular.module('myappApp')
 		var regDate = /^[0-9]{4}-[0-1]?[0-9]{1}-[0-3]?[0-9]{1}$/;
 		return regDate.test(str);
 	};
-	
+
 	/*
 	*  validClock  时间“--：--：--”校验
 	*  param: str 需要验证的数据
@@ -67,7 +67,7 @@ angular.module('myappApp')
 		var regTime = /^([0-2][0-9]):([0-5][0-9]):([0-5][0-9])$/;
 		return regTime.test(str);
 	};
-	
+
 	/*
 	*  validEmail  邮箱校验
 	*  param: str 需要验证的数据
@@ -76,7 +76,7 @@ angular.module('myappApp')
 		var regEmail = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
 		return regEmail.test(str);
 	};
-	
+
 	/*
 	*  validTel  联系方式校验
 	*  param: str 需要验证的数据
@@ -84,9 +84,9 @@ angular.module('myappApp')
 	this.validTel= function(str){
 		var regPhone = /^1[3|4|5|7|8]\d{9}$/,
 			regTel = /^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/;
-		return regPhone.test(str) && regTel.test(str);
+		return regPhone.test(str) || regTel.test(str);
 	};
-	
+
 	/*
 	*  validIp  Ip校验
 	*  param: str 需要验证的数据
@@ -96,7 +96,7 @@ angular.module('myappApp')
 			regIp2 = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 		return regIp.test(str) || regIp2.test(str);
 	};
-	
+
 	/*
 	*  validPort  端口校验
 	*  param: str 需要验证的数据
@@ -105,7 +105,7 @@ angular.module('myappApp')
 		var regPort = /^([0-9]|[1-9]\d|[1-9]\d{2}|[1-9]\d{3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$/;
 		return regPort.test(str);
 	};
-	
+
 	/*
 	*  validHash  密码校验
 	*  param: str 需要验证的数据
@@ -151,7 +151,7 @@ angular.module('myappApp')
 				return " "+i+" ";
 			});
 			err = self._uniq(err);
-			
+
 			if(!!err && err.length!=0){
 				err = err.join(", ");
 				backInfo.status = false;
@@ -161,10 +161,10 @@ angular.module('myappApp')
 		else{
 			backInfo.status = true;
 		}
-		
+
 		return backInfo;
 	}
-	
+
 	/*
 	*  validChinese  中文校验
 	*  param: str 需要验证的数据
@@ -190,7 +190,7 @@ angular.module('myappApp')
 	    	return true;
 	    }
 	};
-	
+
 	/*
 	*  validNaturalNum  正整数校验
 	*  param: str 需要验证的数据
@@ -203,7 +203,7 @@ angular.module('myappApp')
 	    	return true;
 	    }
 	};
-	
+
 	/*
 	*  validLength  长度校验
 	*  param: str 需要验证的数据
@@ -211,7 +211,7 @@ angular.module('myappApp')
 	*         lengthRange.minLen: 最小长度，默认为0
 	*         lengthRange.maxLen: 最大长度，默认为25
 	*/
-	this.validLength = function(str, lengthRange){		
+	this.validLength = function(str, lengthRange){
 		if(!str ||  typeof(str)!='string'){
 			return false;
 		}
@@ -244,7 +244,7 @@ angular.module('myappApp')
         }
 		return realLength;
 	};
-	
+
 	/*
 	 * _uniq
 	 */
@@ -262,7 +262,7 @@ angular.module('myappApp')
 		}
 		return result;
 	};
-	
+
 	/*
 	 * _isRepeat
 	 */

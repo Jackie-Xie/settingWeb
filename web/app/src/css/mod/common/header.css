@@ -1,0 +1,36 @@
+
+/* .header{
+	position: absolute;
+	width:99%;
+	margin:0 auto;
+	width:99.6%;
+	margin:0 0.2%;
+	top:0;
+	left:0;
+	z-index:1;
+}
+
+.footer{
+	position: relative;
+	width:99%;
+	margin:0 auto;
+	color:#669999;
+	width:99.6%;
+	margin:0 0.2%;
+	height:1rem;
+	bottom:0;
+	left:0;
+	z-index:1;
+} */
+.navbar-self {
+     margin-bottom: 0;
+     border: 0;
+     background:#2e3537;
+}
+.navbar-self .navbar-nav>.current>a,
+.navbar-self .navbar-nav>.top-list-item>a:focus,
+.navbar-self .navbar-nav>.top-list-item>a:hover,
+.navbar-self .navbar-nav>.top-list-item>a:active  {
+    color: #fff;
+    background-color: #2a2a2a;
+}

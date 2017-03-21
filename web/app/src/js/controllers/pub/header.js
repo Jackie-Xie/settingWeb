@@ -6,13 +6,10 @@ angular.module('myappApp')
   		$scope.pathStr = '';
 
 	   	$scope.init = function () {
-	   		$scope.$on('onlyPwd',function(){
-	   			$scope.onlyPwd = true;
-	   		})
 	   		if( $rootScope.userName ){
 	   			$scope.userName =  $rootScope.userName;
 	   			$scope.roleId =  $rootScope.roleId;
-	   			$scope.onlyPwd = $rootScope.onlyPwd;
+                $scope.userInfo = $rootScope.userInfo;
 	   		}else{
 	   			var ajaxConfig = {
 		   			'url': apiGetUserInfo,

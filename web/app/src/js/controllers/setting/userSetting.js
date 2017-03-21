@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myappApp')
-  	.controller('UserSettingCtrl', function ($scope, $rootScope, $window, $location,$http, $timeout, AjaxServer, Validate) {
+  	.controller('UserSettingCtrl', function ($scope, $rootScope, $window, $location,$http, $timeout, AjaxServer, Validate,PageService) {
   		var config = {},	    									  	  // 请求配置
   			postData = {},												  // 请求默认所带参数
   			realPager = {},                     						  // 真实分页参数
@@ -28,9 +28,7 @@ angular.module('myappApp')
 
 	   	$scope.init = function () {
 	   		$scope.pathStr = $location.path();
-	   		$scope.$on('onlyPwd',function(){
-	   			$scope.onlyPwd = true;
-	   		});
+            
 	   		$scope.roleId = null;
 	   		$scope.onlyPwd = false;
 	   		$scope.pathStr = $location.path();
@@ -106,8 +104,9 @@ angular.module('myappApp')
 
         // test
         $scope.test = function (){
-            $http.get('/data/test.json').success(function(data){
+            $http.get('/data/userSetting/getUserList.json').success(function(data){
                 console.log(data);
+                console.log(PageService.page(1,5,data,{isSend:1}));
             }).error(function(){
                 console.log('因为网络原因请求失败');
             });
