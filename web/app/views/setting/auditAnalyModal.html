@@ -1,0 +1,16 @@
+<div class="modal-header">
+    <button type="button" class="close"  aria-hidden="true" data-dismiss="modal">×</button>
+    <h6>系统提示</h6>
+</div>
+<div class="modal-body">
+    <p class="text-center">导出成功，请<a role="button" class="j-export" href="{{exportHref}}" target="_blank">点击此处下载</a>.</p>
+</div>
+<div class="modal-footer">
+    <div class="alert alert-danger text-left pl50" role="alert" ng-show="errorMsg!='' && successMsg==''">
+        {{errorMsg}}
+    </div>
+    <div class="alert alert-success text-center" role="alert" ng-show="successMsg!='' && errorMsg==''">
+        {{successMsg}}
+    </div>
+    <button class="btn btn-primary btn-md" aria-hidden="true" data-dismiss="modal" >关 闭</button>
+</div>

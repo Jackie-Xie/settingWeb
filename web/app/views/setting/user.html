@@ -1,158 +1,121 @@
-<div class="j-body">
-	<div class="header" ng-controller='NavCtrl' ng-init="init()" ng-include="'views/mod/header.html'"></div>
-	<div class="main setting-user">
-		<div class="container-fluid">
-	        <!-- modal b -->
-	        <div id="J_userAddModal" class="modal fade" role="dialog" aria-hidden="true" >
-	            <div class="modal-dialog modal-md">
-	                <div class="modal-content" ng-include="'views/setting/userAddModal.html'"></div>
-	            </div>
-	        </div>
-	        <div id="J_userOprConfirm" class="modal fade" role="dialog" aria-hidden="true">
-	            <div class="modal-dialog modal-sm">
-	                <div class="modal-content" ng-include="'views/setting/deleteModal.html'"></div>
-	            </div>
-	        </div>
-	        <div id="J_userHashModal" class="modal fade" role="dialog" aria-hidden="true">
-	            <div class="modal-dialog modal-sm modal-sm-ex">
-	                <div class="modal-content" ng-include="'views/setting/userPwdModal.html'"></div>
-	            </div>
-	        </div>
-	        <!-- modal e -->
-
-			<div class="row wrap">
-				<!-- 子菜单 b -->
-				<div class="clearfix col-lg-3" ng-controller="SideNavCtrl" ng-init="init()" ng-include="'views/setting/subNav.html'"></div>
-				<!-- 子菜单 e -->
-	            <div class="col-lg-9" style="height:{{mainHeight}}px;overflow-y:auto;" ng-init="init()">
-					<div class="panel panel-primary mh-7">
-						<div class="panel-heading">
-						    <h3 class="panel-title">用户搜索</h3>
-						</div>
-						<div class="panel-body">
-							<!-- 查询表单 b -->
-		        			<form class="clearfix form-custom" method="post">
-		                        <div class="col-lg-11 search-forms">
-		                            <div class="col-lg-6 form-group">
-		                                <label class="control-label label-custom" for="J_userName">用户名称：</label>
-		                                <div class="input-custom input-custom-lg">
-		                                    <input type="text" autocomplete="off" class="form-control" id="J_userName" ng-model="queryUser.userName">
-		                                </div>
-		                            </div>
-		                            <div class="col-lg-6 form-group">
-		                                <label class="control-label label-custom" for="J_roleName">角色名称：</label>
-		                                <div class="input-custom input-custom-lg">
-		                                    <select class="form-control" id="J_roleName" ng-model="queryUser.roleId" ng-options="item.id as item.name for item in roleList" ng-change="getBusinessGroupOptions(queryUser.roleId)">
-		                                        <option value="">----请选择角色----</option>
-		                                    </select>
-		                                </div>
-		                            </div>
-		                            <div class="col-lg-6 form-group">
-		                                <label class="control-label label-custom" for="J_groupName">所属单位：</label>
-		                                <div class="input-custom input-custom-lg">
-		                                    <select class="form-control" id="J_groupName" ng-model="queryUser.groupId" ng-options="businessGroup.id as businessGroup.bgname for businessGroup in businessGroupOptions">
-		                                        <option value="">----请选择单位----</option>
-		                                    </select>
-		                                </div>
-		                            </div>
-		                            <div class="col-lg-6 form-group">
-		                                <label class="control-label label-custom" for="J_userStatus">用户状态：</label>
-		                                <div class="input-custom input-custom-lg">
-		                                    <select class="form-control" id="J_userStatus" ng-model="queryUser.userStatus">
-		                                    	<option value="">----请选择状态----</option>
-		                                        <option value="1">正常</option>
-					                            <option value="0">锁定/审核中</option>
-					                            <option value="-1">注销</option>
-		                                    </select>
-		                                </div>
-		                            </div>
-		                        </div>
-		                        <div class="col-lg-1 search-btn mgt50">
-		                            <a role="button" class="btn btn-primary btn-md j-query-user">查询</a>
-		                        </div>
-		                    </form>
-		        			<!-- 查询表单 e -->
-		        			<div class="alert-section">
-								<div class="text-danger text-right pl50" role="alert" ng-show="searchErrorMsg!=''">
-									{{searchErrorMsg}}
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="panel panel-primary mh-20">
-						<div class="panel-heading">
-						    <h3 class="panel-title">用户详情列表</h3>
-						</div>
-						<div class="panel-body">
-							<!-- 查询结果 b -->
-		                    <div class="clearfix col-lg-4 search-result" ng-include="'views/mod/searchResult.html'"></div>
-		                    <!-- 查询结果 e -->
-		        			<!-- 操作按钮 b -->
-		        			<form class="col-lg-8 form-btn text-right" method="post">
-		        			    <a role="button" class="btn btn-success btn-md j-reset-pwd" ng-class="{'btn-custom-disabled':selected.indexOf(1)>-1}" ng-disabled="selected.indexOf(1)>-1">重置密码</a>
-		                        <a role="button" class="btn btn-info btn-md j-add-user">添加</a>
-		                        <a role="button" class="btn btn-warning btn-md j-edit-user">修改</a>
-		                        <a role="button" class="btn btn-danger btn-md j-del-user" ng-class="{'btn-custom-disabled':selected.indexOf(1)>-1||selected.indexOf(2)>-1||selected.indexOf(3)>-1}" ng-disabled="selected.indexOf(1)>-1||selected.indexOf(2)>-1||selected.indexOf(3)>-1">注销</a>
-		                    </form>
-		        			<!-- 操作按钮 e -->
-		        			<!-- 数据表格 b -->
-		                    <div class="col-lg-12 table-responsive">
-		                        <table class="table table-condensed table-striped table-hover table-custom table-checkbox">
-		                            <thead>
-		                                <tr>
-		                                    <th data-id="0"><input id="J_selectAll" type="checkbox" ng-checked="isSelected(0)" ng-click="updateSelection($event,0,userInfoList)" value="checkbox" /><label class="custom-checkbox" for="J_selectAll"></label></th>
-		                                    <th>用户名</th>
-		                                    <th>所属单位</th>
-		                                    <th>角色</th>
-		                                    <th>描述</th>
-		                                    <th>用户状态</th>
-		                                    <th>创建时间</th>
-		                                    <th>手机号码</th>
-		                                    <th>电子邮箱</th>
-		                                    <th>邮件通知</th>
-		                                </tr>
-		                            </thead>
-		                            <tbody>
-		                                <tr class="loading text-center" ng-show="userShowTag && !queryNoneUser && FailedMsg==''">
-		                                    <td colspan="10">loading...</td>
-		                                </tr>
-		                                <tr class="loading text-center" ng-show="queryNoneUser && !userShowTag && FailedMsg==''">
-		                                    <td colspan="10">对不起，查询结果为空！</td>
-		                                </tr>
-										<tr class="loading text-center" ng-show="FailedMsg!='' && !userShowTag && !queryNoneUser">
-		                                    <td colspan="10">{{FailedMsg}}</td>
-		                                </tr>
-		                                <tr ng-class="{'is-checked': isSelected(item.id) }" ng-repeat="item in userInfoList" ng-show="!userShowTag && !queryNoneUser && FailedMsg==''">
-		                                	<td data-id="{{item.id}}" ng-if="(item.status!=-1 && item.auditFlag==1) || item.roleId<0"><input type="checkbox" value="checkbox" ng-checked="isSelected(item.id)" ng-click="updateSelection($event,item.id,userInfoList)" id="checkboxOneInput{{item.id}}" ng-disabled="item.auditFlag==0 || item.status==-1" /><label class="custom-checkbox" for="checkboxOneInput{{item.id}}" ng-click="changeTitle($event,item.auditFlag)"></label></td>
-
-		                                    <td data-id="{{item.id}}" ng-if="item.status==-1 || item.auditFlag==0"><input type="checkbox" disabled="disabled"></td>
-
-		                                    <td>{{item.userName}}</td>
-		                                    <td>{{item.businessGroup.cnName || item.businessGroup.name || '--'}}</td>
-		                                    <td>{{item.role.name}}</td>
-		                                    <td>{{item.describe || '--'}}</td>
-		                                    <td ng-if="item.status==-1">注销</td>
-		                                    <td ng-if="item.status==0 && item.auditFlag==1">锁定</td>
-		                                    <td ng-if="item.status==1 && item.auditFlag==1">正常</td>
-		                                    <td ng-if="item.auditFlag==0">审核中</td>
-		                                    <td>{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
-		                                    <td>{{item.phone}}</td>
-		                                    <td>{{item.emailAddress}}</td>
-		                                    <td>{{item.isSend?'是':'否'}}</td>
-		                                </tr>
-		                            </tbody>
-		                        </table>
-		                    </div>
-		                    <!-- 数据表格 e -->
-		        			<!-- 分页 b -->
-		        			<div ng-hide="userInfoList.length==0" class="clearfix col-lg-12 j-navPager" ng-include="'views/mod/pagination.html'"></div>
-		        			<!-- 分页 e -->
-						</div>
-					</div>
-					<div class="footer" ng-include="'views/mod/footer.html'"></div>
-	            </div>
-			</div>
-		</div>
-	</div>
+<div class="page-title">用户管理</div>
+<div class="panel panel-default mh-7">
+    <div class="panel-heading">
+        <h3 class="panel-title">用户搜索</h3>
+    </div>
+    <div class="panel-body">
+        <!-- 查询表单 b -->
+        <form class="clearfix form-custom" method="post">
+            <div class="col-lg-11 search-forms">
+                <div class="col-lg-6 form-group">
+                    <label class="control-label label-custom" for="J_userName">用户名称：</label>
+                    <div class="input-custom input-custom-lg">
+                        <input type="text" autocomplete="off" class="form-control" id="J_userName" ng-model="queryUser.userName">
+                    </div>
+                </div>
+                <div class="col-lg-6 form-group">
+                    <label class="control-label label-custom" for="J_roleName">角色名称：</label>
+                    <div class="input-custom input-custom-lg">
+                        <select class="form-control" id="J_roleName" ng-model="queryUser.roleId" ng-options="item.id as item.name for item in roleList" ng-change="getBusinessGroupOptions(queryUser.roleId)">
+                            <option value="">----请选择角色----</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 form-group">
+                    <label class="control-label label-custom" for="J_groupName">所属单位：</label>
+                    <div class="input-custom input-custom-lg">
+                        <select class="form-control" id="J_groupName" ng-model="queryUser.groupId" ng-options="businessGroup.id as businessGroup.bgname for businessGroup in businessGroupOptions">
+                            <option value="">----请选择单位----</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 form-group">
+                    <label class="control-label label-custom" for="J_userStatus">用户状态：</label>
+                    <div class="input-custom input-custom-lg">
+                        <select class="form-control" id="J_userStatus" ng-model="queryUser.userStatus" ng-options = "so.id as so.value for so in statusOptions">
+                            <option value="">----请选择状态----</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-1 search-btn mgt50">
+                <a role="button" class="btn btn-primary btn-md" ng-click="query( true )">查询</a>
+            </div>
+        </form>
+        <!-- 查询表单 e -->
+        <div class="alert-section">
+            <div class="text-danger text-right pl50" role="alert" ng-show="searchErrorMsg!=''">
+                {{searchErrorMsg}}
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="panel panel-default mh-20">
+    <div class="panel-heading">
+        <h3 class="panel-title">用户详情列表</h3>
+    </div>
+    <div class="panel-body">
+        <!--查询结果 b-->
+        <div class="clearfix col-lg-6 search-result" ng-include="'views/mod/searchResult.html'"></div>
+        <!--查询结果 e-->
+        <!-- 操作按钮 b -->
+        <form class="col-lg-6 form-btn text-right" method="post">
+            <a role="button" class="btn btn-success btn-md j-reset-pwd" ng-class="{'btn-custom-disabled':selected.indexOf(1)>-1}" ng-disabled="selected.indexOf(1)>-1">重置密码</a>
+            <a role="button" class="btn btn-info btn-md j-add-user">添加</a>
+            <a role="button" class="btn btn-warning btn-md j-edit-user">修改</a>
+            <a role="button" class="btn btn-danger btn-md j-del-user" ng-class="{'btn-custom-disabled':selected.indexOf(1)>-1||selected.indexOf(2)>-1||selected.indexOf(3)>-1}" ng-disabled="selected.indexOf(1)>-1||selected.indexOf(2)>-1||selected.indexOf(3)>-1">注销</a>
+        </form>
+        <!-- 操作按钮 e -->
+
+        <!-- 数据表格 b -->
+        <div class="col-lg-12 table-responsive">
+            <table class="table table-condensed table-striped table-hover table-custom table-checkbox">
+                <thead>
+                    <tr>
+                        <th data-id="0"><input id="J_selectAll" type="checkbox" ng-checked="isSelected(0)" ng-click="updateSelection($event,0,userInfoList)" value="checkbox" /><label class="custom-checkbox" for="J_selectAll"></label></th>
+                        <th>用户名</th>
+                        <th>所属单位</th>
+                        <th>角色</th>
+                        <th>描述</th>
+                        <th>用户状态</th>
+                        <th>创建时间</th>
+                        <th>手机号码</th>
+                        <th>电子邮箱</th>
+                        <th>邮件通知</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tr-loading text-center" ng-show="userShowFlag!=''">
+                        <td colspan="10" ng-if="userShowFlag.indexOf('loading')==-1">{{userShowFlag}}</td>
+                        <td colspan="10" ng-if="userShowFlag.indexOf('loading')>-1"><div class="loading"></div></td>
+                    </tr>
+                    <tr ng-class="{'is-checked': isSelected(item.id) }" ng-repeat="item in userInfoList" ng-show="userShowFlag==''">
+                        <td data-id="{{item.id}}" ng-if="(item.status!=-1 && item.auditFlag==1) || item.roleId<0"><input type="checkbox" value="checkbox" ng-checked="isSelected(item.id)" ng-click="updateSelection($event,item.id,userInfoList)" id="checkboxOneInput{{item.id}}" ng-disabled="item.auditFlag==0 || item.status==-1" /><label class="custom-checkbox" for="checkboxOneInput{{item.id}}" ng-click="changeTitle($event,item.auditFlag)"></label></td>
+
+                        <td data-id="{{item.id}}" ng-if="item.status==-1 || item.auditFlag==0"><input type="checkbox" disabled="disabled"></td>
+
+                        <td>{{item.userName}}</td>
+                        <td>{{item.businessGroup.cnName || item.businessGroup.name || '--'}}</td>
+                        <td>{{item.role.name}}</td>
+                        <td>{{item.describe || '--'}}</td>
+                        <td ng-if="item.status==-1">注销</td>
+                        <td ng-if="item.status==0 && item.auditFlag==1">锁定</td>
+                        <td ng-if="item.status==1 && item.auditFlag==1">正常</td>
+                        <td ng-if="item.auditFlag==0">审核中</td>
+                        <td>{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                        <td>{{item.phone}}</td>
+                        <td>{{item.emailAddress}}</td>
+                        <td>{{item.isSend?'是':'否'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- 数据表格 e -->
+        <!-- 分页 b -->
+        <div ng-hide="userInfoList.length==0" class="clearfix col-lg-12 j-navPager" ng-include="'views/mod/pagination.html'"></div>
+        <!-- 分页 e -->
+    </div>
+</div>
+
+

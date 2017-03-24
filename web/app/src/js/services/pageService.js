@@ -5,7 +5,7 @@
  * description:
  */
 angular.module('myappApp')
-  	.service('PageService', ['$location','$http',function($location, $http){
+  	.service('PageService', [function(){
     var self = this;
 
     /*
@@ -24,13 +24,21 @@ angular.module('myappApp')
      * 獲得搜索以後的數據
      */
     this.search = function(search,data) {
-        var searchOne = {};
-        for(var k in search){
-            searchOne = {
-                key:k,
-                value:search[k]
-            };
-            data = self.searchOne (searchOne,data);
+        var searchOne = undefined;
+        if(typeof (search) === 'object'){
+            if(self.isEmptyObject(search)){
+                data = data;
+            }else{
+                for(var k in search){
+                    searchOne = {
+                        key: k,
+                        value: search[k]
+                    };
+                    if(searchOne.value !== undefined && searchOne.value !== null){
+                        data = self.searchOne (searchOne,data);
+                    }
+                }
+            }
         }
         return data;
     };
@@ -44,13 +52,15 @@ angular.module('myappApp')
             searchOneKey = searchOne.key,
             searchOneVal = searchOne.value,
             responseData = [];
-        for(var i = 0,len = data.length; i < len; i++){
-            aRow = data[i];
-            for(var k in aRow){
-                aProVal = aRow[k];
-                if(k.indexOf(searchOneKey)>-1){
-                    if(typeof(aProVal) == 'string' ? aProVal.indexOf(searchOneVal)>-1 : aProVal == searchOneVal){
-                        responseData.push(data[i]);
+        if(data && data.length > 0){
+            for(var i = 0,len = data.length; i < len; i++){
+                aRow = data[i];
+                for(var k in aRow){
+                    aProVal = aRow[k];
+                    if(k.indexOf(searchOneKey)>-1){
+                        if(typeof(aProVal) == 'string' ? aProVal.indexOf(searchOneVal)>-1 : aProVal == searchOneVal){
+                            responseData.push(data[i]);
+                        }
                     }
                 }
             }
@@ -62,17 +72,18 @@ angular.module('myappApp')
      * 获取分页以后的数据
      */
     this.getPager = function(curPage,pageSize,data) {
-        var pageData = {},
+        var pageData = undefined,
             startIndex = (curPage - 1) * pageSize,
-            endIndex = curPage * pageSize - 1;
+            endIndex = (curPage * pageSize - 1 > data.length) ? data.length - 1 : curPage * pageSize - 1;
         pageData = {
-            total : data.length,
+            total : data.length || 0,
             curPage : curPage,
+            pageSize : pageSize,
             startRow : startIndex,
-            endRow: endIndex + 1,
+            endRow : endIndex + 1,
             pagesNum : self.getPages(pageSize,data),
-            result: self.getPageData(startIndex,endIndex,data)
-        }
+            result : self.getPageData(startIndex,endIndex,data)
+        };
         return pageData;
     };
 
@@ -80,9 +91,11 @@ angular.module('myappApp')
      * 获得一页的数据
      */
     this.getPageData = function(startIndex,endIndex,data) {
-        var tempArr = [];
+        var tempArr = [],
+            tArr = undefined;
         for(var i = startIndex,len = endIndex + 1; i < len; i++){
-            tempArr.push(data[i]);
+            tArr = data[i] || {};
+            tempArr.push(tArr);
         }
         return tempArr;
     };
@@ -91,9 +104,19 @@ angular.module('myappApp')
      * 获得总页码
      */
     this.getPages = function(pageSize,data) {
-        var total = data.length;
+        var total = data.length || 0;
         return Math.ceil(total/pageSize);
     };
+
+    /*
+     * 判断空对象
+     */
+    this.isEmptyObject = function (obj) {
+        for (var key in obj) {
+            return false;
+        }
+        return true;
+    }
 
 
 }]);

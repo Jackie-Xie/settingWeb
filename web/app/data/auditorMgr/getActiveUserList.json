@@ -1,0 +1,32 @@
+[
+  {
+    "id": 2,
+    "roleId": -2,
+    "verCode": null,
+    "userName": "auditor",
+    "hash": "012d3923f041d2b9a6675660904989910d",
+    "secret": "f736f2f1685f4da2185fbbdbd3938634",
+    "status": 1,
+    "phone": "15263256326",
+    "emailAddress": "auditor@email.com",
+    "describe": "auditor",
+    "createTime": 1488273427000,
+    "role": {
+      "id": -2,
+      "name": "审计管理员",
+      "describe": "审计"
+    },
+    "businessGroupId": 0,
+    "businessGroup": null,
+    "isSend": 0,
+    "beginTime": null,
+    "endTime": null,
+    "accessIP": null,
+    "onlineState": 1,
+    "loginTime": 1490343419000,
+    "loginIP": "192.168.60.54",
+    "auditFlag": 1,
+    "accessIpFlag": 1,
+    "timeFlag": 1
+  }
+]

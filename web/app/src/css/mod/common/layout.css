@@ -1,11 +1,20 @@
-/* layout.css 布局相关的样式 */
 .main .wrap{
 	margin-top: 50px;
-	padding: 20px;
+	padding: 0;
 	position: relative;
 	z-index:2;
 }
-
+.wrap .main-content{
+    min-height: 650px;
+    background-color: #e8edf1;
+    padding: 0 20px 20px 20px;
+}
+.main-content .page-title{
+	background: #fff;
+	margin: 0 -20px 20px;
+	padding: 14px 20px;
+	font-size: 16px;
+}
 .mh-28{
 	min-height: 28rem;
 }

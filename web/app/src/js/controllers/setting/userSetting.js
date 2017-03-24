@@ -2,22 +2,12 @@
 
 angular.module('myappApp')
   	.controller('UserSettingCtrl', function ($scope, $rootScope, $window, $location,$http, $timeout, AjaxServer, Validate,PageService) {
-  		var config = {},	    									  	  // 请求配置
-  			postData = {},												  // 请求默认所带参数
-  			realPager = {},                     						  // 真实分页参数
-            defaultPager = {                    						  // 默认分页参数
+  		var defaultPager = {                    						  // 默认分页参数
                 total: 0, 								  				  // 总条数
                 curPage: 1, 						      				  // 当前页码
                 pagesNum: 1, 						  	  				  // 总页数
-                pageIndex: 10 							  				  // 每页存放条数
+                pageSize: 5 							  				  // 每页存放条数
             },
-            apiGetUserInfo = '/account/info',							  // 获取用户信息
-        	apiGetBusinessGroup = '/businessgroup',                       // 所属单位
-            apiGetRoleList = '/role',                                     // 获取角色列表
-            apiGetUserList = '/user',                              		  // 获取用户列表
-            apiAddUserList = apiGetUserList,                              // 添加用户
-            apiDelUserList = apiGetUserList + '?cmd=delete',              // 批量删除用户
-            apiQueryUserList = apiGetUserList + '/search',                // 查询用户列表
   			$userAddModal = null,
   			$userEditModal = null,
   			$userOprConfirm = null,
@@ -28,19 +18,18 @@ angular.module('myappApp')
 
 	   	$scope.init = function () {
 	   		$scope.pathStr = $location.path();
-	   		$scope.roleId = null;
-	   		$scope.onlyPwd = false;
-	   		$scope.pathStr = $location.path();
+            $scope.userShowFlag = 'loading';
+            $scope.queryUser = {};
+            $scope.actionType = 'add';                                    // 标志是add还是update
+            $scope.jumpNum = 1;                                           // 分页默认跳转页码
+            $scope.userInfoList = [];
+            $scope.roleList = [];
+            $scope.businessGroupOptions = [];
+            $scope.pager =  $.extend( {}, defaultPager);
+
 	    	$scope.modalTitle = '';
 	    	$scope.modalInfo = '';
-	    	$scope.queryUser = {'userName':'','roleId':'','userStatus':'','groupId':''};
-	    	$scope.actionType = 'add';                                    // 标志是add还是update
-	    	$scope.jumpNum = 1;                                           // 分页默认跳转页码
-	    	$scope.userInfoList = [];
-	    	$scope.roleList = [];
 	    	$scope.partRoleList = [];
-	    	$scope.businessGroupOptions = [];
-	    	$scope.pager =  $.extend( {}, defaultPager);
 	    	$scope.userModifyForm = {'oldPwd':'','newPwd':'','repeatPwd':''};
 	    	$scope.userPwdForm = {};
 	    	$scope.userForm = {};
@@ -48,38 +37,10 @@ angular.module('myappApp')
 	    	$scope.FailedMsg ='';
 	    	$scope.oprType = '';
 	    	$scope.selected = [];
-	   		$scope.userShowTag = true;
-	   		$scope.queryNoneUser = false;								  // 查询无结果显示标志
 	   		$userAddModal = $('#J_userAddModal');
 	   		$userEditModal = $('#J_userEditModal');
 	   		$userOprConfirm = $('#J_userOprConfirm');
 	   		$userPwdModal = $('#J_userHashModal');
-
-	   		//对角色是运维人员的隐藏用户配置
-            if( $rootScope.userName ){
-	   			$scope.userName =  $rootScope.userName ;
-	   			$scope.roleId =  $rootScope.roleId ;
-	   			$scope.onlyPwd =  $rootScope.onlyPwd ;
-	   		}else{
-	   			var ajaxConfig = {
-		   			'url': apiGetUserInfo,
-		   			'method': 'get',
-		   		}
-		   		AjaxServer.ajaxInfo( ajaxConfig,
-		   			function( data ){
-		   				//TODO：是否需要加强制修改用户密码 ？
-		   				if( !data || !data.userInfo || !data.userInfo.user || !data.userInfo.user.userName || !data.userInfo.user.roleId ){
-	    					return false;
-	    				}
-		   				$rootScope.userName = $scope.userName = data.userInfo.user.userName;
-		   				$rootScope.roleId = $scope.roleId = data.userInfo.user.roleId;
-		   				$scope.userModifyForm.username = $rootScope.userName;
-				   		if(!$scope.userName){
-				   			$location.url('/login');
-				   		}
-		   			}
-		   		);
-	   		}
 
             /*
              *  根据不同页面地址，发送不同请求
@@ -87,7 +48,8 @@ angular.module('myappApp')
             if(typeof($location.path())==='string'){
 	            if($location.path().indexOf('users')>-1){
 	    	    	$scope.getRoleList();
-	                $scope.getBusinessGroupOptions();
+                    $scope.getStatusOptions();
+                    $scope.getBusinessGroupOptions();
 	                $scope.getUserInfoListByConditions();
 	            }
 	            if($location.path().indexOf('modify')>-1){
@@ -95,20 +57,308 @@ angular.module('myappApp')
 	        		$scope.apply();
 	            }
             }
-            $scope.bindSettingEvent();
+            $scope.bindEvent();
 	   		$scope.formatModals();
 
             $scope.test();
 	    };
 
-        // test
-        $scope.test = function (){
-            $http.get('/data/userSetting/getUserList.json').success(function(data){
-                console.log(data);
-                console.log(PageService.page(1,5,data,{isSend:1}));
-            }).error(function(){
+        /*
+         * 查询
+         */
+        $scope.query = function( flag ){
+            $scope.userShowFlag = 'loading';
+            if( flag ){
+                $scope.pager =  $.extend( {}, defaultPager);
+            }
+            $scope.apply();
+            $scope.getUserInfoListByConditions();
+        };
+
+        /*
+         * 按条件查询获取用户列表数据
+         */
+        $scope.getUserInfoListByConditions = function (){
+            var conditions= {
+                userName: $scope.queryUser.userName || undefined,
+                roleId: $scope.queryUser.roleId || undefined,
+                businessGroupId: $scope.queryUser.groupId || undefined,
+                status: $scope.queryUser.userStatus === 0 ? 0 : ( $scope.queryUser.userStatus || undefined )
+            };
+            $http.get('/data/userSetting/getUserList.json').then(function(response){
+                var data = {};
+                if(response.status === 200){
+                    if(response.data && response.data.length > 0){
+                        data = PageService.page($scope.pager.curPage,$scope.pager.pageSize,response.data,conditions);
+                    }
+
+                    if(!data || !data.result || data.result.length===0){
+                        $scope.userShowFlag = '无查询结果';
+                        $scope.userInfoList = [];
+                    }
+                    else{
+                        $scope.userShowFlag = '';
+                        $scope.userInfoList = data.result;
+                        $scope.pager =  $.extend( {}, defaultPager,{
+                            total: data.total,
+                            curPage: data.curPage,
+                            pagesNum: data.pagesNum,
+                            pageSize: data.pageSize
+                        });
+                    }
+                    $scope.apply();
+                }
+            },function(){
+                $scope.userShowFlag = '因为网络原因请求失败';
+                $scope.userInfoList = [];
+                $scope.apply();
+            });
+        };
+
+        /*
+         * 获取角色选项
+         */
+        $scope.getRoleList = function(){
+            $http.get('/data/roles/getRoleList.json',{cache: true}).then(function (response){
+                if(response.status === 200){
+                    $scope.roleList = response.data;
+                    $scope.apply();
+                }
+            },function (){
                 console.log('因为网络原因请求失败');
             });
+        };
+
+        /*
+         * 获取单位选项
+         */
+        $scope.getBusinessGroupOptions = function(roleId , type , businessGroupId){
+            var id = parseInt(roleId);
+            //角色为数据中心的，不调所属单位选项
+            $scope.businessGroupOptions = [];
+            if(!id){
+                //处理修改用户时的反悔
+                if(typeof(type)=='string' && type.indexOf('roleapply')>-1){
+                    id = $scope.userForm.roleselect;
+                    businessGroupId = $scope.handleBusinessGroupId;
+                    $scope.handleBusinessGroupShow = true;
+                }else{
+                    $scope.handleBusinessGroupShow = false;
+                    return false;
+                }
+            }
+            if(id<3){
+                $scope.handleBusinessGroupShow = false;
+                return false;
+            }
+            $http.get('/data/businessGroup/getBusinessGroup.json').then(function (response){
+                if(response.status === 200){
+                    var data = response.data;
+                    if(!!data){
+                        var BusinessGroupObj = null;
+                        $.each(data,function(i){
+                            BusinessGroupObj = {
+                                'id':data[i].id,
+                                'bgname':data[i].cnName || data[i].name
+                            }
+                            //如果单位所在省或省ID没有
+                            if(!!data[i].provinceId || !!data[i].province){
+                                $scope.businessGroupOptions.push(BusinessGroupObj);
+                            }
+                        });
+
+                        if(typeof(type)=='string' && (type.indexOf('update')>-1 || type.indexOf('roleapply')>-1)){
+                            $scope.userForm.groupselect = businessGroupId;
+                            $scope.apply();
+                        }
+                    }
+                }
+            },function (){
+                console.log('因为网络原因请求失败');
+            });
+        };
+
+        /*
+         * 获取用户状态选项
+         */
+        $scope.getStatusOptions = function(){
+            $scope.statusOptions = [
+                {
+                    id: 1,
+                    value:'正常'
+                },
+                {
+                    id: 0,
+                    value:'锁定/审核中'
+                },
+                {
+                    id: -1,
+                    value:'注销'
+                }
+            ];
+        };
+
+        /*
+         *  跳转页面
+         */
+        $scope.gotoPage = function( targetPage ){
+            if(!targetPage || targetPage > $scope.pager.pagesNum || targetPage < 1){
+                $scope.jumpNum = '';
+                $scope.apply();
+                return false;
+            }
+
+            $scope.pager.curPage = parseInt(targetPage);
+            $scope.clearChecked();
+            // 获取数据
+            if(typeof($location.path())==='string' && $location.path().indexOf('users') > -1){
+                $scope.query();
+            }
+        };
+
+        /*
+         * 事件绑定
+         */
+        $scope.bindEvent = function () {
+            // ".form-btn"按钮点击事件
+            $('.form-btn').off();
+            $('.form-btn').on('click','.j-add-user',function( ){
+                    $scope.clearChecked();
+                    $scope.modalTitle = '添加';
+                    $scope.actionType = 'add';
+                    $('#J_username').removeAttr('readonly');
+                    $scope.clickShowModal($userAddModal);
+                    $scope.getRoleList();
+                    $scope.userForm = {'userstatus':'1','roleselect':'','isIpLimited':1,'isTimeLimited':1,'groupselect':'','issend':'1'};
+                    $scope.apply();
+                })
+                .on('click','.j-edit-user',function( ){
+                    if(!!selected ){
+                        if(selected.length===0){
+                            $scope.modalTitle = '友情提示';
+                            $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
+                            $scope.oprType = 'closeModal';
+                            $scope.apply();
+                            $scope.clickShowModal($userOprConfirm);
+                        }
+                        else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
+                            $scope.modalTitle = '友情提示';
+                            $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
+                            $scope.oprType = 'closeModal';
+                            $scope.apply();
+                            $scope.clickShowModal($userOprConfirm);
+                        }else {
+                            $scope.modalTitle = '修改';
+                            $scope.actionType = 'update';
+                            $scope.userForm.roleapply = '';
+                            $('#J_username').attr('readonly','readonly');
+                            if(selected.indexOf(0)>-1){
+                                var idx = selected.indexOf(0);
+                                selected.splice(idx,1);
+                                $scope.getUserInfoById(selected[0]);
+                                selected.push(0);
+                            }
+                            else{
+                                $scope.getUserInfoById(selected[0]);
+                            }
+                            $scope.apply();
+                        }
+                    }
+                })
+                .on('click','.j-del-user',function( ev ){
+                    var it = $(ev.currentTarget);
+                    if(it.hasClass('btn-custom-disabled')){
+                        return false;
+                    }
+                    if(!!selected ){
+                        if(selected.length > 0){
+                            $scope.modalTitle = '注销用户';
+                            $scope.modalInfo = '注销为不可逆操作，请确定是否注销此用户';
+                            $scope.oprType = 'delUser';
+                            $scope.apply();
+                            $scope.clickShowModal($userOprConfirm);
+                        }
+                        else if(selected.length===0){
+                            $scope.modalTitle = '友情提示';
+                            $scope.modalInfo='您还没有选择用户，请选择一个或多个用户进行注销';
+                            $scope.oprType = 'closeModal';
+                            $scope.apply();
+                            $scope.clickShowModal($userOprConfirm);
+                        }
+                    }
+                });
+
+            //重置用户密码
+            $('.j-reset-pwd').on('click',function(ev){
+                var it = $(ev.currentTarget);
+                if(it.hasClass('btn-custom-disabled')){
+                    return false;
+                }
+                if(!!selected ){
+                    if(selected.length===0){
+                        $scope.modalTitle = '友情提示';
+                        $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
+                        $scope.oprType = 'closeModal';
+                        $scope.apply();
+                        $scope.clickShowModal($userOprConfirm);
+                    }
+                    else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
+                        $scope.modalTitle = '友情提示';
+                        $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
+                        $scope.oprType = 'closeModal';
+                        $scope.apply();
+                        $scope.clickShowModal($userOprConfirm);
+                    }
+                    else{
+                        if(selected.indexOf(0)>-1){
+                            var idx = selected.indexOf(0);
+                            selected.splice(idx,1);
+                            $scope.getUserInfoById(selected[0],'pwd');
+                            selected.push(0);
+                        }
+                        else{
+                            $scope.getUserInfoById(selected[0],'pwd');
+                        }
+                        $scope.apply();
+                    }
+                }
+            });
+
+            //关闭模态框，重新加载
+            $('.modal').on('click','[data-dismiss=modal]',function(){
+                $scope.formatModals();
+                //$window.location.reload();
+
+                $scope.getPartRoleList();
+                $scope.getBusinessGroupOptions();
+                $scope.getUserInfoListByConditions();
+            });
+
+            // 分页事件
+            $(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
+            $('.j-body').on('click','.j-navPager .item', function(ev){
+                    var it = $(ev.currentTarget);
+                    $scope.gotoPage(parseInt(it.text()));
+                })
+                .on('click','.j-navPager .prev', function(ev){
+                    if($scope.pager.curPage <= 1){
+                        return false;
+                    }
+                    $scope.gotoPage($scope.pager.curPage - 1);
+                })
+                .on('click','.j-navPager .next', function(ev){
+                    if($scope.pager.curPage >= $scope.pager.pagesNum){
+                        return false;
+                    }
+                    $scope.gotoPage($scope.pager.curPage + 1);
+                });
+
+        };
+
+
+        // test
+        $scope.test = function (){
+
         };
 
 	    //格式化时间选择器
@@ -156,168 +406,6 @@ angular.module('myappApp')
   			}
   			$scope.apply();
 	    };
-
-	    $scope.bindSettingEvent = function () {
-	    	// ".form-btn"按钮点击事件
-            $('.form-btn').off();
-	    	$('.form-btn').on('click','.j-add-user',function( ){
-	    		$scope.clearChecked();
-	    		$scope.modalTitle = '添加';
-	    		$scope.actionType = 'add';
-	    		$('#J_username').removeAttr('readonly');
-	    		$scope.clickShowModal($userAddModal);
-	    		$scope.getPartRoleList();
-	    		$scope.userForm = {'userstatus':'1','roleselect':'','isIpLimited':1,'isTimeLimited':1,'groupselect':'','issend':'1'};
-	    		$scope.apply();
-	    	})
-	    	.on('click','.j-edit-user',function( ){
-	    		if(!!selected ){
-	    			if(selected.length===0){
-		    			$scope.modalTitle = '友情提示';
-		    			$scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
-		    			$scope.oprType = 'closeModal';
-		    			$scope.apply();
-		    			$scope.clickShowModal($userOprConfirm);
-		    		}
-		            else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
-		                $scope.modalTitle = '友情提示';
-		                $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
-		                $scope.oprType = 'closeModal';
-		                $scope.apply();
-		                $scope.clickShowModal($userOprConfirm);
-		            }else {
-	    			    $scope.modalTitle = '修改';
-	    			    $scope.actionType = 'update';
-	    			    $scope.userForm.roleapply = '';
-	        		    $('#J_username').attr('readonly','readonly');
-	    			    if(selected.indexOf(0)>-1){
-	    			    	var idx = selected.indexOf(0);
-	    			    	selected.splice(idx,1);
-	    			    	$scope.getUserInfoById(selected[0]);
-	    			    	selected.push(0);
-	    			    }
-	    			    else{
-	    			    	$scope.getUserInfoById(selected[0]);
-	    	  			}
-	    			    $scope.apply();
-		            }
-	    		}
-	    	})
-	    	.on('click','.j-del-user',function( ev ){
-	    		var it = $(ev.currentTarget);
-	    		if(it.hasClass('btn-custom-disabled')){
-	    			return false;
-	    		}
-	    		if(!!selected ){
-	    			if(selected.length > 0){
-    					$scope.modalTitle = '注销用户';
-		    			$scope.modalInfo = '注销为不可逆操作，请确定是否注销此用户';
-		    			$scope.oprType = 'delUser';
-		    			$scope.apply();
-		    			$scope.clickShowModal($userOprConfirm);
-		    		}
-	    			else if(selected.length===0){
-	    				$scope.modalTitle = '友情提示';
-		    			$scope.modalInfo='您还没有选择用户，请选择一个或多个用户进行注销';
-		    			$scope.oprType = 'closeModal';
-		    			$scope.apply();
-		    			$scope.clickShowModal($userOprConfirm);
-		    		}
-	    		}
-	    	});
-
-	    	//重置用户密码
-	    	$('.j-reset-pwd').on('click',function(ev){
-	    		var it = $(ev.currentTarget);
-	    		if(it.hasClass('btn-custom-disabled')){
-	    			return false;
-	    		}
-	    		if(!!selected ){
-	    			if(selected.length===0){
-		    			$scope.modalTitle = '友情提示';
-		    			$scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
-		    			$scope.oprType = 'closeModal';
-		    			$scope.apply();
-		    			$scope.clickShowModal($userOprConfirm);
-		    		}
-		            else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
-		                $scope.modalTitle = '友情提示';
-		                $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
-		                $scope.oprType = 'closeModal';
-		                $scope.apply();
-		                $scope.clickShowModal($userOprConfirm);
-		            }
-		            else{
-			    		if(selected.indexOf(0)>-1){
-					    	var idx = selected.indexOf(0);
-					    	selected.splice(idx,1);
-					    	$scope.getUserInfoById(selected[0],'pwd');
-					    	selected.push(0);
-					    }
-					    else{
-					    	$scope.getUserInfoById(selected[0],'pwd');
-			  			}
-					    $scope.apply();
-		            }
-	    		}
-	    	});
-
-	    	//查询用户信息
-	    	$('.j-query-user').on('click',function(){
-	    		$scope.userShowTag = true;
-	    		$scope.queryNoneUser = false;
-	    		$scope.searchErrorMsg = '';
-	    		$scope.apply();
-	    		$scope.getUserInfoListByConditions();
-	    	});
-
-            //关闭模态框，重新加载
-            $('.modal').on('click','[data-dismiss=modal]',function(){
-            	$scope.formatModals();
-            	//$window.location.reload();
-
-                $scope.getPartRoleList();
-                $scope.getBusinessGroupOptions();
-                $scope.getUserInfoListByConditions();
-            });
-
-	    	//分页事件
-	    	$('.j-body').on('click','.j-navPager .item', function(ev){
-				var it = $(ev.currentTarget);
-				$scope.gotoPage(parseInt(it.text()));
-			})
-			.on('click','.j-navPager .prev', function(ev){
-				if($scope.pager.curPage <= 1){
-					return false;
-				}
-				$scope.gotoPage($scope.pager.curPage - 1);
-			})
-			.on('click','.j-navPager .next', function(ev){
-				if($scope.pager.curPage >= $scope.pager.pagesNum){
-					return false;
-				}
-				$scope.gotoPage($scope.pager.curPage + 1);
-			});
-
-	    };
-
-	    /*
-	     *  跳转页面
-	     */
-  		$scope.gotoPage = function( targetPage ){
-  			if(!targetPage || targetPage > $scope.pager.pagesNum || targetPage < 1){
-  				$scope.jumpNum = '';
-  				$scope.apply();
-  				return false;
-  			}
-
-  			$scope.pager.curPage = parseInt(targetPage);
-  			$scope.clearChecked();
-  			// 获取数据
-            if(typeof($location.path())==='string' && $location.path().indexOf('users') > -1){
-                $scope.getUserInfoListByConditions();
-  			}
-  		};
 
         /*
 	     * 点击发送请求修改密码
@@ -451,254 +539,6 @@ angular.module('myappApp')
         	return true;
         }
 
-
-        /*
-         * 获取所属单位选项
-         */
-        $scope.getBusinessGroupOptions = function( roleId , type , businessGroupId){
-        	var id = parseInt(roleId);
-        	//角色为数据中心的，不调所属单位选项
-        	$scope.businessGroupOptions = [];
-        	if(!id){
-        		//处理修改用户时的反悔
-        		if(typeof(type)=='string' && type.indexOf('roleapply')>-1){
-        			id = $scope.userForm.roleselect;
-        			businessGroupId = $scope.handleBusinessGroupId;
-        			$scope.handleBusinessGroupShow = true;
-            	}else{
-            		$scope.handleBusinessGroupShow = false;
-            		return false;
-            	}
-    		}
-        	if(id<3){
-        		$scope.handleBusinessGroupShow = false;
-        		return false;
-        	}
-        	$scope.clearErrMessage();
-            config = {
-  				'method':'get',
-  				'data':'',
-  				'url':apiGetBusinessGroup
-  			};
-  			AjaxServer.ajaxInfo( config , function( data ){
-  				if(!!data){
-  					 var BusinessGroupObj = null;
-  					 $.each(data,function(i){
-  						BusinessGroupObj = {
-  							'id':data[i].id,
-  							'bgname':data[i].cnName || data[i].name
-  						}
-  						//如果单位所在省或省ID没有
-  						if(!!data[i].provinceId || !!data[i].province){
-  							$scope.businessGroupOptions.push(BusinessGroupObj);
-  						}
-  	                });
-
-  					if(typeof(type)=='string' && (type.indexOf('update')>-1 || type.indexOf('roleapply')>-1)){
-  						$scope.userForm.groupselect = businessGroupId;
-  						$scope.apply();
-  					}
-  				}
-            },
-            function( status ){
-                console.log(status);
-            });
-        };
-
-  		/*
-		 * 获取相应用户权限的角色列表
-		 */
-  		$scope.getPartRoleList = function( type , roleId){
-  			config = {
-  				'method':'get',
-  				'data':'',
-  				'responseType':'json',
-  				'url':apiGetRoleList + '?cmd=part'
-  			};
-
-  			AjaxServer.ajaxInfo( config , function(data){
-  				if( typeof(data) === 'string'){
-					data = JSON.parse(data);
-				}
-  				if(!!data && data.length!==0){
-					$scope.partRoleList = $.extend([],data);
-					if($scope.partRoleList.length==1){
-						$scope.userForm.roleselect = $scope.partRoleList[0].id;
-						$scope.getBusinessGroupOptions($scope.userForm.roleselect);
-						$scope.apply();
-					}
-
-					if(typeof(type) == 'string' && type.indexOf('update')>-1){
-						$scope.userForm.roleselect = roleId;
-						$scope.apply();
-					}
-  				}
-  				else{
-  				 	$scope.partRoleList = [];
-  				 	$scope.apply();
-  				}
-				$scope.apply();
-			},
-			function(status){
-                var errorMessage = status ? '因为系统内部错误请求失败' : '因为网络原因请求失败';
-                $scope.errorMsg = errorMessage;
-                $scope.apply();
-			});
-  		};
-
-   	    /*
-		 * 获取角色列表
-		 */
-  		$scope.getRoleList = function(){
-
-  			config = {
-  				'method':'get',
-  				'data':'',
-  				'responseType':'json',
-  				'url':apiGetRoleList
-  			};
-
-  			AjaxServer.ajaxInfo( config , function(data){
-  				if( typeof(data) === 'string'){
-					data = JSON.parse(data);
-				}
-				$scope.roleList = $.extend([],data);
-				if(!!$scope.roleList && $scope.roleList.length!==0){
-					$.each($scope.roleList , function(i){
-	                    this.num = parseInt(i) + 1;
-	                });
-					$scope.roleInfoFlag = '';
-				}else{
-					$scope.roleInfoFlag = '暂未配置，请联系管理员';
-				}
-				$scope.apply();
-			},
-			function(status){
-                var errorMessage = status ? '因为系统内部错误请求失败' : '因为网络原因请求失败';
-                $scope.errorMsg = errorMessage;
-                $scope.apply();
-			});
-  		};
-
-       /*
-		* 获取用户列表
-		*/
-
-  		$scope.getUserInfoList = function(){
-  			config = {
-  				'method':'get',
-  				'data':{},
-  				'responseType':'json',
-  				'url':apiGetUserList + '?curPage=' + $scope.pager.curPage + '&pageSize=' + $scope.pager.pageIndex
-  			};
-
-  			AjaxServer.ajaxInfo( config , function(data){
-  				//console.log(data);
-                if(!data || !data.result || data.result.length===0){
-                    $scope.queryNoneUser = true; //显示无查询结果
-                }
-                else{
-                    $scope.queryNoneUser = false;
-                    $scope.userInfoList = data.result.concat();
-                }
-                $scope.userShowTag = false;
-                $scope.FailedMsg = '';
-
-				realPager = {
-								total: data.total, 		// 总条数
-					        	curPage: data.pageNum,  // 当前页码
-					            pagesNum: data.pages,   // 总页数
-					            pageIndex: data.pageSize// 每页存放条数
-					        };
-
-		        $scope.pager = $.extend( {}, defaultPager, realPager);
-
-				$scope.apply();
-			},
-			function(status){
-                var errorMessage = status ? '因为系统内部错误请求失败' : '因为网络原因请求失败';
-		        $scope.FailedMsg = errorMessage;
-		        $scope.apply();
-			} );
-  		};
-
-	   /*
-		* 根据条件查询，获取用户列表
-		*/
-  		$scope.getUserInfoListByConditions = function(type){
-  			 //判断是否有用户角色，有的话，取取看单位名选项
-  			/*if(!!$scope.queryUser && !!$scope.queryUser.roleId){
-  				$scope.getBusinessGroupOptions($scope.queryUser.roleId);
-  			}*/
-
-  		    //判断是否有查询条件，如果添加用户或更新用户就不按搜索条件来作为依赖
-  			var flag = ($.trim(type) == 'add' || $.trim(type) == 'update');
-  			var hasSearchInfo = (!!$scope.queryUser && $scope.queryUser.userName==='' &&  $scope.queryUser.roleId==='' && $scope.queryUser.userStatus==='');
-  			$scope.searchErrorMsg = '';
-  			if( $scope.queryUser.userName && !Validate.validLength($scope.queryUser.userName,{'maxLen':20}) ){
-  				$scope.searchErrorMsg = '用户名称长度过长'; // Validate.validLength(str,lenObj)
-  				$scope.FailedMsg = '用户名称长度过长';
-  				$scope.apply();
-  				return false;
-  			}
-  			if( $scope.queryUser.userName && !Validate.validSpecialChart($scope.queryUser.userName) ){
-  				$scope.searchErrorMsg = '用户名称包含特殊字符'; // Validate.validLength(str,lenObj)
-  				$scope.FailedMsg = '用户名称包含特殊字符';
-  				$scope.apply();
-  				return false;
-  			}
-
-
-  			if(flag){ // 更新或添加用户不查询
-  				$scope.getUserInfoList();
-  			}else if(hasSearchInfo){ // 没有输入的查询信息不查询
-  				$scope.getUserInfoList();
-  			}else{
-  	  			config = {
-  	  	  				'method':'post',
-  	  	  				'data':{
-  			  	  				'userName':$scope.queryUser.userName,
-  			  	  				'businessGroupId':$scope.queryUser.groupId,
-  				  	  			'roleId':$scope.queryUser.roleId,
-  				  	  			'status':$scope.queryUser.userStatus
-  			  	  			   },
-  	  	  				'responseType':'json',
-  	  	  				'url':apiQueryUserList + '?curPage=' + $scope.pager.curPage + '&pageSize=' + $scope.pager.pageIndex
-  	  	  			};
-
-  	  			//请求数据
-  	  			AjaxServer.ajaxInfo( config , function(data){
-  					if(!data||!data.result||data.result.length===0){
-  						$scope.queryNoneUser = true; //显示无查询结果
-  					}
-                    else{
-  						$scope.queryNoneUser = false;
-                        $scope.userInfoList = data.result.concat();
-                    }
-                    $scope.userShowTag = false;
-                    $scope.FailedMsg = '';
-
-  					realPager = {
-  							total: data.total, // 总条数
-  				        	curPage: data.pageNum, //当前页码
-  				            pagesNum: data.pages, //总页数
-  				            pageIndex: data.pageSize // 每页存放条数
-  				        };
-  			        $scope.pager =  $.extend( {}, defaultPager, realPager);
-  			        //当当前所在页大于查询到的总页数
-  			        if($scope.pager.curPage > data.pages  && data.pages != 0){
-  			        	$scope.gotoPage(defaultPager.curPage);
-  			        }
-  					$scope.apply();
-	  			},
-				function(status){
-                    var errorMessage = status ? '因为系统内部错误请求失败' : '因为网络原因请求失败';
-		            $scope.FailedMsg = errorMessage;
-		            $scope.apply();
-				});
-  			}
-		};
-
 		//不能选择审核中用户
 		$scope.changeTitle = function ( ev ,auditFlag ) {
 			var it = $(ev.currentTarget);
@@ -707,9 +547,9 @@ angular.module('myappApp')
 			}
 		}
 
-  		/*
+  		/*/!*
   		 * 根据userId查询用户信息
-  		 */
+  		 *!/
   		$scope.getUserInfoById = function( id , type){
   			if(!id){
   				return false;
@@ -796,7 +636,7 @@ angular.module('myappApp')
                 $scope.successMsg = '';
                 $scope.apply();
 			});
-  		};
+  		};*/
 
   		/*
 		 * 添加或修改用户
@@ -1087,7 +927,7 @@ angular.module('myappApp')
   		 * 删除后获取用户列表
   		 */
   		$scope.getUserList = function(){
-  			$scope.getPartRoleList();
+  			$scope.getRoleList();
   	        $scope.getUserInfoListByConditions();
   		}
 

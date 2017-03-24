@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "name": "test02",
+        "cnName": "test02",
+        "provinceId": 3,
+        "province": {
+            "id": 3,
+            "name": "北京"
+        }
+    },
+    {
+        "id": 2,
+        "name": "test23",
+        "cnName": "test23",
+        "provinceId": 1,
+        "province": {
+            "id": 1,
+            "name": "安徽"
+        }
+    },
+    {
+        "id": 3,
+        "name": "test24",
+        "cnName": "test24",
+        "provinceId": 4,
+        "province": {
+            "id": 4,
+            "name": "重庆"
+        }
+    },
+    {
+        "id": 4,
+        "name": "hzmc",
+        "cnName": "test05",
+        "provinceId": 6,
+        "province": {
+            "id": 6,
+            "name": "甘肃"
+        }
+    },
+    {
+        "id": 5,
+        "name": "test21",
+        "cnName": "test21",
+        "provinceId": 21,
+        "province": {
+            "id": 21,
+            "name": "宁夏"
+        }
+    },
+    {
+        "id": 6,
+        "name": "test22",
+        "cnName": "test22",
+        "provinceId": 20,
+        "province": {
+            "id": 20,
+            "name": "内蒙古"
+        }
+    }
+]

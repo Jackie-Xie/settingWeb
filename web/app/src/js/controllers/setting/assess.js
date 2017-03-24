@@ -1,68 +1,41 @@
 'use strict';
 
 angular.module('myappApp')
-  	.controller('AssessCtrl', function ($scope, $rootScope, AjaxServer, $location, Validate) {
-  		var defaultPager = {
-            	total: 0, // 
-	        	curPage: 1, // 当前页码
-	            pagesNum: 1, //
-	            pageIndex: 10, // 每页存放条数
-        },  
+  	.controller('AssessCtrl', ['$scope', '$rootScope', '$http', '$location', 'PageService','Validate',function ($scope, $rootScope, $http, $location, PageService,Validate) {
+  		var defaultPager = {                    						  // 默认分页参数
+                total: 0, 								  				  // 总条数
+                curPage: 1, 						      				  // 当前页码
+                pagesNum: 1, 						  	  				  // 总页数
+                pageSize: 5 							  				  // 每页存放条数
+            },
         statusText = {
             'wait':'审核中',
             'pass':'已通过',
             'refuse':'已拒绝',
         },
-        apiGetUserInfo = '/account/info', 
+        apiGetUserInfo = '/account/info',
 		apiPostAssessList = '/operAudit/list', //curPage=1&pageSize=10&flag=0; flag:0表示查全部，1：已审核， 2：
         apiPostOprAudit = '/operAudit/audit',
-        $oprConfirm = null;        	
-  		
+        $oprConfirm = null;
+
   		$scope.init = function () {
             $scope.pathStr = $location.path();
-  			$scope.getListSuccess = false;
-  			$scope.loading = true;
+  			$scope.ListShowFlag = 'loading';
   			$scope.errorMsg = '';
   			$scope.successMsg = '';
   			$scope.modalTitle = '';
-  			$scope.linkList = [];
+  			$scope.list = [];
             $scope.statusText =  $.extend( {}, statusText );
-  			$scope.pager =  $.extend( {}, defaultPager );	
+  			$scope.pager =  $.extend( {}, defaultPager );
             $scope.oprType = null;  // 操作类型：pass:通过; refuse:拒绝
             $scope.oprId = null;  // 操作的id
             $oprConfirm = $('#J_oprConfirm');
-            if( $rootScope.userName ){
-                $scope.userName =  $rootScope.userName;
-                $scope.roleId =  $rootScope.roleId; 
-                $scope.onlyPwd = $rootScope.onlyPwd;              
-            }else{
-                var ajaxConfig = {
-                    'url': apiGetUserInfo,
-                    'method': 'get',
-                }
-                AjaxServer.ajaxInfo( ajaxConfig, 
-                    function( data ){
-                        if( !data || !data.userInfo || !data.userInfo.user || !data.userInfo.user.userName || !data.userInfo.user.roleId ){
-                            return false;
-                        }
-                        $rootScope.userName = $scope.userName = data.userInfo.user.userName;
-                        $rootScope.roleId = $scope.roleId = data.userInfo.user.roleId;
-                        if( data.message && data.message == '请重置密码'){
-                            $rootScope.onlyPwd = true;
-                            $scope.onlyPwd = true;
-                        }
-                        if(!$scope.userName){
-                            $location.url('/login');
-                        }
-                    }
-                );
-            } 
-            $scope.getList();     
+            $scope.getList();
 			$scope.bindEvent();
   		};
-  		
-  		$scope.bindEvent = function() {  	    	
-  			$(".j-body").off( "click", "**"); 			
+
+  		$scope.bindEvent = function() {
+  			$(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
  			//分页事件绑定
  			$(".j-body").on('click','.j-navPager .item', function(ev){
  				var it = $(ev.currentTarget);
@@ -86,7 +59,7 @@ angular.module('myappApp')
                     $scope.oprId = $scope.list[idx].id;
                     $oprConfirm.modal('show');
                     $scope.apply();
-                }                
+                }
 
             }).on('click','.j-btnRefuse', function(ev){
                 var it = $(ev.currentTarget),
@@ -97,7 +70,7 @@ angular.module('myappApp')
                     $oprConfirm.modal('show');
                     $scope.apply();
                 }
-            }); 			
+            });
    		};
 
         // 点击弹框取消按钮
@@ -120,7 +93,7 @@ angular.module('myappApp')
                 'method': 'post',
             };
             it.addClass('disabled').text('处理中...');
-            AjaxServer.ajaxInfo( ajaxConfig, 
+            AjaxServer.ajaxInfo( ajaxConfig,
                 function( data ){
                     it.removeClass('disabled').text('确定');
                     if( data.result ){
@@ -128,7 +101,7 @@ angular.module('myappApp')
                     }else{
                         $scope.ajaxConfirmFail( data.message );
                     }
-                    
+
                 },
                 function( error ){
                     it.removeClass('disabled').text('确定');
@@ -148,36 +121,40 @@ angular.module('myappApp')
             $scope.clickOprCancel();
             $scope.getList();
         }
-  		
-   		// 得到linkList数据
-		$scope.getList = function(){					
-			$scope.loading = true;
-  			var ajaxConfig = {
-			  	method:'get',
-			  	//data: '', // flag:0表示查全部，1：已审核， 2：
-			  	url: apiPostAssessList + '/0?curPage=' + $scope.pager.curPage + '&pageSize=' + $scope.pager.pageIndex,	
-			}
-  			AjaxServer.ajaxInfo(ajaxConfig, function( data ){
-                var d = typeof(data) == 'string' ? JSON.parse(data) : data;
-                $scope.getListSuccess = true;
-                $scope.loading = false;
-                $scope.pager.curPage = d.pageNum;
-				$scope.pager.pagesNum = d.pages;
-				$scope.pager.total = d.total;
-                $.each(d.result, function(k,v){
-                    v.jsonData = typeof(v.jsonData ) == 'string' ? JSON.parse(v.jsonData ) : v.jsonData ;
-                });
-                $scope.list = d.result;
+
+   		// 得到数据
+		$scope.getList = function(){
+            var conditions= {};
+            $http.get('/data/assessMgr/getAssessList.json').then(function(response){
+                var data = {};
+                if(response.status === 200){
+                    if(response.data && response.data.length > 0){
+                        data = PageService.page($scope.pager.curPage,$scope.pager.pageSize,response.data,conditions);
+                    }
+
+                    if(!data || !data.result || data.result.length===0){
+                        $scope.ListShowFlag = '无查询结果';
+                        $scope.list = [];
+                    }
+                    else{
+                        $scope.ListShowFlag = '';
+                        $scope.list = data.result;
+                        $scope.pager =  $.extend( {}, defaultPager,{
+                            total: data.total,
+                            curPage: data.curPage,
+                            pagesNum: data.pagesNum,
+                            pageSize: data.pageSize
+                        });
+                    }
+                    $scope.apply();
+                }
+            },function(data){
+                $scope.ListShowFlag = '因为网络原因请求失败';
+                $scope.list = [];
                 $scope.apply();
-            },
-  			function(status){
-        	    $scope.getListSuccess = false;
-                $scope.loading = false;
-				$scope.errorMsg = '因网络未知原因，操作失败，请刷新页面重试。';
-				$scope.apply();
-  			});			
+            });
 		};
-		
+
 		/*
 	    *  跳转页面
 	    */
@@ -186,14 +163,14 @@ angular.module('myappApp')
   				return false;
   			}
   			$scope.pager.curPage = parseInt(targetPage);
-  			//判断当前所在页面
+  			// 判断当前所在页面
   			$scope.getList();
   		};
-  		
-  		
+
+
   		$scope.apply = function() {
   			if(!$scope.$$phase) {
   			    $scope.$apply();
   			}
   		};
-});
+}]);

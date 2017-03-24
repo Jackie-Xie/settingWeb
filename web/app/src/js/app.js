@@ -19,39 +19,39 @@ angular
 			redirectTo: '/setting/users',
 		})
 		.when('/setting/roles', {
-			templateUrl: 'views/setting/role.html',
+			templateUrl: 'views/setting/index.html',
 			controller: 'RoleSettingCtrl',
 		})
 		.when('/setting/users', {
-			templateUrl: 'views/setting/user.html',
+			templateUrl: 'views/setting/index.html',
 			controller: 'UserSettingCtrl',
 		})
 		.when('/setting/modify', {
-			templateUrl: 'views/setting/modify.html',
+			templateUrl: 'views/setting/index.html',
 			controller: 'UserSettingCtrl',
 		})
 		.when('/setting/safety', {
-			templateUrl: 'views/setting/safety.html',
+			templateUrl: 'views/setting/index.html',
 			controller: 'SafetyCtrl',
 		})
-		.when('/setting/audit', {
-			templateUrl: 'views/setting/auditIndex.html',
+		.when('/setting/auditIndex', {
+			templateUrl: 'views/setting/index.html',
 			controller: 'AuditCtrl',
 		})
 		.when('/setting/activeUser', {
-			templateUrl: 'views/setting/activeUser.html',
+			templateUrl: 'views/setting/index.html',
 			controller: 'ActiveUserCtrl',
 		})
 		.when('/setting/auditAnaly', {
-			templateUrl: 'views/setting/auditAnaly.html',
+			templateUrl: 'views/setting/index.html',
 			controller: 'AuditAnalyCtrl',
 		})
 		.when('/setting/systemAlarm', {
-			templateUrl: 'views/setting/systemAlarm.html',
+			templateUrl: 'views/setting/index.html',
 			controller: 'SystemAlarmCtrl',
 		})
 		.when('/setting/assess', {
-			templateUrl: 'views/setting/assess.html',
+			templateUrl: 'views/setting/index.html',
 			controller: 'AssessCtrl',
 		})
 		.when('/404', {
@@ -67,6 +67,6 @@ angular
 			controller: 'LoginCtrl'
 		})
 		.otherwise({
-			redirectTo: '/404',
+			redirectTo: '/404'
 		});
   });

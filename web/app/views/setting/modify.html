@@ -1,72 +1,61 @@
-<div class="header" ng-controller='NavCtrl' ng-init="init()" ng-include="'views/mod/header.html'"></div>
-<div class="main modify-pwd">
-    <div class="container-fluid">
-        <div class="row wrap">
-            <!-- 子菜单 b -->
-            <div class="clearfix col-lg-3" ng-controller='SideNavCtrl' ng-init="init()" ng-include="'views/setting/subNav.html'"></div>
-            <!-- 子菜单 e -->
-            <div class="col-lg-9 " style="height:{{mainHeight}}px;overflow-y:auto;" ng-init="init()">
-                <div class="panel panel-primary mh-28">
-					<div class="panel-heading">
-					    <h3 class="panel-title">修改密码</h3>
-					</div>
-					<div class="panel-body">
-                        <form class="form-horizontal" name="modifyPwdForm" method="post">
-                           <div class="form-group text-left">
-                               <label class="control-label label-custom-modal width125" for="J_userModifyName">用户名称：</label>
-                               <div class="input-custom input-custom-40">
-                                   <input class="form-control" type="text" autocomplete="off" id="J_userModifyName" ng-change="clearErrMessage()" ng-model="userModifyForm.username" readonly>
-                               </div>
-                           </div>
-                           <div class="form-group text-left">
-                               <label class="control-label label-custom-modal width125" for="J_userModifyPwd"><span class="txt-impt">*</span>原密码：</label>
-                               <div class="input-custom input-custom-40">
-                                   <input class="form-control" type="password" name="modifyOldPwd" autocomplete="off" id="J_userModifypwd_old" ng-change="clearErrMessage()" ng-model="userModifyForm.oldPwd">
-                               </div>
-                               <div class="input-custom input-custom-30 error-msg">
-                                   <span class="static-msg">
-                                     &nbsp;&nbsp;&nbsp;&nbsp;请输入8-25位原密码
-                                   </span>
-                               </div>
-                           </div>
-                           <div class="form-group text-left">
-                               <label class="control-label label-custom-modal width125" for="J_userModifyPwd_new"><span class="txt-impt">*</span>新密码：</label>
-                               <div class="input-custom input-custom-40">
-                                   <input class="form-control" type="password" name="modifyNewPwd" autocomplete="off" id="J_userModifypwd_new" ng-change="clearErrMessage()" ng-model="userModifyForm.newPwd">
-                               </div>
-                               <div class="input-custom input-custom-30 error-msg">
-                                   <span class="static-msg">
-                                     &nbsp;&nbsp;&nbsp;&nbsp;密码为8-25位数字和字母组合
-                                   </span>
-                               </div>
-                           </div>
-                           <div class="form-group text-left">
-                               <label class="control-label label-custom-modal width125" for="J_userModifyPwd_repeat"><span class="txt-impt">*</span>再次输入新密码：</label>
-                               <div class="input-custom input-custom-40">
-                                   <input class="form-control" type="password" name="modifyRepeatPwd" autocomplete="off" id="J_userModifypwd_repeat" ng-change="clearErrMessage()" ng-model="userModifyForm.repeatPwd">
-                               </div>
-                               <div class="input-custom input-custom-30 error-msg">
-                                   <span class="static-msg">
-                                     &nbsp;&nbsp;&nbsp;&nbsp;请保持输入与新密码一致
-                                   </span>
-                               </div>
-                           </div>
-                           <div class="col-lg-12 form-group text-left">
-   	                        <div class="alert-section">
-   		                        <div class="alert alert-danger text-left" role="alert" ng-show="errorMsg!=''">
-   								     {{errorMsg}}
-   								</div>
-   								<div class="alert alert-success text-left" role="alert" ng-show="successMsg!=''">
-   								     {{successMsg}}
-   								</div>
-   							</div>
-   	                        <button class="btn btn-primary btn-md modify-btn mgl-rem10" data-text="保存" ng-click="modifyHash($event)">保存</button>
-                           </div>
-                       </form>
-					</div>
-				</div>
-                <div class="footer" ng-include="'views/mod/footer.html'"></div>
+<div class="page-title">修改密码</div>
+<div class="panel panel-default mh-28">
+    <div class="panel-heading">
+        <h3 class="panel-title">用户密码修改</h3>
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal" name="modifyPwdForm" method="post">
+           <div class="form-group text-left">
+               <label class="control-label label-custom-modal width125" for="J_userModifyName">用户名称：</label>
+               <div class="input-custom input-custom-40">
+                   <input class="form-control" type="text" autocomplete="off" id="J_userModifyName" ng-change="clearErrMessage()" ng-model="userModifyForm.username" readonly>
+               </div>
+           </div>
+           <div class="form-group text-left">
+               <label class="control-label label-custom-modal width125" for="J_userModifyPwd"><span class="txt-impt">*</span>原密码：</label>
+               <div class="input-custom input-custom-40">
+                   <input class="form-control" type="password" name="modifyOldPwd" autocomplete="off" id="J_userModifypwd_old" ng-change="clearErrMessage()" ng-model="userModifyForm.oldPwd">
+               </div>
+               <div class="input-custom input-custom-30 error-msg">
+                   <span class="static-msg">
+                     &nbsp;&nbsp;&nbsp;&nbsp;请输入8-25位原密码
+                   </span>
+               </div>
+           </div>
+           <div class="form-group text-left">
+               <label class="control-label label-custom-modal width125" for="J_userModifyPwd_new"><span class="txt-impt">*</span>新密码：</label>
+               <div class="input-custom input-custom-40">
+                   <input class="form-control" type="password" name="modifyNewPwd" autocomplete="off" id="J_userModifypwd_new" ng-change="clearErrMessage()" ng-model="userModifyForm.newPwd">
+               </div>
+               <div class="input-custom input-custom-30 error-msg">
+                   <span class="static-msg">
+                     &nbsp;&nbsp;&nbsp;&nbsp;密码为8-25位数字和字母组合
+                   </span>
+               </div>
+           </div>
+           <div class="form-group text-left">
+               <label class="control-label label-custom-modal width125" for="J_userModifyPwd_repeat"><span class="txt-impt">*</span>再次输入新密码：</label>
+               <div class="input-custom input-custom-40">
+                   <input class="form-control" type="password" name="modifyRepeatPwd" autocomplete="off" id="J_userModifypwd_repeat" ng-change="clearErrMessage()" ng-model="userModifyForm.repeatPwd">
+               </div>
+               <div class="input-custom input-custom-30 error-msg">
+                   <span class="static-msg">
+                     &nbsp;&nbsp;&nbsp;&nbsp;请保持输入与新密码一致
+                   </span>
+               </div>
+           </div>
+           <div class="col-lg-12 form-group text-left">
+            <div class="alert-section">
+                <div class="alert alert-danger text-left" role="alert" ng-show="errorMsg!=''">
+                     {{errorMsg}}
+                </div>
+                <div class="alert alert-success text-left" role="alert" ng-show="successMsg!=''">
+                     {{successMsg}}
+                </div>
             </div>
-        </div>
+            <button class="btn btn-primary btn-md modify-btn mgl-rem10" data-text="保存" ng-click="modifyHash($event)">保存</button>
+           </div>
+       </form>
     </div>
 </div>
+

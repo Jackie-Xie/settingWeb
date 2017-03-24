@@ -2,7 +2,7 @@
 
 angular.module('myappApp')
   	.controller('NavCtrl', ['$scope', '$rootScope', '$location', '$cookies','sessionStore',function ($scope, $rootScope, $location, $cookies,sessionStore) {
-        var userLocalInfo = sessionStore.getObject('userInfo');
+        var userLocalInfo = null;
   		$scope.pathStr = $location.path();
 
 	   	$scope.init = function () {
@@ -15,13 +15,6 @@ angular.module('myappApp')
             }
             $scope.apply();
 	    	$scope.resetRender();
-	    	// 页面跳转后自动清除定时刷新，节省浏览器资源
-	        $('body').on('click','.top-nav li', function(ev){
-                $scope.getLocalLoginInfo();
-	        	if($scope.stopRefresh){
-	        		$scope.stopRefresh();
-	        	}
-	        });
 
             if($scope.userLogStatus ){
                 // 清除登出效果
@@ -38,7 +31,7 @@ angular.module('myappApp')
             }
 
 	        // 判断是否已经登录
-	        if( $scope.userLogStatus.indexOf('login') === -1 && (!$cookies || !$cookies.getObject('userInfo')) && (!userLocalInfo || $.isEmptyObject(userLocalInfo)) ){
+	        if( !$scope.userLogStatus || ($scope.userLogStatus.indexOf('login') === -1 && (!$cookies || !$cookies.getObject('userInfo')) && (!userLocalInfo || $.isEmptyObject(userLocalInfo)) ) ){
                 $location.path('/login');
 	        }
             $scope.bindEvent();
@@ -51,6 +44,10 @@ angular.module('myappApp')
             $(window).on('resize',function(){
 	        	$scope.resetRender();
 	        });
+
+			$('body').on('click','.top-nav li', function(){
+				$scope.getLocalLoginInfo();
+			});
         };
 
         /*
@@ -71,11 +68,12 @@ angular.module('myappApp')
 	    	$rootScope.roleId = $scope.roleId = 0;
             // cookies
             if( $cookies && $cookies.getObject('userInfo') ){
-                 $cookies.remove("userInfo");
+				$cookies.remove("userInfo");
             }
             // localStore
+			userLocalInfo = sessionStore.getObject('userInfo');
             if(userLocalInfo && !$.isEmptyObject(userLocalInfo)){
-                 $cookies.remove("userInfo");
+				sessionStore.remove("userInfo");
             }
             $scope.apply();
 	    };
@@ -100,8 +98,9 @@ angular.module('myappApp')
                 $rootScope.userLogStatus = 'saved';
 			}
             // localStore
+			userLocalInfo = sessionStore.getObject('userInfo');
             if(userLocalInfo && !$.isEmptyObject(userLocalInfo)){
-                 $cookies.remove("userInfo");
+				sessionStore.remove("userInfo");
             }
 	    	else{
 				sessionStore.setObject('userInfo',user);
@@ -118,7 +117,8 @@ angular.module('myappApp')
          * 获取登录信息
          */
 	    $scope.getLocalLoginInfo = function(){
-	    	var user;
+	    	var user = {},
+				userLocalInfo = sessionStore.getObject('userInfo');
 	    	if($cookies && $cookies.getObject('userInfo')){
 				user = $cookies.getObject('userInfo');
 				$rootScope.userName = user.userName;

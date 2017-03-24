@@ -3,25 +3,22 @@ angular.module('myappApp')
         var viewHeight = $(window).height();
 	   	$scope.init = function () {
 	    	$scope.pathStr = $location.path();
-            $scope.menuHeight = viewHeight - 48;
-            $rootScope.mainHeight = viewHeight - 48;
-	    	// 页面跳转后自动清除定时刷新，节省浏览器资源
-	        $('body').on('click','.nav li', function(){
-	        	if($scope.stopRefresh){
-	        		$scope.stopRefresh();
-	        	}
-                $scope.resetRender();
-	        });
+            $scope.menuHeight = viewHeight - 50;
+            $rootScope.mainHeight = viewHeight - 50;
 	        $scope.bindEvent();
 	    };
 
         $scope.resetRender = function () {
-            $scope.menuHeight = $(window).height() - 48;
-            $rootScope.mainHeight = $(window).height() - 48;
+            $scope.menuHeight = $(window).height() - 50;
+            $rootScope.mainHeight = $(window).height() - 50;
             $scope.apply();
         };
 
 	    $scope.bindEvent = function () {
+            $('body').on('click','.nav li', function(){
+                $scope.resetRender();
+            });
+            
             $(window).resize(function(){
                 $scope.resetRender();
             });

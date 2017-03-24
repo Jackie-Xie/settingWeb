@@ -1,11 +1,11 @@
 .menu-list{
     position: fixed;
-	top: 48px;
+	top: 50px;
 	left: 0;
-	width: 16.6%;
-  overflow-y: auto;
+	width: 16.7%;
+  	overflow-y: auto;
 	margin-bottom: 0;
-  background-color: #444;
+	background-color: #444;
 	border-top: 1px solid #505050;
 }
 .menu-item {

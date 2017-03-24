@@ -1,159 +1,114 @@
-<div class="j-body">
-<div class="header" ng-controller='NavCtrl' ng-init="init()" ng-include="'views/mod/header.html'"></div>
-<div class="main modify-pwd">
-    <div class="container-fluid">
-    	<!-- modal -->
-        <div id="J_auditIndexConfirm" class="modal fade" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close"  aria-hidden="true" data-dismiss="modal">×</button>
-                        <h6>系统提示</h6>
+<div class="page-title">操作日志审计</div>
+<div class="panel panel-default mh-7">
+    <div class="panel-heading">
+        <h3 class="panel-title">查询条件</h3>
+    </div>
+    <div class="panel-body">
+        <!-- 查询表单 b -->
+        <form class="clearfix form-custom" method="post">
+            <div class="col-lg-11 search-forms">
+                <div class="col-lg-6 form-group">
+                    <label class="control-label label-custom width80 text-right" for="J_roleName">所属角色：</label>
+                    <div class="input-custom input-custom-lg">
+                        <select class="form-control" id="J_roleName" ng-model="searchPara.roleId" ng-options="item.id as item.name for item in roleList" ng-change="getBusinessGroupOptions(searchPara.roleId)">
+                            <option value="">----请选择----</option>
+                        </select>
                     </div>
-                    <div class="modal-body">
-                        <p class="text-center">{{confirmInfo}}</p>
+                </div>
+                <div class="col-lg-6 form-group">
+                    <label class="control-label label-custom width80 text-right" for="J_groupName">所属单位：</label>
+                    <div class="input-custom input-custom-lg">
+                        <select class="form-control" id="J_groupName" ng-model="searchPara.groupId" ng-options="businessGroup.id as businessGroup.bgname for businessGroup in businessGroupOptions">
+                            <option value="">----请选择----</option>
+                        </select>
                     </div>
-                    <div class="modal-footer">
-                    	<div class="alert alert-danger text-left pl50" role="alert" ng-show="errorMsg!='' && successMsg==''">
-							{{errorMsg}}
-						</div>
-						<div class="alert alert-success text-center" role="alert" ng-show="successMsg!='' && errorMsg==''">
-							{{successMsg}}
-						</div>
-					    <button class="btn btn-primary btn-md" ng-show="czType == 'getBackup'" ng-click="backupExec()">确 定</button>
-					    <button class="btn btn-primary btn-md" aria-hidden="true" data-dismiss="modal" >{{cancelButton}}</button>
+                </div>
+                <div class="col-lg-6 form-group">
+                    <label class="control-label label-custom width80 text-right" for="J_groupName">事件类型：</label>
+                    <div class="input-custom input-custom-lg">
+                        <select class="form-control" id="J_sortID" ng-model="searchPara.auditIypeId" ng-options="item.id as item.cn_name for item in auditTypeList">
+                            <option value="">----请选择----</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-6 form-group">
+                    <label class="control-label label-custom width80 text-right" for="J_groupName">排序：</label>
+                    <div class="input-custom input-custom-lg">
+                        <select class="form-control" id="J_sortID" ng-model="searchPara.sortTypeId" ng-options="item.id as item.cn_name for item in sortTypeList">
+                            <option value="">----请选择----</option>
+                        </select>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- modal -->
-
-        <div class="row wrap">
-            <!-- 子菜单 b -->
-            <div class="clearfix col-lg-3" ng-controller='SideNavCtrl' ng-init="init()" ng-include="'views/setting/subNav.html'"></div>
-            <!-- 子菜单 e -->
-            <div class="col-lg-9" style="height:{{mainHeight}}px;overflow-y:auto;" ng-init="init()">
-                <div class="panel panel-primary mh-7">
-					<div class="panel-heading">
-					    <h3 class="panel-title">查询条件</h3>
-					</div>
-					<div class="panel-body">
-                        <!-- 查询表单 b -->
-            			<form class="clearfix form-custom" method="post">
-                            <div class="col-lg-11 search-forms">
-                                <div class="col-lg-6 form-group">
-                                    <label class="control-label label-custom width80 text-right" for="J_roleName">所属角色：</label>
-                                    <div class="input-custom input-custom-lg">
-                                        <select class="form-control" id="J_roleName" ng-model="searchPara.roleId" ng-options="item.id as item.name for item in roleList" ng-change="getBusinessGroupOptions(searchPara.roleId)">
-                                            <option value="">----请选择----</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 form-group">
-                                    <label class="control-label label-custom width80 text-right" for="J_groupName">所属单位：</label>
-                                    <div class="input-custom input-custom-lg">
-                                        <select class="form-control" id="J_groupName" ng-model="searchPara.groupId" ng-options="businessGroup.id as businessGroup.bgname for businessGroup in businessGroupOptions">
-                                            <option value="">----请选择----</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 form-group">
-                                    <label class="control-label label-custom width80 text-right" for="J_groupName">事件类型：</label>
-                                    <div class="input-custom input-custom-lg">
-                                        <select class="form-control" id="J_sortID" ng-model="searchPara.auditIypeId" ng-options="item.id as item.cn_name for item in auditTypeList">
-                                            <option value="">----请选择----</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 form-group">
-                                    <label class="control-label label-custom width80 text-right" for="J_groupName">排序：</label>
-                                    <div class="input-custom input-custom-lg">
-                                        <select class="form-control" id="J_sortID" ng-model="searchPara.sortTypeId" ng-options="item.id as item.cn_name for item in sortTypeList">
-                                            <option value="">----请选择----</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 search-btn mgt50">
-                                <a role="button" class="btn btn-primary btn-md j-searchPara">查询</a>
-                            </div>
-                        </form>
-            			<!-- 查询表单 e -->
-					</div>
-				</div>
-
-                <div class="panel panel-primary mh-20">
-					<div class="panel-heading">
-					    <h3 class="panel-title">操作日志列表</h3>
-					</div>
-					<div class="panel-body">
-                        <!-- 查询结果 b -->
-                        <div class="clearfix col-lg-6 search-result" ng-include="'views/mod/searchResult.html'"></div>
-                        <div class="col-lg-6 text-right">
-    						<a role="button" class="btn btn-warning btn-md j-getBackup" ng-hide="pager.total==0">执行备份</a>
-    					</div>
-                        <!-- 查询结果 e -->
-            			<!-- 数据表格 b -->
-                        <div class="col-lg-12 table-responsive">
-                            <table class="table table-condensed table-striped table-hover table-custom mgb40">
-                                <thead>
-                                    <tr>
-    									<th>编号</th>
-    									<th class="tl">操作用户</th>
-    									<th class="tl">所属单位</th>
-                                        <th class="tl">所属角色</th>
-                                        <th class="tl">操作类型</th>
-                                        <th class="tl">操作内容</th>
-                                        <th class="tl">操作结果</th>
-                                        <th class="tl">操作时间</th>
-                                        <th class="tl">终端地址</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                   <tr class="loading text-center" ng-show="loading">
-    	                                <td colspan="9">loading...</td>
-    	                            </tr>
-    								<tr class="loading text-center" ng-show="auditList.length==0 && !loading && getListSuccess == true">
-    									<td colspan="9">数据为空</td>
-    								</tr>
-    								<tr class="loading text-center" ng-show="errorMsg != '' && getListSuccess == false">
-    									<td colspan="9">{{errorMsg}}</td>
-    								</tr>
-                                    <tr ng-repeat="item in auditList">
-    									<td>{{$index+1}}</td>
-    									<td class="tl">{{item.userName}}</td>
-                                        <td class="tl">
-                                        	<span ng-if="item.businessGroupName != null && item.businessGroupName != ''">{{item.businessGroupName}}</span>
-    										<span ng-if="item.businessGroupName == null || item.businessGroupName == ''">--</span>
-                                        </td>
-                                        <td class="tl">
-                                        	<span ng-if="item.roleName != null && item.roleName != ''">{{item.roleName}}</span>
-    										<span ng-if="item.roleName == null || item.roleName == ''">--</span>
-                                        </td>
-                                        <td class="tl">{{item.eventType}}</td>
-                                        <td class="tl">{{item.content}}</td>
-                                        <td class="tl">{{item.status}}</td>
-                                        <td class="tl">
-                                        	<span ng-if="item.createTime != null && item.createTime != ''">{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
-    										<span ng-if="item.createTime == null || item.createTime == ''">--</span>
-    									</td>
-    									<td class="tl">
-                                        	<span ng-if="item.host != null && item.host != ''">{{item.host}}</span>
-    										<span ng-if="item.host == null || item.host == ''">--</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- 数据表格 e -->
-            			<!-- 分页 start -->
-            			<div class="col-lg-12 clearfix j-navPager navPager-rb" ng-include="'views/mod/pagination.html'"></div>
-            			<!-- 分页 e -->
-					</div>
-				</div>
-                <div class="footer" ng-include="'views/mod/footer.html'"></div>
+            <div class="col-lg-1 search-btn mgt50">
+                <a role="button" class="btn btn-primary btn-md j-searchPara">查询</a>
             </div>
-        </div>
+        </form>
+        <!-- 查询表单 e -->
     </div>
 </div>
+
+<div class="panel panel-default mh-20">
+    <div class="panel-heading">
+        <h3 class="panel-title">操作日志列表</h3>
+    </div>
+    <div class="panel-body">
+        <!-- 查询结果 b -->
+        <div class="clearfix col-lg-6 search-result" ng-include="'views/mod/searchResult.html'"></div>
+        <div class="col-lg-6 text-right">
+            <a role="button" class="btn btn-warning btn-md j-getBackup" ng-hide="pager.total==0">执行备份</a>
+        </div>
+        <!-- 查询结果 e -->
+        <!-- 数据表格 b -->
+        <div class="col-lg-12 table-responsive">
+            <table class="table table-condensed table-striped table-hover table-custom mgb40">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>操作用户</th>
+                        <th>所属单位</th>
+                        <th>所属角色</th>
+                        <th>操作类型</th>
+                        <th>操作内容</th>
+                        <th>操作结果</th>
+                        <th>操作时间</th>
+                        <th>终端地址</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tr-loading text-center" ng-show="ListShowFlag!=''">
+                        <td colspan="9" ng-if="ListShowFlag.indexOf('loading')==-1">{{ListShowFlag}}</td>
+                        <td colspan="9" ng-if="ListShowFlag.indexOf('loading')>-1"><div class="loading"></div></td>
+                    </tr>
+                    <tr ng-repeat="item in auditList" ng-show="ListShowFlag==''">
+                        <td>{{$index+1}}</td>
+                        <td>{{item.userName}}</td>
+                        <td>
+                            <span ng-if="item.businessGroupName != null && item.businessGroupName != ''">{{item.businessGroupName}}</span>
+                            <span ng-if="item.businessGroupName == null || item.businessGroupName == ''">--</span>
+                        </td>
+                        <td>
+                            <span ng-if="item.roleName != null && item.roleName != ''">{{item.roleName}}</span>
+                            <span ng-if="item.roleName == null || item.roleName == ''">--</span>
+                        </td>
+                        <td>{{item.eventType}}</td>
+                        <td>{{item.content}}</td>
+                        <td>{{item.status}}</td>
+                        <td>
+                            <span ng-if="item.createTime != null && item.createTime != ''">{{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+                            <span ng-if="item.createTime == null || item.createTime == ''">--</span>
+                        </td>
+                        <td>
+                            <span ng-if="item.host != null && item.host != ''">{{item.host}}</span>
+                            <span ng-if="item.host == null || item.host == ''">--</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- 数据表格 e -->
+        <!-- 分页 start -->
+        <div class="col-lg-12 clearfix j-navPager navPager-rb" ng-include="'views/mod/pagination.html'"></div>
+        <!-- 分页 e -->
+    </div>
 </div>

@@ -1,18 +1,18 @@
 'use strict';
 
 angular.module('myappApp')
-  	.controller('AuditAnalyCtrl', function ($scope, AjaxServer, Validate, $location) {
+  	.controller('AuditAnalyCtrl', function ($scope,$http, AjaxServer, PageService,Validate, $location) {
   		var config={},
   			defaultPager = {
-            	total: 0, // 
+            	total: 0, //
 	        	curPage: 1, //当前页码
 	            pagesNum: 1, //
-	            pageIndex: 10, // 每页存放条数
+	            pageSize: 5, // 每页存放条数
             },
-			apigetAuditAnalyList = '/useroperatelog',	
+			apigetAuditAnalyList = '/useroperatelog',
 			apiGetUserList = '/useroperatelog/operuser',                  // 获取用户列表
 			apiGetExport = '/useroperatelog/export',                      // 导出
-			$oprConfirm = undefined, 			  		
+			$oprConfirm = undefined,
 			auditTypeList=[
 							{
 							    "id": 1,
@@ -40,14 +40,13 @@ angular.module('myappApp')
   			            {id:'12',cnName:'切换',sum:0},
   			            {id:'13',cnName:'闪回',sum:0}
   			           ];
-  		
+
   		$scope.searchPara = {'beginTime':'','endTime':'','userId':'','auditIypeId':''};
   		$scope.analyData = [];
-  		
+
   		$scope.init = function () {
             $scope.pathStr = $location.path();
-  			$scope.getListSuccess = false;
-  			$scope.loading = true;
+  			$scope.ListShowFlag = 'loading';
   			$scope.errorMsg = '';
   			$scope.sucessMsg = '';
   			$scope.errorMsgBeginTime = '';
@@ -57,34 +56,33 @@ angular.module('myappApp')
   			$scope.roleList = [];
   			$scope.businessGroupOptions = [];
   			$scope.subNavClass = ['','','','','','','','','active'];
-  			$scope.pager =  $.extend( {}, defaultPager );	
+  			$scope.pager =  $.extend( {}, defaultPager );
   			$scope.auditTypeList =  $.extend([], auditTypeList ); //事件类型
-  		
+
   			$scope.getUserList();
 			$scope.getAuditAnalyList();
-			$scope.bindEventAutdit();		
-			
+			$scope.bindEvent();
+
   		};
-  		
-  		$scope.bindEventAutdit = function() {  	    	
-  			$(".j-body").off( "click", "**");
-  			
+
+  		$scope.bindEvent = function() {
   			//查询用户信息
 	    	$(".j-body").on('click','.j-searchPara', function(ev){
 	    		$scope.getAuditAnalyList();
 	    	});
-	    	
+
 	    	//查询用户信息
 	    	$(".j-body").on('click','.j-getExport', function(ev){
 	    		$scope.exportData();
 	    	});
-	    	
+
 	    	//关闭下载
 	    	$(".j-body").on('click','.j-export', function(ev){
 	    		$scope.hideOprConfirm();
 	    	});
-	    	
+
  			//分页事件绑定
+            $(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
  			$(".j-body").on('click','.j-navPager .item', function(ev){
  				var it = $(ev.currentTarget);
  				$scope.gotoPage(parseInt(it.text()));
@@ -99,10 +97,10 @@ angular.module('myappApp')
  				}
  				$scope.gotoPage($scope.pager.curPage + 1);
  			});
- 			
+
  			$scope.formatTime();
    		};
-   		
+
    		/*
   		 * 自定义滚动条
   		 */
@@ -113,10 +111,10 @@ angular.module('myappApp')
   			    theme:'my-theme-x',//横向滚动条
   			    scrollButtons:{
 			    	scrollSpeed: 30
-		    	}  				
+		    	}
   			});
   		};
-  		
+
   		$scope.formatTime = function(){
 	  		var dateValue=new Date();
 	  		dateValue.setDate(dateValue.getDate()-1);
@@ -190,7 +188,7 @@ angular.module('myappApp')
   				'data':'',
   				'responseType':'json',
   				'url':apiGetUserList
-  			};  			
+  			};
   			AjaxServer.ajaxInfo( config , function(data){
   				if( typeof(data) === 'string'){
 					data = JSON.parse(data);
@@ -203,16 +201,15 @@ angular.module('myappApp')
                 $scope.errorMsg = errorMessage;
                 $scope.apply();
 			});
-  		};		
-  		
+  		};
+
    		// 得到操作审计数据
-		$scope.getAuditAnalyList = function(){					
-			$scope.loading = true;
+		$scope.getAuditAnalyList = function(){
 			//输入验证
    			if(!!$scope.searchPara && !$scope.validateForm($scope.searchPara)){
    				return false;
    			}
-			var userId = $scope.searchPara.userId; 	
+			var userId = $scope.searchPara.userId;
  			var startTime = $scope.searchPara.beginTime;
  			var endTime = $scope.searchPara.endTime;
  			var eventTypeId = $scope.searchPara.auditIypeId;
@@ -225,36 +222,45 @@ angular.module('myappApp')
 			if(userId == null){
 				userId = '';
 			}
-			var ajaxData = {
-					startTime:startTime,
-					endTime:endTime,
-					userId:userId,
-					eventTypeId:eventTypeId
-	  	  		},
-  			config = {
-  	  				method:'post',
-  	  				data:ajaxData,
-  	  				url:apigetAuditAnalyList +'?cmd=statistic&pageSize=' + $scope.pager.pageIndex + '&curPage=' + $scope.pager.curPage
-  	  			};
-  			AjaxServer.ajaxInfo(config, function( data ){
-                var d = typeof(data) == 'string' ? JSON.parse(data) : data;
-                $scope.getListSuccess = true;
-                $scope.loading = false;
-                $scope.pager.curPage = d.pageNum;
-				$scope.pager.pagesNum = d.pageS;
-				$scope.pager.total = d.total;
-				$scope.analyList = d.result;	
-				$scope.customScroll();
+
+            var conditions= {
+                startTime:startTime,
+                endTime:endTime,
+                userId:userId,
+                eventTypeId:eventTypeId
+            };
+            $http.get('/data/auditorMgr/getAuditAnalyList.json').then(function(response){
+                var data = {};
+                if(response.status === 200){
+                    if(response.data && response.data.length > 0){
+                        data = PageService.page($scope.pager.curPage,$scope.pager.pageSize,response.data,conditions);
+                    }
+
+                    if(!data || !data.result || data.result.length===0){
+                        $scope.ListShowFlag = '无查询结果';
+                        $scope.analyList = [];
+                    }
+                    else{
+                        $scope.ListShowFlag = '';
+                        $scope.analyList = data.result;
+                        $scope.pager =  $.extend( {}, defaultPager,{
+                            total: data.total,
+                            curPage: data.curPage,
+                            pagesNum: data.pagesNum,
+                            pageSize: data.pageSize
+                        });
+                    }
+                    $scope.customScroll();
+                    $scope.apply();
+                }
+            },function(data){
+                $scope.ListShowFlag = '因为网络原因请求失败';
+                $scope.analyList = [];
                 $scope.apply();
-            },
-  			function(status){
-        	    $scope.getListSuccess = false;
-                $scope.loading = false;
-				$scope.errorMsg = '因网络未知原因，操作失败，请刷新页面重试。';
-				$scope.apply();
-  			});			
+            });
+
 		};
-		
+
 		/*
          * 备份
          */
@@ -263,7 +269,7 @@ angular.module('myappApp')
    			if(!!$scope.searchPara && !$scope.validateForm($scope.searchPara)){
    				return false;
    			}
- 			var userId = $scope.searchPara.userId; 	
+ 			var userId = $scope.searchPara.userId;
  			var startTime = $scope.searchPara.beginTime;
  			var endTime = $scope.searchPara.endTime;
  			var eventTypeId = $scope.searchPara.auditIypeId;
@@ -295,10 +301,10 @@ angular.module('myappApp')
    			function(status){
  				$scope.errorMsg = '因网络未知原因，导出失败。';
  				$scope.apply();
-   			});	
-   			
+   			});
+
          };
-         
+
          /*
    		 * 验证表单数据
    		 */
@@ -319,25 +325,25 @@ angular.module('myappApp')
             	$scope.errorMsgEndTime = '查询结束时间应大于开始时间，请修改后查询。';
                 $scope.apply();
             	return false;
-            } 		
+            }
    			return true;
    		};
-                		
+
       		/*
      	    *  响应下一步按钮
      	    */
-	   		$scope.getExportExcel = function(id,url){ 
+	   		$scope.getExportExcel = function(id,url){
 	   			var a = document.createElement('a');
                 a.setAttribute('href', url);
                 a.setAttribute('target', '_blank');
                 a.setAttribute('id', id);
                 // 防止反复添加
-                if(!document.getElementById(id)) {                     
+                if(!document.getElementById(id)) {
                     document.body.appendChild(a);
                 }
                 a.click();
 	   		};
-	   		
+
 	   		 /*
 	   	    *  初始化模态框
 	   	    */
@@ -347,15 +353,15 @@ angular.module('myappApp')
 	     			$scope.successMsg = '';
 	              // $scope.apply();
 	     		};
-     		
+
      		$scope.showOprConfirm = function(){
       			$oprConfirm.modal('show');
       		};
 
       		$scope.hideOprConfirm = function(){
       			$oprConfirm.modal('hide');
-      		};	  
-          
+      		};
+
 		/*
 	    *  跳转页面
 	    */
@@ -368,7 +374,7 @@ angular.module('myappApp')
   			//判断当前所在页面
   			$scope.getAuditAnalyList();
   		};
-  	
+
   		$scope.apply = function() {
   			if(!$scope.$$phase) {
   			    $scope.$apply();

@@ -1,73 +1,54 @@
-<div class="j-body">
-<div class="header" ng-controller='NavCtrl' ng-init="init()" ng-include="'views/mod/header.html'"></div>
-<div class="main modify-pwd">
-    <div class="container-fluid">
-        <div class="row wrap">
-            <!-- 子菜单 b -->
-            <div class="clearfix col-lg-3" ng-controller='SideNavCtrl' ng-init="init()" ng-include="'views/setting/subNav.html'"></div>
-            <!-- 子菜单 e -->
-            <div class="col-lg-9" style="height:{{mainHeight}}px;overflow-y:auto;" ng-init="init()">
-                <div class="panel panel-primary mh-28">
-					<div class="panel-heading">
-					    <h3 class="panel-title">系统告警列表</h3>
-					</div>
-					<div class="panel-body">
-                        <!-- 查询结果 b -->
-
-                        <!-- 查询结果 e -->
-            			<!-- 数据表格 b -->
-                        <div class="table-responsive">
-                            <table class="table table-condensed table-striped table-hover table-custom">
-                                <thead>
-                                    <tr>
-                                        <th class="tl">用户名</th>
-                                        <th class="tl">单位</th>
-                                        <th class="tl">角色</th>
-                                        <th class="tl">告警类型</th>
-                                        <th class="tl">告警级别</th>
-                                        <th class="tl">告警内容</th>
-                                        <th class="tl">时间</th>
-                                        <th class="tl">访问IP</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                   <tr class="loading text-center" ng-show="loading">
-    	                                <td colspan="4">loading...</td>
-    	                            </tr>
-    								<tr class="loading text-center" ng-show="systemAlarmList.length==0 && !loading && getListSuccess == true">
-    									<td colspan="4">数据为空</td>
-    								</tr>
-    								<tr class="loading text-center" ng-show="errorMsg != '' && getListSuccess == false">
-    									<td colspan="4">{{errorMsg}}</td>
-    								</tr>
-                                    <tr ng-repeat="item in systemAlarmList">
-                                        <td class="tl">{{item.userName}}</td>
-                                        <td class="tl" ng-if="item.businessGroupName">
-                                            {{item.businessGroupName}}
-                                        </td>
-                                        <td class="tl" ng-if="!item.businessGroupName">
-                                            --
-                                        </td>
-                                        <td class="tl">{{item.roleName}}</td>
-                                        <td class="tl">{{item.type}}</td>
-                                        <td class="tl">{{levelText[item.level]}}</td>
-                                        <td class="tl">{{item.content}}</td>
-                                        <td class="tl">{{item.createTime  | date:'yyyy-MM-dd HH:mm:ss'}}</td>
-                                        <td class="tl" ng-if="item.host">{{item.host}}</td>
-                                        <td class="tl" ng-if="!item.host"> -- </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- 数据表格 e -->
-            			<!-- 分页 start -->
-            			<div class="clearfix j-navPager navPager-rb" ng-include="'views/mod/pagination.html'"></div>
-            			<!-- 分页 e -->
-					</div>
-				</div>
-                <div class="footer" ng-include="'views/mod/footer.html'"></div>
-            </div>
-        </div>
+<div class="page-title">系统告警审计</div>
+<div class="panel panel-default mh-28">
+    <div class="panel-heading">
+        <h3 class="panel-title">系统告警列表</h3>
     </div>
-</div>
+    <div class="panel-body">
+        <!-- 查询结果 b -->
+
+        <!-- 查询结果 e -->
+        <!-- 数据表格 b -->
+        <div class="table-responsive">
+            <table class="table table-condensed table-striped table-hover table-custom">
+                <thead>
+                    <tr>
+                        <th>用户名</th>
+                        <th>单位</th>
+                        <th>角色</th>
+                        <th>告警类型</th>
+                        <th>告警级别</th>
+                        <th>告警内容</th>
+                        <th>时间</th>
+                        <th>访问IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tr-loading text-center" ng-show="ListShowFlag!=''">
+                        <td colspan="8" ng-if="ListShowFlag.indexOf('loading')==-1">{{ListShowFlag}}</td>
+                        <td colspan="8" ng-if="ListShowFlag.indexOf('loading')>-1"><div class="loading"></div></td>
+                    </tr>
+                    <tr ng-repeat="item in systemAlarmList" ng-show="ListShowFlag==''">
+                        <td>{{item.userName}}</td>
+                        <td ng-if="item.businessGroupName">
+                            {{item.businessGroupName}}
+                        </td>
+                        <td ng-if="!item.businessGroupName">
+                            --
+                        </td>
+                        <td>{{item.roleName}}</td>
+                        <td>{{item.type}}</td>
+                        <td>{{levelText[item.level]}}</td>
+                        <td>{{item.content}}</td>
+                        <td>{{item.createTime  | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                        <td ng-if="item.host">{{item.host}}</td>
+                        <td ng-if="!item.host"> -- </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- 数据表格 e -->
+        <!-- 分页 start -->
+        <div class="clearfix j-navPager navPager-rb" ng-include="'views/mod/pagination.html'"></div>
+        <!-- 分页 e -->
+    </div>
 </div>

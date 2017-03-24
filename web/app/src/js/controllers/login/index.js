@@ -184,7 +184,7 @@ angular.module('myappApp')
                     return false;
                 }
                 if( $scope.roleId === -2){
-                    $location.path('/setting/audit');
+                    $location.path('/setting/auditIndex');
                     return false;
                 }
                 if( $scope.roleId === -3){

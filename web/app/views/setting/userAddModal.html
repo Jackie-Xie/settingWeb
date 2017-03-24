@@ -36,47 +36,6 @@
 	                        </select>
 	                    </div>
 	                </div>
-	               <!-- 角色审核时需加上 -->
-	               <!--  
-	               <div class="form-group text-center" ng-show="actionType === 'update'">
-	                    <label class="control-label label-custom-modal width100" for="J_roleselect"><span class="txt-impt">*</span>用户角色：</label>
-	                    <div class="input-custom input-custom-lg">
-	                        <input class="form-control" type="text" autocomplete="off" id="J_roleselect" ng-model="userForm.rolename" ng-change="getBusinessGroupOptions(userForm.roleselect)" disabled readonly/>
-	                    </div>
-	                </div>
-	                <div class="form-group text-center" ng-hide="actionType === 'update'">
-	                    <label class="control-label label-custom-modal width100" for="J_roleselect"><span class="txt-impt">*</span>用户角色：</label>
-	                    <div class="input-custom input-custom-lg">
-	                        <select class="form-control" id="J_roleselect" ng-model="userForm.roleselect" ng-options="role.id as role.name for role in partRoleList" ng-change="getBusinessGroupOptions(userForm.roleselect)">
-	                            <option value="">--------------------------------请选择--------------------------------</option>
-	                        </select>
-	                    </div>
-	                </div>
-	                <div class="form-group text-center" ng-hide="parseInt(userForm.roleselect) < 0 || actionType === 'add'">
-	                    <label class="control-label label-custom-modal width100" for="J_roleapply">选择申请角色：</label>
-	                    <div class="input-custom input-custom-lg">
-	                        <select class="form-control" id="J_roleapply" ng-model="userForm.roleapply" ng-options="role.id as role.name for role in partRoleList" ng-change="getBusinessGroupOptions(userForm.roleapply,'roleapply')">
-	                            <option value="">--------------------------------请选择--------------------------------</option>
-	                        </select>
-	                    </div>
-	                </div>
-	                <div ng-show="actionType === 'add' && userForm.roleselect >= 3" class="form-group text-center">
-	                    <label class="control-label label-custom-modal width100" for="J_groupselect">所属单位：</label>
-	                    <div class="input-custom input-custom-lg">
-	                        <select class="form-control" id="J_groupselect" ng-model="userForm.groupselect" ng-options="businessGroup.id as businessGroup.bgname for businessGroup in businessGroupOptions" ng-change="clearErrMessage()">
-	                            <option value="">--------------------------------请选择--------------------------------</option>
-	                        </select>
-	                    </div>
-	                </div>
-	                <div ng-show="( actionType === 'update' && (userForm.roleapply >= 3 || (userForm.groupselect>0 && userForm.roleselect >= 3)) && !handleBusinessGroupShow ) || ( actionType === 'update' &&  handleBusinessGroupShow )" class="form-group text-center">
-	                    <label class="control-label label-custom-modal width100" for="J_groupapply">所属单位：</label>
-	                    <div class="input-custom input-custom-lg">
-	                        <select class="form-control" id="J_groupapply" ng-model="userForm.groupselect" ng-options="businessGroup.id as businessGroup.bgname for businessGroup in businessGroupOptions" ng-change="clearErrMessage()">
-	                            <option value="">--------------------------------请选择--------------------------------</option>
-	                        </select>
-	                    </div>
-	                </div> 
-	                -->
                 </div>
                 <div class="form-group text-center" ng-show="actionType==='update' && userForm.roleselect!=-1">
                     <label class="control-label label-custom-modal width100" for="J_userstatus">用户状态：</label>
