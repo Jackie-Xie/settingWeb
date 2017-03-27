@@ -1,22 +1,18 @@
 'use strict';
 
 angular.module('myappApp')
-  	.controller('AssessCtrl', ['$scope', '$rootScope', '$http', '$location', 'PageService','Validate',function ($scope, $rootScope, $http, $location, PageService,Validate) {
+  	.controller('AssessCtrl', ['$scope','$http', '$location','$timeout', 'PageService',function ($scope, $http, $location,$timeout, PageService) {
   		var defaultPager = {                    						  // 默认分页参数
                 total: 0, 								  				  // 总条数
                 curPage: 1, 						      				  // 当前页码
                 pagesNum: 1, 						  	  				  // 总页数
-                pageSize: 5 							  				  // 每页存放条数
+                pageSize: 10 							  				  // 每页存放条数
             },
-        statusText = {
-            'wait':'审核中',
-            'pass':'已通过',
-            'refuse':'已拒绝',
-        },
-        apiGetUserInfo = '/account/info',
-		apiPostAssessList = '/operAudit/list', //curPage=1&pageSize=10&flag=0; flag:0表示查全部，1：已审核， 2：
-        apiPostOprAudit = '/operAudit/audit',
-        $oprConfirm = null;
+            statusText = {
+                'wait':'审核中',
+                'pass':'已通过',
+                'refuse':'已拒绝',
+            };
 
   		$scope.init = function () {
             $scope.pathStr = $location.path();
@@ -24,103 +20,83 @@ angular.module('myappApp')
   			$scope.errorMsg = '';
   			$scope.successMsg = '';
   			$scope.modalTitle = '';
+            $scope.modalInfo = '';
   			$scope.list = [];
-            $scope.statusText =  $.extend( {}, statusText );
-  			$scope.pager =  $.extend( {}, defaultPager );
+            $scope.statusText =  angular.extend( {}, statusText );
+  			$scope.pager =  angular.extend( {}, defaultPager );
             $scope.oprType = null;  // 操作类型：pass:通过; refuse:拒绝
             $scope.oprId = null;  // 操作的id
-            $oprConfirm = $('#J_oprConfirm');
             $scope.getList();
 			$scope.bindEvent();
   		};
 
   		$scope.bindEvent = function() {
-  			$(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
+  			angular.element('.j-body').off( 'click', '.j-navPager .item').off( 'click', '.j-navPager .prev').off( 'click', '.j-navPager .next');
  			//分页事件绑定
- 			$(".j-body").on('click','.j-navPager .item', function(ev){
- 				var it = $(ev.currentTarget);
+ 			angular.element('.j-body').on('click','.j-navPager .item', function(ev){
+ 				var it = angular.element(ev.currentTarget);
  				$scope.gotoPage(parseInt(it.text()));
- 			}).on('click','.j-navPager .prev', function(ev){
+ 			}).on('click','.j-navPager .prev', function(){
  				if($scope.pager.curPage <= 1){
  					return false;
  				}
  				$scope.gotoPage($scope.pager.curPage - 1);
- 			}).on('click','.j-navPager .next', function(ev){
+ 			}).on('click','.j-navPager .next', function(){
  				if($scope.pager.curPage >= $scope.pager.pagesNum){
  					return false;
  				}
  				$scope.gotoPage($scope.pager.curPage + 1);
- 			}).on('click','.j-btnPass', function(ev){
-                var it = $(ev.currentTarget),
-                    idx = it.parent().attr('data-id');
-                if(idx >= 0){
-                    $scope.oprType = 'pass';
-                    $scope.modalTitle = '审核操作';
-                    $scope.oprId = $scope.list[idx].id;
-                    $oprConfirm.modal('show');
-                    $scope.apply();
-                }
-
-            }).on('click','.j-btnRefuse', function(ev){
-                var it = $(ev.currentTarget),
-                    idx = it.parent().attr('data-id');
-                if(idx >= 0){
-                    $scope.oprType = 'refuse';
-                    $scope.oprId = $scope.list[idx].id;
-                    $oprConfirm.modal('show');
-                    $scope.apply();
-                }
-            });
+ 			});
    		};
 
-        // 点击弹框取消按钮
-        $scope.clickOprCancel = function(){
-            $scope.oprType = null;
-            $scope.oprId = null;
-            $scope.errorMsg = '';
-            $oprConfirm.modal('hide');
-        }
+        // 点击通过
+        $scope.clickPass = function(idx){
+            $scope.modalInfo = '确定通过这一条审核记录么？';
+            $scope.oprType = 'pass';
+            $scope.oprId = $scope.list[idx].id;
+            $scope.formatModal();
+        };
 
-        // 点击通过确定按钮
-        $scope.clickOprConfirm = function( ev ){
-            var it = $(ev.target);
+        // 点击拒绝
+        $scope.clickRefuse = function(idx){
+            $scope.modalInfo = '确定不通过这一条审核记录么？';
+            $scope.oprType = 'refuse';
+            $scope.oprId = $scope.list[idx].id;
+            $scope.formatModal();
+        };
+
+        $scope.formatModal = function(){
+            $scope.errorMsg = '';
+  			$scope.successMsg = '';
+            $scope.modalTitle = '审核操作';
+            $scope.apply();
+            angular.element('#J_userOprConfirm').modal('show');
+        };
+
+        // 点击请求通过或拒绝审核
+        $scope.confirmOpr = function( ev ){
+            var it = angular.element(ev.target);
             if(it.hasClass('disabled')){
                 return false;
             }
-            var ajaxConfig = {
-                'url': apiPostOprAudit + '/' + $scope.oprId,
-                'data':{'status': $scope.oprType},
-                'method': 'post',
-            };
+            var postData = {'status': $scope.oprType};
+            console.log(postData);
             it.addClass('disabled').text('处理中...');
-            AjaxServer.ajaxInfo( ajaxConfig,
-                function( data ){
-                    it.removeClass('disabled').text('确定');
-                    if( data.result ){
-                        $scope.ajaxConfirmSuccess();
-                    }else{
-                        $scope.ajaxConfirmFail( data.message );
-                    }
-
-                },
-                function( error ){
-                    it.removeClass('disabled').text('确定');
-                    $scope.ajaxConfirmFail( error );
+            // 实际要发送请求,这里只是假设
+            var flag = Math.floor(Math.random()*2);
+            $timeout(function(){
+                it.removeClass('disabled').text('确定');
+                if(flag){
+                    $scope.errorMsg = '';
+                    angular.element('#J_userOprConfirm').modal('hide');
+                    $scope.getList();
                 }
-            );
-        }
-
-        // 操作回调函数
-        $scope.ajaxConfirmFail = function( msg ){
-            $scope.errorMsg = msg;
-            $scope.apply();
-        }
-
-        // 操作回调函数
-        $scope.ajaxConfirmSuccess = function(){
-            $scope.clickOprCancel();
-            $scope.getList();
-        }
+                else{
+                    $scope.errorMsg = '请求失败';
+                }
+                $scope.apply();
+            },500);
+        };
 
    		// 得到数据
 		$scope.getList = function(){
@@ -139,7 +115,7 @@ angular.module('myappApp')
                     else{
                         $scope.ListShowFlag = '';
                         $scope.list = data.result;
-                        $scope.pager =  $.extend( {}, defaultPager,{
+                        $scope.pager =  angular.element.extend( {}, defaultPager,{
                             total: data.total,
                             curPage: data.curPage,
                             pagesNum: data.pagesNum,
@@ -149,7 +125,7 @@ angular.module('myappApp')
                     $scope.apply();
                 }
             },function(data){
-                $scope.ListShowFlag = '因为网络原因请求失败';
+                $scope.ListShowFlag = data || '因为网络原因请求失败';
                 $scope.list = [];
                 $scope.apply();
             });

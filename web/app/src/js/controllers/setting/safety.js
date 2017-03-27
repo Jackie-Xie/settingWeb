@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myappApp')
-  	.controller('SafetyCtrl', ['$scope', '$http', 'Validate', '$location',function ($scope, $http, Validate, $location) {
+  	.controller('SafetyCtrl', ['$scope', '$http','$timeout','$location','Validate',function ($scope, $http, $timeout, $location, Validate) {
   		$scope.init = function () {
             $scope.pathStr = $location.path();
 			$scope.clearErrMessage();
@@ -13,7 +13,7 @@ angular.module('myappApp')
   		 * 修改安全配置
   		 */
   		$scope.updateSafetyInfo = function ( event ){
-  			var it = $(event.currentTarget);
+  			var it = $(event.target);
 			if(it.hasClass('disabled')){
 				return false;
 			}
@@ -31,12 +31,22 @@ angular.module('myappApp')
   			};
 			console.log(postData);
 
-  			it.addClass('disabled');
+  			it.addClass('disabled').text('提交中...');
   			// 实际要发送POST请求到后台进行修改操作，发送成功后的回调函数中在进行操作
-			it.removeClass('disabled');
-			$scope.errorMsg = '';
-			$scope.successMsg = '配置更新成功';
-			$scope.apply();
+            // 这里只是假设
+            var flag = Math.floor(Math.random()*2);
+            $timeout(function(){
+                it.removeClass('disabled').text('保存');
+                if(flag){
+                    $scope.errorMsg = '';
+                    $scope.successMsg = '配置更新成功';
+                }
+                else{
+                    $scope.errorMsg = '配置更新失败';
+                    $scope.successMsg = '';
+                }
+                $scope.apply();
+            },500); 
   		};
 
   		/*

@@ -27,28 +27,25 @@
                     </tr>
                     <tr ng-repeat="item in list" ng-show="ListShowFlag==''">
                         <td>
-                            {{item.createTime | date:'yyyy-MM-dd HH:mm:ss'}}
+                            {{(item.createTime | date:'yyyy-MM-dd HH:mm:ss') || '--'}}
                         </td>
                         <td>
                             {{item.type}}
                         </td>
                         <td>
-                            {{item.memo}}
-                            <p class="as-span" ng-if="item.jsonData.businessGroup.cnName">单位：{{item.jsonData.businessGroup.cnName}}</p>
-                            <p class="as-span" ng-if="item.jsonData.role.name">角色：{{item.jsonData.role.name}}</p>
+                            <p>{{item.memo}}</p>
+                            <p ng-if="item.jsonData.businessGroup.cnName">单位：{{item.jsonData.businessGroup.cnName}}</p>
+                            <p ng-if="item.jsonData.role.name">角色：{{item.jsonData.role.name}}</p>
                         </td>
                         <td>
                             {{statusText[item.status]}}
                         </td>
-                        <td ng-if="!item.auditTime">
-                            --
+                        <td>
+                            {{(item.auditTime | date:'yyyy-MM-dd HH:mm:ss') || '--'}}
                         </td>
-                        <td ng-if="item.auditTime">
-                            {{item.auditTime | date:'yyyy-MM-dd HH:mm:ss'}}
-                        </td>
-                        <td data-id={{$index}} ng-if="item.status=='wait'">
-                            <a class="btn btn-link j-btnPass">通过</a>
-                            <a class="btn btn-link j-btnRefuse">拒绝</a>
+                        <td ng-if="item.status=='wait'">
+                            <a class="btn btn-link" ng-click="clickPass($index)">通过</a>
+                            <a class="btn btn-link" ng-click="clickRefuse($index)">拒绝</a>
                         </td>
                         <td ng-if="item.status!='wait'"> -- </td>
                     </tr>

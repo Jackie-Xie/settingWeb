@@ -1,84 +1,67 @@
 'use strict';
 
 angular.module('myappApp')
-  	.controller('AuditAnalyCtrl', function ($scope,$http, AjaxServer, PageService,Validate, $location) {
-  		var config={},
-  			defaultPager = {
-            	total: 0, //
-	        	curPage: 1, //当前页码
-	            pagesNum: 1, //
-	            pageSize: 5, // 每页存放条数
+  	.controller('AuditAnalyCtrl', ['$scope','$http', '$location','$timeout', 'PageService','Validate',function ($scope,$http, $location,$timeout,PageService, Validate) {
+  		var defaultPager = {
+            	total: 0,
+	        	curPage: 1,
+	            pagesNum: 1,
+	            pageSize: 5
             },
-			apigetAuditAnalyList = '/useroperatelog',
-			apiGetUserList = '/useroperatelog/operuser',                  // 获取用户列表
-			apiGetExport = '/useroperatelog/export',                      // 导出
-			$oprConfirm = undefined,
 			auditTypeList=[
-							{
-							    "id": 1,
-							    "cn_name": "认证操作"
-							},{
-							    "id": 2,
-							    "cn_name": "系统操作"
-							},{
-							    "id": 3,
-							    "cn_name": "业务操作"
-							}
-					    ],
-		    //步骤数组
-	        eventList=[{id:'1',cnName:'用户登录',sum:0},
-  			            {id:'2',cnName:'用户退出',sum:0},
-  			            {id:'3',cnName:'添加用户',sum:0},
-  			            {id:'4',cnName:'删除用户',sum:0},
-  			            {id:'5',cnName:'修改用户',sum:0},
-  			            {id:'6',cnName:'密码重置',sum:0},
-  			            {id:'7',cnName:'修改安全配置',sum:0},
-  			            {id:'8',cnName:'越权访问',sum:0},
-  			            {id:'9',cnName:'IP地址变动过大',sum:0},
-  			            {id:'10',cnName:'连续登录失败',sum:0},
-  			            {id:'11',cnName:'服务启停',sum:0},
-  			            {id:'12',cnName:'切换',sum:0},
-  			            {id:'13',cnName:'闪回',sum:0}
-  			           ];
-
-  		$scope.searchPara = {'beginTime':'','endTime':'','userId':'','auditIypeId':''};
-  		$scope.analyData = [];
+				{
+				    "id": 1,
+				    "cn_name": "认证操作"
+				},{
+				    "id": 2,
+				    "cn_name": "系统操作"
+				},{
+				    "id": 3,
+				    "cn_name": "业务操作"
+				}
+		    ];
 
   		$scope.init = function () {
             $scope.pathStr = $location.path();
   			$scope.ListShowFlag = 'loading';
   			$scope.errorMsg = '';
   			$scope.sucessMsg = '';
+            $scope.confirmInfo = '';
   			$scope.errorMsgBeginTime = '';
   			$scope.errorMsgEndTime = '';
-  			$oprConfirm = $('#J_auditAnalyConfirm');
-  			$scope.linkList = [];
-  			$scope.roleList = [];
+            $scope.searchPara = {};
+  			$scope.analyList = [];
+  			$scope.userList = [];
   			$scope.businessGroupOptions = [];
-  			$scope.subNavClass = ['','','','','','','','','active'];
   			$scope.pager =  $.extend( {}, defaultPager );
-  			$scope.auditTypeList =  $.extend([], auditTypeList ); //事件类型
+  			$scope.auditTypeList =  $.extend([], auditTypeList ); // 事件类型
 
   			$scope.getUserList();
-			$scope.getAuditAnalyList();
+			$scope.getList();
 			$scope.bindEvent();
 
   		};
 
-  		$scope.bindEvent = function() {
-  			//查询用户信息
-	    	$(".j-body").on('click','.j-searchPara', function(ev){
-	    		$scope.getAuditAnalyList();
-	    	});
+        /*
+         * 查询
+         */
+        $scope.query = function( flag ){
+            $scope.ListShowFlag = 'loading';
+            if( flag ){
+                $scope.pager =  $.extend( {}, defaultPager);
+            }
+            $scope.apply();
+            $scope.getList();
+        };
 
-	    	//查询用户信息
-	    	$(".j-body").on('click','.j-getExport', function(ev){
-	    		$scope.exportData();
-	    	});
+        /*
+         * 事件绑定
+         */
+  		$scope.bindEvent = function() {
 
 	    	//关闭下载
 	    	$(".j-body").on('click','.j-export', function(ev){
-	    		$scope.hideOprConfirm();
+                $('#J_auditAnalyConfirm').modal('hide');
 	    	});
 
  			//分页事件绑定
@@ -98,22 +81,9 @@ angular.module('myappApp')
  				$scope.gotoPage($scope.pager.curPage + 1);
  			});
 
- 			$scope.formatTime();
+            $timeout($scope.formatTime,500);
    		};
 
-   		/*
-  		 * 自定义滚动条
-  		 */
-  		$scope.customScroll = function(){
-  			$('.scroll-custom').mCustomScrollbar({
-  			    axis:'y',  // vertical scrollbar
-  			    horizontalScroll:true,//横向滚动条
-  			    theme:'my-theme-x',//横向滚动条
-  			    scrollButtons:{
-			    	scrollSpeed: 30
-		    	}
-  			});
-  		};
 
   		$scope.formatTime = function(){
 	  		var dateValue=new Date();
@@ -127,7 +97,7 @@ angular.module('myappApp')
 	  			startView: "month",
 				minView: "month",
 	  			forceParse: 0,
-	  			'endDate':dateValue,
+	  			endDate:dateValue,
 	  	    }).on("changeDate",function(ev){
 	  	    	var transferdate=transferDate($("#J_beginTime").val());//转时间日期
 	  	        $('#J_endTime').datetimepicker('remove');
@@ -137,8 +107,8 @@ angular.module('myappApp')
 	  	    		autoclose: 1,
 	  	    		startView: "month",
 	  				minView: "month",
-	  	    		'startDate':transferdate,
-	  	    		'endDate':dateValue,
+	  	    		startDate:transferdate,
+	  	    		endDate:dateValue,
 	  	    	}).on("changeDate",function(ev){
 	  	            var enddate=$("#J_endTime").val();
 	  	            setEndTime(enddate);
@@ -151,7 +121,7 @@ angular.module('myappApp')
 	  	        startView: "month",
 				minView: "month",
 				maxDate:dateValue,
-				'endDate':dateValue,
+				endDate:dateValue,
 	  	        autoclose: 1
 	  	    }).on("changeDate",function(ev){
 	  	        var enddate=$("#J_endTime").val();
@@ -167,7 +137,7 @@ angular.module('myappApp')
 	  	                startView: "month",
 	  	                minView: "month",
 	  	                forceParse: 0,
-	  	                'endDate':transferDate(enddate)
+	  	                endDate:transferDate(enddate)
 	  	        });
 	  	    }
 	  	    //将时间字符串转为date
@@ -180,54 +150,34 @@ angular.module('myappApp')
   		};
 
 	    /*
-		 * 获取角色列表
+		 * 获取用户选项
 		 */
   		$scope.getUserList = function(){
-  			config = {
-  				'method':'get',
-  				'data':'',
-  				'responseType':'json',
-  				'url':apiGetUserList
-  			};
-  			AjaxServer.ajaxInfo( config , function(data){
-  				if( typeof(data) === 'string'){
-					data = JSON.parse(data);
-				}
-				$scope.userList = $.extend([],data);
-				$scope.apply();
-			},
-			function(status){
-                var errorMessage = status ? '因为系统内部错误请求失败' : '因为网络原因请求失败';
-                $scope.errorMsg = errorMessage;
+            $http.get('/data/userSetting/getUserList.json').then(function(response){
+                if(response.status === 200){
+                    if(response.data && response.data.length > 0){
+                        $scope.userList = response.data;
+                    }
+                    $scope.apply();
+                }
+            },function(){
+                $scope.userList = [];
                 $scope.apply();
-			});
+            });
   		};
 
    		// 得到操作审计数据
-		$scope.getAuditAnalyList = function(){
+		$scope.getList = function(){
 			//输入验证
-   			if(!!$scope.searchPara && !$scope.validateForm($scope.searchPara)){
+   			if($scope.searchPara && !$scope.validateForm($scope.searchPara)){
    				return false;
    			}
-			var userId = $scope.searchPara.userId;
- 			var startTime = $scope.searchPara.beginTime;
- 			var endTime = $scope.searchPara.endTime;
- 			var eventTypeId = $scope.searchPara.auditIypeId;
- 			if(userId == null){
- 				userId = '';
- 			}
- 			if(eventTypeId == null){
- 				eventTypeId = '';
- 			}
-			if(userId == null){
-				userId = '';
-			}
 
             var conditions= {
-                startTime:startTime,
-                endTime:endTime,
-                userId:userId,
-                eventTypeId:eventTypeId
+                startTime:$scope.searchPara.beginTime || undefined,
+                endTime:$scope.searchPara.endTime || undefined,
+                userId:$scope.searchPara.userId || undefined,
+                eventTypeId:$scope.searchPara.auditTypeId || undefined
             };
             $http.get('/data/auditorMgr/getAuditAnalyList.json').then(function(response){
                 var data = {};
@@ -250,11 +200,10 @@ angular.module('myappApp')
                             pageSize: data.pageSize
                         });
                     }
-                    $scope.customScroll();
                     $scope.apply();
                 }
             },function(data){
-                $scope.ListShowFlag = '因为网络原因请求失败';
+                $scope.ListShowFlag = data || '因为网络原因请求失败';
                 $scope.analyList = [];
                 $scope.apply();
             });
@@ -264,7 +213,12 @@ angular.module('myappApp')
 		/*
          * 备份
          */
-         $scope.exportData = function(){
+         $scope.clickExport = function(ev){
+             var it = angular.element(ev.target);
+             if(it.hasClass('disabled')){
+                 return false;
+             }
+             it.addClass('disabled');
         	//输入验证
    			if(!!$scope.searchPara && !$scope.validateForm($scope.searchPara)){
    				return false;
@@ -272,7 +226,7 @@ angular.module('myappApp')
  			var userId = $scope.searchPara.userId;
  			var startTime = $scope.searchPara.beginTime;
  			var endTime = $scope.searchPara.endTime;
- 			var eventTypeId = $scope.searchPara.auditIypeId;
+ 			var eventTypeId = $scope.searchPara.auditTypeId;
  			if(userId == null){
  				userId = '';
  			}
@@ -295,8 +249,9 @@ angular.module('myappApp')
    	          	var url = urlTemp + apiGetExport + "?cmd=statistic";
    	          	$scope.exportHref = url;
    	            $scope.apply();
-   	            $scope.showOprConfirm();
+                    $('#J_auditAnalyConfirm').modal('show');
 //   	          	$scope.getExportExcel('j-checkExport',url);
+                it.removeClass('disabled');
              },
    			function(status){
  				$scope.errorMsg = '因网络未知原因，导出失败。';
@@ -344,23 +299,16 @@ angular.module('myappApp')
                 a.click();
 	   		};
 
-	   		 /*
-	   	    *  初始化模态框
-	   	    */
-	   	    $scope.formatModals = function(){
-	     			$scope.confirmInfo = '';
-	     			$scope.errorMsg = '';
-	     			$scope.successMsg = '';
-	              // $scope.apply();
-	     		};
+        /*
+        *  初始化模态框
+        */
+        $scope.formatModals = function(){
+            $scope.confirmInfo = '';
+            $scope.errorMsg = '';
+            $scope.successMsg = '';
+          // $scope.apply();
+        };
 
-     		$scope.showOprConfirm = function(){
-      			$oprConfirm.modal('show');
-      		};
-
-      		$scope.hideOprConfirm = function(){
-      			$oprConfirm.modal('hide');
-      		};
 
 		/*
 	    *  跳转页面
@@ -372,7 +320,7 @@ angular.module('myappApp')
 
   			$scope.pager.curPage = parseInt(targetPage);
   			//判断当前所在页面
-  			$scope.getAuditAnalyList();
+  			$scope.getList();
   		};
 
   		$scope.apply = function() {
@@ -380,4 +328,4 @@ angular.module('myappApp')
   			    $scope.$apply();
   			}
   		};
-});
+}]);

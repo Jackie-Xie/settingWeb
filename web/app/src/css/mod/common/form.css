@@ -28,7 +28,7 @@
 	margin-left: 20%;
 }
  */
-.input-custom{
+/*.input-custom{
 	width: 100%;
 	display: inline-block;
 }
@@ -106,7 +106,7 @@
 
 .input-export-type{
 	width:3rem;
-}
+}*/
 
 .input-custom-export select.form-control,
 .input-export-type select.form-control{
@@ -207,7 +207,7 @@
 	-moz-appearance: none;
   	appearance: none;
   	visibility: hidden;
-  	display: none; 
+  	display: none;
 }
 
 .custom-radio,.custom-radio:focus{
@@ -239,7 +239,7 @@
 }
 
 input[type=checkbox][disabled] + .custom-checkbox{
-    cursor: not-allowed; 
+    cursor: not-allowed;
 }
 
 input[type=radio]:checked + .custom-radio .radio-bar{
@@ -249,7 +249,7 @@ input[type=radio]:checked + .custom-radio .radio-bar{
 /* .is-checked td{
 	color: #03ffff;
 }*/
-.width80{
+/*.width80{
     width:80px;
 }
 .width85{
@@ -266,7 +266,10 @@ input[type=radio]:checked + .custom-radio .radio-bar{
 }
 .width125{
     width:125px;
-}
+}*/
+
 .error-msg{
+    height: 12px;
+    font-size: 12px;
     color: #ff0004;
 }

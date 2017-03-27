@@ -1,54 +1,54 @@
 <div class="page-title">操作日志审计</div>
-<div class="panel panel-default mh-7">
+<div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">查询条件</h3>
     </div>
-    <div class="panel-body">
+    <div class="panel-body" style="position:relative;">
         <!-- 查询表单 b -->
-        <form class="clearfix form-custom" method="post">
-            <div class="col-lg-11 search-forms">
-                <div class="col-lg-6 form-group">
-                    <label class="control-label label-custom width80 text-right" for="J_roleName">所属角色：</label>
-                    <div class="input-custom input-custom-lg">
-                        <select class="form-control" id="J_roleName" ng-model="searchPara.roleId" ng-options="item.id as item.name for item in roleList" ng-change="getBusinessGroupOptions(searchPara.roleId)">
+        <form class="form-horizontal" method="post">
+            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-12">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label" for="J_AuditRoleId">所属角色：</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                        <select class="form-control" id="J_AuditRoleId" ng-model="searchPara.roleId" ng-options="item.id as item.name for item in roleList" ng-change="getBusinessGroupOptions(searchPara.roleId)">
                             <option value="">----请选择----</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-6 form-group">
-                    <label class="control-label label-custom width80 text-right" for="J_groupName">所属单位：</label>
-                    <div class="input-custom input-custom-lg">
-                        <select class="form-control" id="J_groupName" ng-model="searchPara.groupId" ng-options="businessGroup.id as businessGroup.bgname for businessGroup in businessGroupOptions">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label" for="J_auditGroupId">所属单位：</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                        <select class="form-control" id="J_auditGroupId" ng-model="searchPara.groupId" ng-options="businessGroup.id as businessGroup.bgname for businessGroup in businessGroupOptions">
                             <option value="">----请选择----</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-6 form-group">
-                    <label class="control-label label-custom width80 text-right" for="J_groupName">事件类型：</label>
-                    <div class="input-custom input-custom-lg">
-                        <select class="form-control" id="J_sortID" ng-model="searchPara.auditIypeId" ng-options="item.id as item.cn_name for item in auditTypeList">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label" for="J_auditTypeId">事件类型：</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                        <select class="form-control" id="J_auditTypeId" ng-model="searchPara.auditTypeId" ng-options="item.id as item.cn_name for item in auditTypeList">
                             <option value="">----请选择----</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-6 form-group">
-                    <label class="control-label label-custom width80 text-right" for="J_groupName">排序：</label>
-                    <div class="input-custom input-custom-lg">
-                        <select class="form-control" id="J_sortID" ng-model="searchPara.sortTypeId" ng-options="item.id as item.cn_name for item in sortTypeList">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label" for="J_sortTypeId">排序：</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                        <select class="form-control" id="J_sortTypeId" ng-model="searchPara.sortTypeId" ng-options="item.id as item.cn_name for item in sortTypeList">
                             <option value="">----请选择----</option>
                         </select>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-1 search-btn mgt50">
-                <a role="button" class="btn btn-primary btn-md j-searchPara">查询</a>
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 btn-search">
+                <a role="button" class="btn btn-primary btn-md" ng-click="query( true )">查询</a>
             </div>
         </form>
         <!-- 查询表单 e -->
     </div>
 </div>
 
-<div class="panel panel-default mh-20">
+<div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">操作日志列表</h3>
     </div>
@@ -56,12 +56,12 @@
         <!-- 查询结果 b -->
         <div class="clearfix col-lg-6 search-result" ng-include="'views/mod/searchResult.html'"></div>
         <div class="col-lg-6 text-right">
-            <a role="button" class="btn btn-warning btn-md j-getBackup" ng-hide="pager.total==0">执行备份</a>
+            <a role="button" class="btn btn-warning btn-md" ng-hide="pager.total==0" ng-click="getBackup()">执行备份</a>
         </div>
         <!-- 查询结果 e -->
         <!-- 数据表格 b -->
         <div class="col-lg-12 table-responsive">
-            <table class="table table-condensed table-striped table-hover table-custom mgb40">
+            <table class="table table-condensed table-striped table-hover table-custom">
                 <thead>
                     <tr>
                         <th>编号</th>
@@ -108,7 +108,7 @@
         </div>
         <!-- 数据表格 e -->
         <!-- 分页 start -->
-        <div class="col-lg-12 clearfix j-navPager navPager-rb" ng-include="'views/mod/pagination.html'"></div>
+        <div class="col-lg-12 clearfix j-navPager" ng-include="'views/mod/pagination.html'"></div>
         <!-- 分页 e -->
     </div>
 </div>

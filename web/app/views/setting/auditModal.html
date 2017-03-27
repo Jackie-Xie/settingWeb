@@ -12,6 +12,6 @@
     <div class="alert alert-success text-center" role="alert" ng-show="successMsg!='' && errorMsg==''">
         {{successMsg}}
     </div>
-    <button class="btn btn-primary btn-md" ng-show="czType == 'getBackup'" ng-click="backupExec()">确 定</button>
-    <button class="btn btn-primary btn-md" aria-hidden="true" data-dismiss="modal" >{{cancelButton}}</button>
+    <button class="btn btn-info btn-md" ng-show="czType == 'getBackup'" ng-click="backupExec($event)">确 定</button>
+    <button class="btn btn-warning btn-md" aria-hidden="true" data-dismiss="modal" >{{cancelButton}}</button>
 </div>

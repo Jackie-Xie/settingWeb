@@ -25,7 +25,7 @@ angular.module('myappApp')
             $scope.userInfoList = [];
             $scope.roleList = [];
             $scope.businessGroupOptions = [];
-            $scope.pager =  $.extend( {}, defaultPager);
+            $scope.pager = $.extend( {}, defaultPager);
 
 	    	$scope.modalTitle = '';
 	    	$scope.modalInfo = '';
@@ -217,141 +217,142 @@ angular.module('myappApp')
         };
 
         /*
+         * 点击添加用户
+         */
+        $scope.clickAdd = function(){
+            $scope.clearChecked();
+            $scope.modalTitle = '添加';
+            $scope.actionType = 'add';
+            $('#J_username').removeAttr('readonly');
+            $scope.clickShowModal($userAddModal);
+            $scope.getRoleList();
+            $scope.userForm = {'userstatus':'1','roleselect':'','isIpLimited':1,'isTimeLimited':1,'groupselect':'','issend':'1'};
+            $scope.apply();
+        };
+
+        /*
+         * 点击修改用户
+         */
+        $scope.clickEdit = function(){
+            if(!!selected ){
+                if(selected.length===0){
+                    $scope.modalTitle = '友情提示';
+                    $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
+                    $scope.oprType = 'closeModal';
+                    $scope.apply();
+                    $scope.clickShowModal($userOprConfirm);
+                }
+                else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
+                    $scope.modalTitle = '友情提示';
+                    $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
+                    $scope.oprType = 'closeModal';
+                    $scope.apply();
+                    $scope.clickShowModal($userOprConfirm);
+                }else {
+                    $scope.modalTitle = '修改';
+                    $scope.actionType = 'update';
+                    $scope.userForm.roleapply = '';
+                    $('#J_username').attr('readonly','readonly');
+                    if(selected.indexOf(0)>-1){
+                        var idx = selected.indexOf(0);
+                        selected.splice(idx,1);
+                        $scope.getUserInfoById(selected[0]);
+                        selected.push(0);
+                    }
+                    else{
+                        $scope.getUserInfoById(selected[0]);
+                    }
+                    $scope.apply();
+                }
+            }
+        };
+
+        /*
+         * 点击删除用户
+         */
+        $scope.clickDelete = function(ev){
+            var it = $(ev.currentTarget);
+            if(it.hasClass('btn-custom-disabled')){
+                return false;
+            }
+            if(!!selected ){
+                if(selected.length > 0){
+                    $scope.modalTitle = '注销用户';
+                    $scope.modalInfo = '注销为不可逆操作，请确定是否注销此用户';
+                    $scope.oprType = 'delUser';
+                    $scope.apply();
+                    $scope.clickShowModal($userOprConfirm);
+                }
+                else if(selected.length===0){
+                    $scope.modalTitle = '友情提示';
+                    $scope.modalInfo='您还没有选择用户，请选择一个或多个用户进行注销';
+                    $scope.oprType = 'closeModal';
+                    $scope.apply();
+                    $scope.clickShowModal($userOprConfirm);
+                }
+            }
+        };
+
+        /*
+         * 点击重置密码
+         */
+        $scope.clickResetPwd = function(ev){
+            var it = $(ev.currentTarget);
+            if(it.hasClass('btn-custom-disabled')){
+                return false;
+            }
+            if(!!selected ){
+                if(selected.length===0){
+                    $scope.modalTitle = '友情提示';
+                    $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
+                    $scope.oprType = 'closeModal';
+                    $scope.apply();
+                    $scope.clickShowModal($userOprConfirm);
+                }
+                else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
+                    $scope.modalTitle = '友情提示';
+                    $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
+                    $scope.oprType = 'closeModal';
+                    $scope.apply();
+                    $scope.clickShowModal($userOprConfirm);
+                }
+                else{
+                    if(selected.indexOf(0)>-1){
+                        var idx = selected.indexOf(0);
+                        selected.splice(idx,1);
+                        $scope.getUserInfoById(selected[0],'pwd');
+                        selected.push(0);
+                    }
+                    else{
+                        $scope.getUserInfoById(selected[0],'pwd');
+                    }
+                    $scope.apply();
+                }
+            }
+        };
+
+        /*
          * 事件绑定
          */
         $scope.bindEvent = function () {
-            // ".form-btn"按钮点击事件
-            $('.form-btn').off();
-            $('.form-btn').on('click','.j-add-user',function( ){
-                    $scope.clearChecked();
-                    $scope.modalTitle = '添加';
-                    $scope.actionType = 'add';
-                    $('#J_username').removeAttr('readonly');
-                    $scope.clickShowModal($userAddModal);
-                    $scope.getRoleList();
-                    $scope.userForm = {'userstatus':'1','roleselect':'','isIpLimited':1,'isTimeLimited':1,'groupselect':'','issend':'1'};
-                    $scope.apply();
-                })
-                .on('click','.j-edit-user',function( ){
-                    if(!!selected ){
-                        if(selected.length===0){
-                            $scope.modalTitle = '友情提示';
-                            $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
-                            $scope.oprType = 'closeModal';
-                            $scope.apply();
-                            $scope.clickShowModal($userOprConfirm);
-                        }
-                        else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
-                            $scope.modalTitle = '友情提示';
-                            $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
-                            $scope.oprType = 'closeModal';
-                            $scope.apply();
-                            $scope.clickShowModal($userOprConfirm);
-                        }else {
-                            $scope.modalTitle = '修改';
-                            $scope.actionType = 'update';
-                            $scope.userForm.roleapply = '';
-                            $('#J_username').attr('readonly','readonly');
-                            if(selected.indexOf(0)>-1){
-                                var idx = selected.indexOf(0);
-                                selected.splice(idx,1);
-                                $scope.getUserInfoById(selected[0]);
-                                selected.push(0);
-                            }
-                            else{
-                                $scope.getUserInfoById(selected[0]);
-                            }
-                            $scope.apply();
-                        }
-                    }
-                })
-                .on('click','.j-del-user',function( ev ){
-                    var it = $(ev.currentTarget);
-                    if(it.hasClass('btn-custom-disabled')){
-                        return false;
-                    }
-                    if(!!selected ){
-                        if(selected.length > 0){
-                            $scope.modalTitle = '注销用户';
-                            $scope.modalInfo = '注销为不可逆操作，请确定是否注销此用户';
-                            $scope.oprType = 'delUser';
-                            $scope.apply();
-                            $scope.clickShowModal($userOprConfirm);
-                        }
-                        else if(selected.length===0){
-                            $scope.modalTitle = '友情提示';
-                            $scope.modalInfo='您还没有选择用户，请选择一个或多个用户进行注销';
-                            $scope.oprType = 'closeModal';
-                            $scope.apply();
-                            $scope.clickShowModal($userOprConfirm);
-                        }
-                    }
-                });
-
-            //重置用户密码
-            $('.j-reset-pwd').on('click',function(ev){
-                var it = $(ev.currentTarget);
-                if(it.hasClass('btn-custom-disabled')){
-                    return false;
-                }
-                if(!!selected ){
-                    if(selected.length===0){
-                        $scope.modalTitle = '友情提示';
-                        $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
-                        $scope.oprType = 'closeModal';
-                        $scope.apply();
-                        $scope.clickShowModal($userOprConfirm);
-                    }
-                    else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
-                        $scope.modalTitle = '友情提示';
-                        $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
-                        $scope.oprType = 'closeModal';
-                        $scope.apply();
-                        $scope.clickShowModal($userOprConfirm);
-                    }
-                    else{
-                        if(selected.indexOf(0)>-1){
-                            var idx = selected.indexOf(0);
-                            selected.splice(idx,1);
-                            $scope.getUserInfoById(selected[0],'pwd');
-                            selected.push(0);
-                        }
-                        else{
-                            $scope.getUserInfoById(selected[0],'pwd');
-                        }
-                        $scope.apply();
-                    }
-                }
-            });
-
-            //关闭模态框，重新加载
-            $('.modal').on('click','[data-dismiss=modal]',function(){
-                $scope.formatModals();
-                //$window.location.reload();
-
-                $scope.getPartRoleList();
-                $scope.getBusinessGroupOptions();
-                $scope.getUserInfoListByConditions();
-            });
-
             // 分页事件
             $(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
             $('.j-body').on('click','.j-navPager .item', function(ev){
-                    var it = $(ev.currentTarget);
-                    $scope.gotoPage(parseInt(it.text()));
-                })
-                .on('click','.j-navPager .prev', function(ev){
-                    if($scope.pager.curPage <= 1){
-                        return false;
-                    }
-                    $scope.gotoPage($scope.pager.curPage - 1);
-                })
-                .on('click','.j-navPager .next', function(ev){
-                    if($scope.pager.curPage >= $scope.pager.pagesNum){
-                        return false;
-                    }
-                    $scope.gotoPage($scope.pager.curPage + 1);
-                });
+                var it = $(ev.currentTarget);
+                $scope.gotoPage(parseInt(it.text()));
+            })
+            .on('click','.j-navPager .prev', function(ev){
+                if($scope.pager.curPage <= 1){
+                    return false;
+                }
+                $scope.gotoPage($scope.pager.curPage - 1);
+            })
+            .on('click','.j-navPager .next', function(ev){
+                if($scope.pager.curPage >= $scope.pager.pagesNum){
+                    return false;
+                }
+                $scope.gotoPage($scope.pager.curPage + 1);
+            });
 
         };
 

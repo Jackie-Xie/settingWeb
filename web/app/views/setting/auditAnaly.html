@@ -1,68 +1,54 @@
 <div class="page-title">日志审计分析</div>
-<div class="panel panel-default mh-7">
+<div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">统计条件</h3>
     </div>
-    <div class="panel-body">
+    <div class="panel-body" style="position:relative;">
         <!-- 查询表单 b -->
-        <form class="clearfix form-custom" method="post">
-            <div class="col-lg-11 search-forms">
-               <div class="col-lg-6 form-group">
-                   <div class="input-group date j-form-time col-lg-12" id="J_beginTime" data-date="" data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd" data-link-field="J_beginTime">
-                         <label class="control-label label-custom label-custom-audit width80 text-right" for="J_beginTime">开始时间：</label>
-                         <div class="input-custom input-custom-50 input-custom-audit">
-                             <input class="form-control" ng-model="searchPara.beginTime" type="text" autocomplete="off" placeholder="请输入统计开始时间">
-                             <div class="input-custom error-msg search-form-error-msg col-lg-12" ng-show="!!errorMsgBeginTime">
-                                {{errorMsgBeginTime}}
-                             </div>
-                         </div>
-                         <div class="input-custom input-custom-20">
-                             <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-                             <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+        <form class="form-horizontal" method="post">
+            <div class="col-lg-10 col-md-10 col-sm-8 col-xs-12">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                    <div class="j-form-time" id="J_auditBeginTime" data-date="" data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd" data-link-field="J_beginTime">
+                        <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label" for="J_auditBeginTime">开始时间：</label>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                            <input class="form-control" ng-model="searchPara.beginTime" type="text" autocomplete="off" placeholder="请选择统计开始时间" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                    <div class="j-form-time" id="J_auditEndTime" data-date="" data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd" data-link-field="J_endTime">
+                         <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label" for="J_auditEndTime">结束时间：</label>
+                         <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                             <input class="form-control col-lg-8" ng-model="searchPara.endTime" type="text" autocomplete="off" placeholder="请选择统计结束时间" readonly>
                          </div>
                     </div>
                 </div>
-                <div class="col-lg-6 form-group">
-                    <div class="input-group date j-form-time col-lg-12" id="J_endTime" data-date="" data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd" data-link-field="J_endTime">
-                         <label class="control-label label-custom label-custom-audit width80 text-right" for="J_endTime">结束时间：</label>
-                         <div class="input-custom input-custom-50 input-custom-audit">
-                             <input class="form-control" ng-model="searchPara.endTime" type="text" autocomplete="off" placeholder="请输入统计结束时间">
-                             <div class="input-custom error-msg search-form-error-msg col-lg-12" ng-show="!!errorMsgEndTime">
-                                {{errorMsgEndTime}}
-                             </div>
-                         </div>
-                         <div class="input-custom input-custom-20">
-                             <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-                             <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-                         </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 form-group">
-                    <label class="control-label label-custom width80 text-right" for="J_groupName">用户：</label>
-                    <div class="input-custom input-custom-lg">
-                        <select class="form-control" id="J_userId" ng-model="searchPara.userId" ng-options="item.id as item.userName for item in userList">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label" for="J_auditUserId">用户：</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                        <select class="form-control" id="J_auditUserId" ng-model="searchPara.userId" ng-options="item.id as item.userName for item in userList">
                             <option value="">全部</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-6 form-group">
-                    <label class="control-label label-custom width80 text-right" for="J_groupName">事件类型：</label>
-                    <div class="input-custom input-custom-lg">
-                        <select class="form-control" id="J_sortID" ng-model="searchPara.auditIypeId" ng-options="item.id as item.cn_name for item in auditTypeList">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                    <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label" for="J_AnalyTypeId">事件类型：</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                        <select class="form-control" id="J_AnalyTypeId" ng-model="searchPara.auditTypeId" ng-options="item.id as item.cn_name for item in auditTypeList">
                             <option value="">----请选择----</option>
                         </select>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-1 search-btn mgt60">
-                <a role="button" class="btn btn-primary btn-md j-searchPara">查询</a>
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 btn-search">
+                <a role="button" class="btn btn-primary btn-md" ng-click="query( true )">查询</a>
             </div>
         </form>
         <!-- 查询表单 e -->
     </div>
 </div>
 
-<div class="panel panel-default mh-20">
+<div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">统计结果</h3>
     </div>
@@ -70,20 +56,15 @@
         <!-- 查询结果 b -->
         <div class="clearfix col-lg-6 search-result" ng-include="'views/mod/searchResult.html'"></div>
         <div class="col-lg-6 text-right">
-            <a role="button" class="btn btn-success btn-md j-getExport" ng-hide="pager.total==0">导出</a>
+            <a role="button" class="btn btn-success btn-md" ng-click="clickExport($event)" ng-hide="pager.total==0">导出</a>
         </div>
         <!-- 查询结果 e -->
         <!-- 数据表格 b -->
-        <div class="col-lg-12 table-responsive table-audit scroll-custom">
+        <div class="col-lg-12 table-responsive">
             <table class="table table-condensed table-striped table-hover table-custom">
                 <thead>
                     <tr>
                         <th>编号</th>
-                        <!--
-                        <div ng-repeat="item in eventList">
-                            <th>{{item.cnName}}</th>
-                        </div>
-                        -->
                         <th>日期</th>
                         <th>用户登录</th>
                         <th>用户退出</th>
@@ -108,11 +89,6 @@
                     </tr>
                     <tr ng-repeat="item in analyList" ng-show="ListShowFlag==''">
                         <td>{{$index+1}}</td>
-                        <!--
-                        <div ng-repeat="event in analyList.eventList">
-                            <th>{{event.sum}}</th>
-                        </div>
-                        -->
                         <td>
                             {{item.createTime | date:'yyyy-MM-dd'}}
                         </td>

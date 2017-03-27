@@ -24,7 +24,7 @@ angular.module('myappApp')
      * 獲得搜索以後的數據
      */
     this.search = function(search,data) {
-        var searchOne = undefined;
+        var searchOne;
         if(typeof (search) === 'object'){
             if(self.isEmptyObject(search)){
                 data = data;
@@ -47,7 +47,7 @@ angular.module('myappApp')
      * 獲得一個條件搜索的數據
      */
     this.searchOne = function(searchOne,data) {
-        var aRow = undefined,
+        var aRow,
             aProVal = '',
             searchOneKey = searchOne.key,
             searchOneVal = searchOne.value,
@@ -58,7 +58,7 @@ angular.module('myappApp')
                 for(var k in aRow){
                     aProVal = aRow[k];
                     if(k.indexOf(searchOneKey)>-1){
-                        if(typeof(aProVal) == 'string' ? aProVal.indexOf(searchOneVal)>-1 : aProVal == searchOneVal){
+                        if(typeof(aProVal) === 'string' ? aProVal.indexOf(searchOneVal)>-1 : aProVal === searchOneVal){
                             responseData.push(data[i]);
                         }
                     }
@@ -72,7 +72,7 @@ angular.module('myappApp')
      * 获取分页以后的数据
      */
     this.getPager = function(curPage,pageSize,data) {
-        var pageData = undefined,
+        var pageData,
             startIndex = (curPage - 1) * pageSize,
             endIndex = (curPage * pageSize - 1 > data.length) ? data.length - 1 : curPage * pageSize - 1;
         pageData = {
@@ -92,7 +92,7 @@ angular.module('myappApp')
      */
     this.getPageData = function(startIndex,endIndex,data) {
         var tempArr = [],
-            tArr = undefined;
+            tArr;
         for(var i = startIndex,len = endIndex + 1; i < len; i++){
             tArr = data[i] || {};
             tempArr.push(tArr);
@@ -116,7 +116,7 @@ angular.module('myappApp')
             return false;
         }
         return true;
-    }
+    };
 
 
 }]);

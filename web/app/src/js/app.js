@@ -12,6 +12,9 @@ angular
   .config(function ($routeProvider) {
     $routeProvider
 		.when('/', {
+			redirectTo: '/login',
+		})
+        .when('/login', {
 			templateUrl: 'views/login/index.html',
 			controller: 'LoginCtrl'
 		})
@@ -28,7 +31,7 @@ angular
 		})
 		.when('/setting/modify', {
 			templateUrl: 'views/setting/index.html',
-			controller: 'UserSettingCtrl',
+			controller: 'ModifyPwdCtrl',
 		})
 		.when('/setting/safety', {
 			templateUrl: 'views/setting/index.html',
@@ -61,10 +64,6 @@ angular
 		.when('/402', {
 			templateUrl: 'authError.html',
 			controller: ''
-		})
-		.when('/login', {
-			templateUrl: 'views/login/index.html',
-			controller: 'LoginCtrl'
 		})
 		.otherwise({
 			redirectTo: '/404'

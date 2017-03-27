@@ -5,7 +5,7 @@
  * description: 用于表单验证，可提供非空，长度范围等校验
  */
 angular.module('myappApp')
-  	.service('Validate', function($location, $http){
+  	.service('Validate', function(){
     var self = this;
 	/*
 	*  validEmpty  非空校验

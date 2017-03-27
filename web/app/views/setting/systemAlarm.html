@@ -29,19 +29,15 @@
                     </tr>
                     <tr ng-repeat="item in systemAlarmList" ng-show="ListShowFlag==''">
                         <td>{{item.userName}}</td>
-                        <td ng-if="item.businessGroupName">
-                            {{item.businessGroupName}}
-                        </td>
-                        <td ng-if="!item.businessGroupName">
-                            --
+                        <td>
+                            {{item.businessGroupName || '--'}}
                         </td>
                         <td>{{item.roleName}}</td>
                         <td>{{item.type}}</td>
                         <td>{{levelText[item.level]}}</td>
                         <td>{{item.content}}</td>
-                        <td>{{item.createTime  | date:'yyyy-MM-dd HH:mm:ss'}}</td>
-                        <td ng-if="item.host">{{item.host}}</td>
-                        <td ng-if="!item.host"> -- </td>
+                        <td>{{(item.createTime  | date:'yyyy-MM-dd HH:mm:ss') || '--'}}</td>
+                        <td>{{item.host || '--'}}</td>
                     </tr>
                 </tbody>
             </table>

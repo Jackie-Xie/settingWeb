@@ -46,7 +46,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="form-group text-center">
                     <label class="control-label label-custom-modal width100" for="J_userIp">客户端IP：</label>
                     <div class="input-custom input-custom-54" ng-show="!userForm.isIpLimited">
@@ -131,6 +131,7 @@
 		<div class="alert alert-success text-center" role="alert" ng-show="successMsg!='' && errorMsg==''">
 			{{successMsg}}
 		</div>
-	</div>	
-	<button class="btn btn-primary btn-md" data-text="确定" ng-click="addUser(actionType,$event)">确定</button>
+	</div>
+	<button class="btn btn-info btn-md" data-text="确定" ng-click="addUser(actionType,$event)">确定</button>
+	<button class="btn btn-warning btn-md" data-text="取消" data-dismiss="modal" aria-hidden="true">取消</button>
 </div>
