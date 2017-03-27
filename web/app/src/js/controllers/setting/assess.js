@@ -11,7 +11,7 @@ angular.module('myappApp')
             statusText = {
                 'wait':'审核中',
                 'pass':'已通过',
-                'refuse':'已拒绝',
+                'refuse':'已拒绝'
             };
 
   		$scope.init = function () {

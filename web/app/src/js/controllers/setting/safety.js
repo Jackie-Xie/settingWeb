@@ -13,7 +13,7 @@ angular.module('myappApp')
   		 * 修改安全配置
   		 */
   		$scope.updateSafetyInfo = function ( event ){
-  			var it = $(event.target);
+  			var it = angular.element(event.target);
 			if(it.hasClass('disabled')){
 				return false;
 			}
@@ -46,7 +46,7 @@ angular.module('myappApp')
                     $scope.successMsg = '';
                 }
                 $scope.apply();
-            },500); 
+            },500);
   		};
 
   		/*

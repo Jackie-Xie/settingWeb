@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myappApp')
-  	.controller('AuditAnalyCtrl', ['$scope','$http', '$location','$timeout', 'PageService','Validate',function ($scope,$http, $location,$timeout,PageService, Validate) {
+  	.controller('AuditAnalyCtrl', ['$scope','$http','$window', '$location','$timeout', 'PageService','Validate',function ($scope,$http,$window, $location,$timeout,PageService, Validate) {
   		var defaultPager = {
             	total: 0,
 	        	curPage: 1,
@@ -27,14 +27,12 @@ angular.module('myappApp')
   			$scope.errorMsg = '';
   			$scope.sucessMsg = '';
             $scope.confirmInfo = '';
-  			$scope.errorMsgBeginTime = '';
-  			$scope.errorMsgEndTime = '';
             $scope.searchPara = {};
   			$scope.analyList = [];
   			$scope.userList = [];
   			$scope.businessGroupOptions = [];
-  			$scope.pager =  $.extend( {}, defaultPager );
-  			$scope.auditTypeList =  $.extend([], auditTypeList ); // 事件类型
+  			$scope.pager =  angular.extend( {}, defaultPager );
+  			$scope.auditTypeList =  angular.extend([], auditTypeList ); // 事件类型
 
   			$scope.getUserList();
 			$scope.getList();
@@ -48,7 +46,7 @@ angular.module('myappApp')
         $scope.query = function( flag ){
             $scope.ListShowFlag = 'loading';
             if( flag ){
-                $scope.pager =  $.extend( {}, defaultPager);
+                $scope.pager =  angular.extend( {}, defaultPager);
             }
             $scope.apply();
             $scope.getList();
@@ -60,14 +58,14 @@ angular.module('myappApp')
   		$scope.bindEvent = function() {
 
 	    	//关闭下载
-	    	$(".j-body").on('click','.j-export', function(ev){
-                $('#J_auditAnalyConfirm').modal('hide');
+            angular.element(".j-body").on('click','.j-export', function(ev){
+                angular.element('#J_auditAnalyConfirm').modal('hide');
 	    	});
 
  			//分页事件绑定
-            $(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
- 			$(".j-body").on('click','.j-navPager .item', function(ev){
- 				var it = $(ev.currentTarget);
+            angular.element(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
+            angular.element(".j-body").on('click','.j-navPager .item', function(ev){
+ 				var it = angular.element(ev.currentTarget);
  				$scope.gotoPage(parseInt(it.text()));
  			}).on('click','.j-navPager .prev', function(ev){
  				if($scope.pager.curPage <= 1){
@@ -81,72 +79,81 @@ angular.module('myappApp')
  				$scope.gotoPage($scope.pager.curPage + 1);
  			});
 
-            $timeout($scope.formatTime,500);
    		};
 
-
-  		$scope.formatTime = function(){
+        /*
+         * 日期格式化
+         */
+  		$scope.formatTime = function(type){
 	  		var dateValue=new Date();
-	  		dateValue.setDate(dateValue.getDate()-1);
-	  		//开始时间
-	  		$('#J_beginTime').datetimepicker({
-	  	    	format:'yyyy-mm-dd',
-	  	    	language:  'zh-CN',
-	  			autoclose: 1,
-	  			todayHighlight: false,
-	  			startView: "month",
-				minView: "month",
-	  			forceParse: 0,
-	  			endDate:dateValue,
-	  	    }).on("changeDate",function(ev){
-	  	    	var transferdate=transferDate($("#J_beginTime").val());//转时间日期
-	  	        $('#J_endTime').datetimepicker('remove');
-	  	    	$('#J_endTime').datetimepicker({
-	  	    		format:'yyyy-mm-dd',
-	  	    		language:  'zh-CN',
-	  	    		autoclose: 1,
-	  	    		startView: "month",
-	  				minView: "month",
-	  	    		startDate:transferdate,
-	  	    		endDate:dateValue,
-	  	    	}).on("changeDate",function(ev){
-	  	            var enddate=$("#J_endTime").val();
-	  	            setEndTime(enddate);
-	  	        });
-	  	    });
-	  		//结束时间
-	  	    $('#J_endTime').datetimepicker({
-	  	        format:'yyyy-mm-dd',
-	  	        language:  'zh-CN',
-	  	        startView: "month",
-				minView: "month",
-				maxDate:dateValue,
-				endDate:dateValue,
-	  	        autoclose: 1
-	  	    }).on("changeDate",function(ev){
-	  	        var enddate=$("#J_endTime").val();
-	  	        setEndTime(enddate);
-	  	    });
+	  		dateValue.setDate(dateValue.getDate());
+
+            if(type === 'start'){
+                // 开始时间
+                angular.element('#J_auditBeginTime').datetimepicker({
+                    format:'yyyy-mm-dd',
+                    language:  'zh-CN',
+                    autoclose: true,
+                    todayHighlight: false,
+                    startView: "month",
+                    minView: "month",
+                    forceParse: 0,
+                    endDate: dateValue,
+                }).on("changeDate",function(ev){
+                    var transferdate = transferDate(angular.element('#J_auditBeginTime').val());//转时间日期
+                    angular.element("#J_auditEndTime").datetimepicker('remove');
+                    angular.element("#J_auditEndTime").datetimepicker({
+                        format:'yyyy-mm-dd',
+                        language:  'zh-CN',
+                        autoclose: true,
+                        startView: "month",
+                        minView: "month",
+                        startDate: transferdate,
+                        endDate: dateValue,
+                    }).on("changeDate",function(ev){
+                        var enddate=angular.element("#J_auditEndTime").val();
+                        setEndTime(enddate);
+                    });
+                });
+            }
+            else if(type === 'end'){
+                // 结束时间
+                angular.element("#J_auditEndTime").datetimepicker({
+                    format:'yyyy-mm-dd',
+                    language:  'zh-CN',
+                    startView: "month",
+                    minView: "month",
+                    maxDate: dateValue,
+                    endDate: dateValue,
+                    autoclose: true
+                }).on("changeDate",function(ev){
+                    var enddate=angular.element("#J_auditEndTime").val();
+                    setEndTime(enddate);
+                });
+            }
+
 	  	    function setEndTime(enddate){
-	  	        $('#J_beginTime').datetimepicker('remove');
-	  	            $('#J_beginTime').datetimepicker({
+                angular.element('#J_auditBeginTime').datetimepicker('remove');
+                angular.element('#J_auditBeginTime').datetimepicker({
 	  	                format:'yyyy-mm-dd',
 	  	                language:  'zh-CN',
-	  	                autoclose: 1,
+	  	                autoclose: true,
 	  	                todayHighlight: false,
 	  	                startView: "month",
 	  	                minView: "month",
 	  	                forceParse: 0,
-	  	                endDate:transferDate(enddate)
+	  	                endDate: transferDate(enddate)
 	  	        });
 	  	    }
-	  	    //将时间字符串转为date
+
+	  	    // 将时间字符串转为date
 	  	    function transferDate(data){
-	  	        var start_time=data;
-	  	        var newTime= start_time.replace(/-/g,"-");
+	  	        var start_time = data;
+	  	        var newTime = start_time.replace(/-/g,"-");
 	  	        var transferdate = new Date(newTime);
 	  	        return transferdate;
 	  	    }
+
   		};
 
 	    /*
@@ -166,7 +173,9 @@ angular.module('myappApp')
             });
   		};
 
-   		// 得到操作审计数据
+   		/*
+   		 * 得到操作审计数据
+   		 */
 		$scope.getList = function(){
 			//输入验证
    			if($scope.searchPara && !$scope.validateForm($scope.searchPara)){
@@ -193,7 +202,7 @@ angular.module('myappApp')
                     else{
                         $scope.ListShowFlag = '';
                         $scope.analyList = data.result;
-                        $scope.pager =  $.extend( {}, defaultPager,{
+                        $scope.pager =  angular.extend( {}, defaultPager,{
                             total: data.total,
                             curPage: data.curPage,
                             pagesNum: data.pagesNum,
@@ -211,104 +220,84 @@ angular.module('myappApp')
 		};
 
 		/*
-         * 备份
+         * 点击导出
          */
-         $scope.clickExport = function(ev){
-             var it = angular.element(ev.target);
-             if(it.hasClass('disabled')){
-                 return false;
-             }
-             it.addClass('disabled');
-        	//输入验证
-   			if(!!$scope.searchPara && !$scope.validateForm($scope.searchPara)){
-   				return false;
-   			}
- 			var userId = $scope.searchPara.userId;
- 			var startTime = $scope.searchPara.beginTime;
- 			var endTime = $scope.searchPara.endTime;
- 			var eventTypeId = $scope.searchPara.auditTypeId;
- 			if(userId == null){
- 				userId = '';
- 			}
- 			if(eventTypeId == null){
- 				eventTypeId = '';
- 			}
- 			var ajaxData = {
-					startTime:startTime,
-					endTime:endTime,
-					userId:userId,
-					eventTypeId:eventTypeId
-	  	  		},
-   			config = {
-   	  				method:'post',
-   	  				data:ajaxData,
-   	  				url:apiGetExport
-   	  			};
-   			AjaxServer.ajaxInfo(config, function( data ){
-   				var urlTemp = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
-   	          	var url = urlTemp + apiGetExport + "?cmd=statistic";
-   	          	$scope.exportHref = url;
-   	            $scope.apply();
-                    $('#J_auditAnalyConfirm').modal('show');
-//   	          	$scope.getExportExcel('j-checkExport',url);
-                it.removeClass('disabled');
-             },
-   			function(status){
- 				$scope.errorMsg = '因网络未知原因，导出失败。';
- 				$scope.apply();
-   			});
-
+         $scope.clickExport = function(){
+             $scope.modalTitle = '导出操作';
+             $scope.cancelButton = '确定';
+             $scope.successMsg = '';
+             $scope.errorMsg = '';
+             $scope.apply();
+             angular.element('#J_auditAnalyConfirm').modal('show');
          };
+
+        /*
+         *  响应下一步按钮
+         */
+        $scope.getExportExcel = function(ev){
+            var it = angular.element(ev.target);
+            if(it.text() === '关闭'){
+                angular.element('#J_auditAnalyConfirm').modal('hide');
+                return false;
+            }
+            if(it.hasClass('disabled')){
+                return false;
+            }
+            it.addClass('disabled').text('导出中...');
+            // 输入验证
+            if($scope.searchPara && !$scope.validateForm($scope.searchPara)){
+                return false;
+            }
+            var ajaxData = {
+                startTime:$scope.searchPara.beginTime,
+                endTime:$scope.searchPara.endTime,
+                userId:$scope.searchPara.userId,
+                eventTypeId:$scope.searchPara.auditTypeId
+            };
+            // 实际要发送请求,这里只是假设
+            var flag = Math.floor(Math.random()*2);
+            $timeout(function(){
+                console.log(ajaxData);
+                if(flag){
+                    var url = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port
+                        + "/analysis/export?cmd=statistic";
+                    $window.open(url);
+                    $scope.successMsg = '导出成功';
+                    $scope.errorMsg = '';
+                }
+                else{
+                    $scope.successMsg = '';
+                    $scope.errorMsg = '导出失败';
+                }
+                $scope.cancelButton = '关闭';
+                $scope.apply();
+                it.removeClass('disabled').text('关闭');
+
+            },500);
+        };
+
 
          /*
    		 * 验证表单数据
    		 */
    		$scope.validateForm = function ( formObj ) {
-   			$scope.errorMsgBeginTime = '';
-  			$scope.errorMsgEndTime = '';
    			if(Validate.validEmpty(formObj.beginTime) && !Validate.validDate(formObj.beginTime)){
-            	$scope.errorMsgBeginTime = '开始时间格式不对，请修改后查询。';
+            	$scope.sysError = '开始时间格式不对，请修改后查询。';
                 $scope.apply();
             	return false;
             }
             if(Validate.validEmpty(formObj.endTime) && !Validate.validDate(formObj.endTime)){
-            	$scope.errorMsgEndTime = '结束时间格式不对，请修改后查询。';
+            	$scope.sysError = '结束时间格式不对，请修改后查询。';
                 $scope.apply();
             	return false;
             }
             if(Validate.validEmpty(formObj.endTime) && Validate.validEmpty(formObj.beginTime) && formObj.endTime < formObj.beginTime){
-            	$scope.errorMsgEndTime = '查询结束时间应大于开始时间，请修改后查询。';
+            	$scope.sysError = '查询结束时间应大于开始时间，请修改后查询。';
                 $scope.apply();
             	return false;
             }
    			return true;
    		};
-
-      		/*
-     	    *  响应下一步按钮
-     	    */
-	   		$scope.getExportExcel = function(id,url){
-	   			var a = document.createElement('a');
-                a.setAttribute('href', url);
-                a.setAttribute('target', '_blank');
-                a.setAttribute('id', id);
-                // 防止反复添加
-                if(!document.getElementById(id)) {
-                    document.body.appendChild(a);
-                }
-                a.click();
-	   		};
-
-        /*
-        *  初始化模态框
-        */
-        $scope.formatModals = function(){
-            $scope.confirmInfo = '';
-            $scope.errorMsg = '';
-            $scope.successMsg = '';
-          // $scope.apply();
-        };
-
 
 		/*
 	    *  跳转页面

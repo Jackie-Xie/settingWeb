@@ -8,18 +8,18 @@
         <form class="form-horizontal" method="post">
             <div class="col-lg-10 col-md-10 col-sm-8 col-xs-12">
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
-                    <div class="j-form-time" id="J_auditBeginTime" data-date="" data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd" data-link-field="J_beginTime">
+                    <div class="date j-form-time" data-date="" data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd" data-link-field="J_auditBeginTime">
                         <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label" for="J_auditBeginTime">开始时间：</label>
                         <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-                            <input class="form-control" ng-model="searchPara.beginTime" type="text" autocomplete="off" placeholder="请选择统计开始时间" readonly>
+                            <input class="form-control" id="J_auditBeginTime" ng-model="searchPara.beginTime" type="text" autocomplete="off" placeholder="请选择统计开始时间" ng-init="formatTime('start')">
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
-                    <div class="j-form-time" id="J_auditEndTime" data-date="" data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd" data-link-field="J_endTime">
+                    <div class="date j-form-time" data-date="" data-date-format="yyyy-mm-dd" data-link-format="yyyy-mm-dd" data-link-field="J_auditEndTime">
                          <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label" for="J_auditEndTime">结束时间：</label>
                          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-                             <input class="form-control col-lg-8" ng-model="searchPara.endTime" type="text" autocomplete="off" placeholder="请选择统计结束时间" readonly>
+                             <input class="form-control col-lg-8" id="J_auditEndTime" ng-model="searchPara.endTime" type="text" autocomplete="off" placeholder="请选择统计结束时间" ng-init="formatTime('end')">
                          </div>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
         <!-- 查询结果 b -->
         <div class="clearfix col-lg-6 search-result" ng-include="'views/mod/searchResult.html'"></div>
         <div class="col-lg-6 text-right">
-            <a role="button" class="btn btn-success btn-md" ng-click="clickExport($event)" ng-hide="pager.total==0">导出</a>
+            <a role="button" class="btn btn-success btn-md" ng-click="clickExport()" ng-hide="pager.total==0">导出</a>
         </div>
         <!-- 查询结果 e -->
         <!-- 数据表格 b -->

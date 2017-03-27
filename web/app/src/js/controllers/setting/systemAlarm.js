@@ -18,16 +18,16 @@ angular.module('myappApp')
                 'Medium':'中',
                 'Low':'低',
             };
-            $scope.pager =  $.extend( {}, defaultPager );
+            $scope.pager =  angular.extend( {}, defaultPager );
             $scope.bindEvent();
             $scope.getList();
         };
 
         $scope.bindEvent = function() {
-            $(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
+            angular.element(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
             //分页事件绑定
-            $(".j-body").on('click','.j-navPager .item', function(ev){
-                var it = $(ev.currentTarget);
+            angular.element(".j-body").on('click','.j-navPager .item', function(ev){
+                var it = angular.element(ev.currentTarget);
                 $scope.gotoPage(parseInt(it.text()));
             }).on('click','.j-navPager .prev', function(ev){
                 if($scope.pager.curPage <= 1){
@@ -59,7 +59,7 @@ angular.module('myappApp')
                     else{
                         $scope.ListShowFlag = '';
                         $scope.systemAlarmList = data.result;
-                        $scope.pager =  $.extend( {}, defaultPager,{
+                        $scope.pager =  angular.extend( {}, defaultPager,{
                             total: data.total,
                             curPage: data.curPage,
                             pagesNum: data.pagesNum,
@@ -69,7 +69,7 @@ angular.module('myappApp')
                     $scope.apply();
                 }
             },function(data){
-                $scope.ListShowFlag = '因为网络原因请求失败';
+                $scope.ListShowFlag = data || '因为网络原因请求失败';
                 $scope.systemAlarmList = [];
                 $scope.apply();
             });

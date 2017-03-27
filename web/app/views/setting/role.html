@@ -23,7 +23,7 @@
 						<td colspan="3" ng-if="roleInfoFlag.indexOf('loading')>-1"><div class="loading"></div></td>
 					</tr>
 					<tr ng-repeat="item in roleList" ng-show="roleInfoFlag==''">
-						<td>{{item.num}}</td>
+						<td>{{$index + 1}}</td>
 						<td>{{item.name}}</td>
 						<td>{{item.describe}}</td>
 					</tr>

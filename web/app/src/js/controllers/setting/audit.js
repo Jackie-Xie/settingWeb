@@ -53,7 +53,7 @@ angular.module('myappApp')
   			$scope.businessGroupOptions = [];
             $scope.pathStr = $location.path();
   			$scope.ListShowFlag = 'loading';
-  			$scope.pager =  $.extend( {}, defaultPager );
+  			$scope.pager =  angular.extend( {}, defaultPager );
             $scope.searchPara = {};
 
   			$scope.getRoleList();
@@ -78,9 +78,9 @@ angular.module('myappApp')
 
   		$scope.bindEvent = function() {
  			//分页事件绑定
-            $(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
- 			$(".j-body").on('click','.j-navPager .item', function(ev){
- 				var it = $(ev.currentTarget);
+            angular.element(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
+            angular.element(".j-body").on('click','.j-navPager .item', function(ev){
+ 				var it = angular.element(ev.currentTarget);
  				$scope.gotoPage(parseInt(it.text()));
  			}).on('click','.j-navPager .prev', function(ev){
  				if($scope.pager.curPage <= 1){
@@ -118,7 +118,7 @@ angular.module('myappApp')
                     else{
                         $scope.ListShowFlag = '';
                         $scope.auditList = data.result;
-                        $scope.pager =  $.extend( {}, defaultPager,{
+                        $scope.pager =  angular.extend( {}, defaultPager,{
                             total: data.total,
                             curPage: data.curPage,
                             pagesNum: data.pagesNum,
@@ -128,7 +128,7 @@ angular.module('myappApp')
                     $scope.apply();
                 }
             },function(data){
-                $scope.ListShowFlag = '因为网络原因请求失败';
+                $scope.ListShowFlag = data || '因为网络原因请求失败';
                 $scope.auditList = [];
                 $scope.apply();
             });
@@ -144,14 +144,14 @@ angular.module('myappApp')
  			$scope.cancelButton = "取 消";
 			$scope.confirmInfo = '确定执行备份操作？';
 			$scope.apply();
-			$('#J_auditIndexConfirm').modal('show');
+            angular.element('#J_auditIndexConfirm').modal('show');
  		};
 
 		/*
          * 备份操作
          */
         $scope.backupExec = function(ev){
-            var it = $(ev.target);
+            var it = angular.element(ev.target);
             if(it.hasClass('disabled')){
                 return false;
             }
@@ -178,14 +178,14 @@ angular.module('myappApp')
  		 * 获取事件类型选项
  		 */
         $scope.getAuditTypeOptions = function(){
-            $scope.auditTypeList =  $.extend([], auditTypeList );
+            $scope.auditTypeList =  angular.extend([], auditTypeList );
         };
 
         /*
  		 * 获取排序规则选项
  		 */
         $scope.getSortTypeOptions = function(){
-            $scope.sortTypeList =  $.extend([], sortTypeList );
+            $scope.sortTypeList =  angular.extend([], sortTypeList );
         };
 
 		/*
@@ -211,7 +211,7 @@ angular.module('myappApp')
                     var data = response.data;
                     if(!!data){
                         var BusinessGroupObj = null;
-                        $.each(data,function(i){
+                        angular.forEach(data,function(n,i){
                             BusinessGroupObj = {
                                 'id':data[i].id,
                                 'bgname':data[i].cnName || data[i].name

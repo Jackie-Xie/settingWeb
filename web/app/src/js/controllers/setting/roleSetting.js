@@ -21,9 +21,6 @@ angular.module('myappApp')
                 if(response.status === 200){
                     $scope.roleList = response.data;
                     if($scope.roleList && $scope.roleList.length!==0){
-    					$.each($scope.roleList , function(i){
-    	                    this.num = parseInt(i) + 1;
-    	                });
     					$scope.roleInfoFlag = '';
     				}else{
     					$scope.roleInfoFlag = '暂未配置，请联系管理员';

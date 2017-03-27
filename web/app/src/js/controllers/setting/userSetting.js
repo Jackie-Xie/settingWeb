@@ -1,66 +1,39 @@
 'use strict';
 
 angular.module('myappApp')
-  	.controller('UserSettingCtrl', function ($scope, $rootScope, $window, $location,$http, $timeout, AjaxServer, Validate,PageService) {
+  	.controller('UserSettingCtrl', ['$scope','$window','$location','$http', '$timeout', 'AjaxServer', 'Validate','PageService',function ($scope, $window, $location,$http, $timeout, AjaxServer, Validate,PageService) {
   		var defaultPager = {                    						  // 默认分页参数
                 total: 0, 								  				  // 总条数
                 curPage: 1, 						      				  // 当前页码
                 pagesNum: 1, 						  	  				  // 总页数
                 pageSize: 5 							  				  // 每页存放条数
             },
-  			$userAddModal = null,
-  			$userEditModal = null,
-  			$userOprConfirm = null,
-  			$userPwdModal = null,
-  			modalArr = [],
-  			selected = [];
+  			selected = [];                                                // checkBox选中的id数组
 
 
 	   	$scope.init = function () {
 	   		$scope.pathStr = $location.path();
             $scope.userShowFlag = 'loading';
             $scope.queryUser = {};
-            $scope.actionType = 'add';                                    // 标志是add还是update
-            $scope.jumpNum = 1;                                           // 分页默认跳转页码
+            $scope.actionType = 'add';
             $scope.userInfoList = [];
             $scope.roleList = [];
             $scope.businessGroupOptions = [];
-            $scope.pager = $.extend( {}, defaultPager);
-
+            $scope.pager = angular.extend( {}, defaultPager);
 	    	$scope.modalTitle = '';
 	    	$scope.modalInfo = '';
-	    	$scope.partRoleList = [];
-	    	$scope.userModifyForm = {'oldPwd':'','newPwd':'','repeatPwd':''};
 	    	$scope.userPwdForm = {};
 	    	$scope.userForm = {};
-	    	$scope.searchErrorMsg = '';
-	    	$scope.FailedMsg ='';
 	    	$scope.oprType = '';
 	    	$scope.selected = [];
-	   		$userAddModal = $('#J_userAddModal');
-	   		$userEditModal = $('#J_userEditModal');
-	   		$userOprConfirm = $('#J_userOprConfirm');
-	   		$userPwdModal = $('#J_userHashModal');
 
-            /*
-             *  根据不同页面地址，发送不同请求
-             */
-            if(typeof($location.path())==='string'){
-	            if($location.path().indexOf('users')>-1){
-	    	    	$scope.getRoleList();
-                    $scope.getStatusOptions();
-                    $scope.getBusinessGroupOptions();
-	                $scope.getUserInfoListByConditions();
-	            }
-	            if($location.path().indexOf('modify')>-1){
-	                $scope.userModifyForm.username = $rootScope.userName;
-	        		$scope.apply();
-	            }
-            }
+            $scope.getRoleList();
+            $scope.getStatusOptions();
+            $scope.getBusinessGroupOptions();
+            $scope.getUserInfoListByConditions();
             $scope.bindEvent();
 	   		$scope.formatModals();
 
-            $scope.test();
 	    };
 
         /*
@@ -224,7 +197,7 @@ angular.module('myappApp')
             $scope.modalTitle = '添加';
             $scope.actionType = 'add';
             $('#J_username').removeAttr('readonly');
-            $scope.clickShowModal($userAddModal);
+            $scope.clickShowModal(angular.element('#J_userAddModal'));
             $scope.getRoleList();
             $scope.userForm = {'userstatus':'1','roleselect':'','isIpLimited':1,'isTimeLimited':1,'groupselect':'','issend':'1'};
             $scope.apply();
@@ -240,14 +213,14 @@ angular.module('myappApp')
                     $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
                     $scope.oprType = 'closeModal';
                     $scope.apply();
-                    $scope.clickShowModal($userOprConfirm);
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
                 }
                 else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
                     $scope.modalTitle = '友情提示';
                     $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
                     $scope.oprType = 'closeModal';
                     $scope.apply();
-                    $scope.clickShowModal($userOprConfirm);
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
                 }else {
                     $scope.modalTitle = '修改';
                     $scope.actionType = 'update';
@@ -281,14 +254,14 @@ angular.module('myappApp')
                     $scope.modalInfo = '注销为不可逆操作，请确定是否注销此用户';
                     $scope.oprType = 'delUser';
                     $scope.apply();
-                    $scope.clickShowModal($userOprConfirm);
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
                 }
                 else if(selected.length===0){
                     $scope.modalTitle = '友情提示';
                     $scope.modalInfo='您还没有选择用户，请选择一个或多个用户进行注销';
                     $scope.oprType = 'closeModal';
                     $scope.apply();
-                    $scope.clickShowModal($userOprConfirm);
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
                 }
             }
         };
@@ -307,14 +280,14 @@ angular.module('myappApp')
                     $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
                     $scope.oprType = 'closeModal';
                     $scope.apply();
-                    $scope.clickShowModal($userOprConfirm);
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
                 }
                 else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
                     $scope.modalTitle = '友情提示';
                     $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
                     $scope.oprType = 'closeModal';
                     $scope.apply();
-                    $scope.clickShowModal($userOprConfirm);
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
                 }
                 else{
                     if(selected.indexOf(0)>-1){
@@ -568,32 +541,32 @@ angular.module('myappApp')
 	  					$scope.modalTitle = '友情提示';
 	  					$scope.modalInfo='无权限修改，请联系管理员核对';
 		                $scope.apply();
-		                $scope.clickShowModal($userOprConfirm);
+		                $scope.clickShowModal(angular.element('#J_userOprConfirm'));
 	  				}
 	  				else if(typeof(data.error)==='string' && data.error.indexOf('fail')>-1){
 	  					$scope.oprType = 'closeModal';
 	  					$scope.modalTitle = '友情提示';
 	  					$scope.modalInfo='用户还在审核中，请联系审核管理员';
 		                $scope.apply();
-		                $scope.clickShowModal($userOprConfirm);
+		                $scope.clickShowModal(angular.element('#J_userOprConfirm'));
 	  				}
 	  				else if(typeof(data.error)==='string' && data.error.indexOf('delete')>-1){
 	  					$scope.oprType = 'closeModal';
 	  					$scope.modalTitle = '友情提示';
 	  					$scope.modalInfo='用户已经注销';
 		                $scope.apply();
-		                $scope.clickShowModal($userOprConfirm);
+		                $scope.clickShowModal(angular.element('#J_userOprConfirm'));
 	  				}
 	  				else{
 	  					if(typeof(type)==='string' && type.indexOf('pwd')>-1){
 	  						//弹窗
-	  						$scope.clickShowModal($userPwdModal);
+	  						$scope.clickShowModal(angular.element('#J_userHashModal'));
 			                //修改前的数据
 							$scope.userPwdForm.username = data.userName;
 							$scope.apply();
 	  					}else{
 	  						//弹窗
-			  				$scope.clickShowModal($userAddModal);
+			  				$scope.clickShowModal(angular.element('#J_userAddModal'));
 			                //修改前的数据
 							$scope.userForm.username = data.userName;
 							$scope.getPartRoleList( $scope.actionType , data.roleId);
@@ -1024,7 +997,7 @@ angular.module('myappApp')
 	     *  初始化模态框
 	     */
 	    $scope.formatModals = function(){
-	    	modalArr = [ $userAddModal,$userEditModal,$userOprConfirm,$userPwdModal ];
+	    	var modalArr = [ angular.element('#J_userAddModal'),angular.element('#J_userEditModal'),angular.element('#J_userOprConfirm'),angular.element('#J_userHashModal') ];
 	    	$scope.hideModal(modalArr);
             $scope.businessGroupOptions = [];
             $scope.handleBusinessGroupId = '';
@@ -1061,4 +1034,4 @@ angular.module('myappApp')
   			    $scope.$apply();
   			}
   		};
-});
+}]);
