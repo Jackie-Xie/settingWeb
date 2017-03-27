@@ -1,7 +1,7 @@
 
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h6>{{modalTitle}}用户配置</h6>
+    <h6>{{modalTitle}}用户</h6>
 </div>
 <div class="modal-body scroll-custom">
 	<div class="row ">
@@ -11,7 +11,7 @@
 	                <div class="form-group text-center">
 	                    <label class="control-label col-lg-3" for="J_username"><span class="txt-impt">*</span>用户名称：</label>
 	                    <div class="col-lg-9">
-	                        <input class="form-control" type="text" autocomplete="off" id="J_username" ng-model="userForm.username" ng-change="clearErrMessage()" required>
+	                        <input class="form-control" type="text" autocomplete="off" id="J_username" ng-model="userForm.username" ng-change="clearErrMessage()" ng-readonly="actionType==='update'">
 	                    </div>
 	                </div>
 	                <div class="form-group text-center" ng-hide="actionType==='update'">
@@ -23,7 +23,7 @@
 	                <div class="form-group text-center">
 	                    <label class="control-label col-lg-3" for="J_roleselect"><span class="txt-impt">*</span>用户角色：</label>
 	                    <div class="col-lg-9">
-	                        <select class="form-control" id="J_roleselect" ng-model="userForm.roleselect" ng-options="role.id as role.name for role in partRoleList" ng-change="getBusinessGroupOptions(userForm.roleselect)">
+	                        <select class="form-control" id="J_roleselect" ng-model="userForm.roleselect" ng-options="role.id as role.name for role in roleList" ng-change="getBusinessGroupOptions(userForm.roleselect)">
 	                            <option value="">-----------------------------请选择------------------------------</option>
 	                        </select>
 	                    </div>
@@ -63,7 +63,7 @@
                 <div class="form-group text-center">
                      <label class="control-label col-lg-3" for="J_beginTime">访问开始时间：</label>
                      <div class="col-lg-7" ng-class="{'disabled-input':userForm.isTimeLimited}">
-                         <input class="form-control workinput wicon mr25" id="J_beginTime" ng-model="userForm.beginTime" type="text" autocomplete="off" ng-change="clearErrMessage()" placeholder="请选择开始时间" ng-disabled="userForm.isTimeLimited" >
+                         <input class="form-control" id="J_beginTime" ng-model="userForm.beginTime" type="text" autocomplete="off" ng-change="clearErrMessage()" placeholder="请输入开始时间" ng-disabled="userForm.isTimeLimited" >
                      </div>
                      <label class="control-label col-lg-2 checkbox-inline text-left">
                          <input id="J_isTimeLimited" type="checkbox" ng-checked="userForm.isTimeLimited" ng-click="updateTimeLimited()"><label class="custom-checkbox" for="J_isTimeLimited"></label>&nbsp;&nbsp;不限制
@@ -72,7 +72,7 @@
                 <div class="form-group text-center">
                      <label class="control-label col-lg-3" for="J_endTime">访问结束时间：</label>
                      <div class="col-lg-7" ng-class="{'disabled-input':userForm.isTimeLimited}">
-                         <input class="form-control workinput wicon mr25" id="J_endTime" ng-model="userForm.endTime" type="text" autocomplete="off" ng-change="clearErrMessage()" placeholder="请选择结束时间" ng-disabled="userForm.isTimeLimited" >
+                         <input class="form-control" id="J_endTime" ng-model="userForm.endTime" type="text" autocomplete="off" ng-change="clearErrMessage()" placeholder="请输入结束时间" ng-disabled="userForm.isTimeLimited" >
                      </div>
                 </div>
                 <div class="form-group error-msg text-center" ng-if="!userForm.isTimeLimited && !userForm.beginTime && !userForm.endTime">若不选择访问时间，则默认该用户不能访问系统</div>

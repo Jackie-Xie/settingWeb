@@ -1,14 +1,13 @@
 'use strict';
 
 angular.module('myappApp')
-  	.controller('UserSettingCtrl', ['$scope','$window','$location','$http', '$timeout', 'AjaxServer', 'Validate','PageService',function ($scope, $window, $location,$http, $timeout, AjaxServer, Validate,PageService) {
+  	.controller('UserSettingCtrl', ['$scope','$rootScope','$window','$location','$http', '$timeout', 'AjaxServer', 'Validate','PageService',function ($scope, $rootScope,$window, $location,$http, $timeout, AjaxServer, Validate,PageService) {
   		var defaultPager = {                    						  // 默认分页参数
                 total: 0, 								  				  // 总条数
                 curPage: 1, 						      				  // 当前页码
                 pagesNum: 1, 						  	  				  // 总页数
                 pageSize: 5 							  				  // 每页存放条数
-            },
-  			selected = [];                                                // checkBox选中的id数组
+            };                                               
 
 
 	   	$scope.init = function () {
@@ -62,6 +61,7 @@ angular.module('myappApp')
                 var data = {};
                 if(response.status === 200){
                     if(response.data && response.data.length > 0){
+                        $scope.allUserList = angular.extend([],response.data);
                         data = PageService.page($scope.pager.curPage,$scope.pager.pageSize,response.data,conditions);
                     }
 
@@ -127,7 +127,7 @@ angular.module('myappApp')
             $http.get('/data/businessGroup/getBusinessGroup.json').then(function (response){
                 if(response.status === 200){
                     var data = response.data;
-                    if(!!data){
+                    if(data){
                         var BusinessGroupObj = null;
                         $.each(data,function(i){
                             BusinessGroupObj = {
@@ -135,7 +135,7 @@ angular.module('myappApp')
                                 'bgname':data[i].cnName || data[i].name
                             }
                             //如果单位所在省或省ID没有
-                            if(!!data[i].provinceId || !!data[i].province){
+                            if(data[i].provinceId || data[i].province){
                                 $scope.businessGroupOptions.push(BusinessGroupObj);
                             }
                         });
@@ -172,146 +172,13 @@ angular.module('myappApp')
         };
 
         /*
-         *  跳转页面
-         */
-        $scope.gotoPage = function( targetPage ){
-            if(!targetPage || targetPage > $scope.pager.pagesNum || targetPage < 1){
-                $scope.jumpNum = '';
-                $scope.apply();
-                return false;
-            }
-
-            $scope.pager.curPage = parseInt(targetPage);
-            $scope.clearChecked();
-            // 获取数据
-            if(typeof($location.path())==='string' && $location.path().indexOf('users') > -1){
-                $scope.query();
-            }
-        };
-
-        /*
-         * 点击添加用户
-         */
-        $scope.clickAdd = function(){
-            $scope.clearChecked();
-            $scope.modalTitle = '添加';
-            $scope.actionType = 'add';
-            $('#J_username').removeAttr('readonly');
-            $scope.clickShowModal(angular.element('#J_userAddModal'));
-            $scope.getRoleList();
-            $scope.userForm = {'userstatus':'1','roleselect':'','isIpLimited':1,'isTimeLimited':1,'groupselect':'','issend':'1'};
-            $scope.apply();
-        };
-
-        /*
-         * 点击修改用户
-         */
-        $scope.clickEdit = function(){
-            if(!!selected ){
-                if(selected.length===0){
-                    $scope.modalTitle = '友情提示';
-                    $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
-                    $scope.oprType = 'closeModal';
-                    $scope.apply();
-                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
-                }
-                else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
-                    $scope.modalTitle = '友情提示';
-                    $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
-                    $scope.oprType = 'closeModal';
-                    $scope.apply();
-                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
-                }else {
-                    $scope.modalTitle = '修改';
-                    $scope.actionType = 'update';
-                    $scope.userForm.roleapply = '';
-                    $('#J_username').attr('readonly','readonly');
-                    if(selected.indexOf(0)>-1){
-                        var idx = selected.indexOf(0);
-                        selected.splice(idx,1);
-                        $scope.getUserInfoById(selected[0]);
-                        selected.push(0);
-                    }
-                    else{
-                        $scope.getUserInfoById(selected[0]);
-                    }
-                    $scope.apply();
-                }
-            }
-        };
-
-        /*
-         * 点击删除用户
-         */
-        $scope.clickDelete = function(ev){
-            var it = $(ev.currentTarget);
-            if(it.hasClass('btn-custom-disabled')){
-                return false;
-            }
-            if(!!selected ){
-                if(selected.length > 0){
-                    $scope.modalTitle = '注销用户';
-                    $scope.modalInfo = '注销为不可逆操作，请确定是否注销此用户';
-                    $scope.oprType = 'delUser';
-                    $scope.apply();
-                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
-                }
-                else if(selected.length===0){
-                    $scope.modalTitle = '友情提示';
-                    $scope.modalInfo='您还没有选择用户，请选择一个或多个用户进行注销';
-                    $scope.oprType = 'closeModal';
-                    $scope.apply();
-                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
-                }
-            }
-        };
-
-        /*
-         * 点击重置密码
-         */
-        $scope.clickResetPwd = function(ev){
-            var it = $(ev.currentTarget);
-            if(it.hasClass('btn-custom-disabled')){
-                return false;
-            }
-            if(!!selected ){
-                if(selected.length===0){
-                    $scope.modalTitle = '友情提示';
-                    $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
-                    $scope.oprType = 'closeModal';
-                    $scope.apply();
-                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
-                }
-                else if((selected.indexOf(0)>-1) ? (selected.length > 2) : (selected.length > 1)){
-                    $scope.modalTitle = '友情提示';
-                    $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
-                    $scope.oprType = 'closeModal';
-                    $scope.apply();
-                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
-                }
-                else{
-                    if(selected.indexOf(0)>-1){
-                        var idx = selected.indexOf(0);
-                        selected.splice(idx,1);
-                        $scope.getUserInfoById(selected[0],'pwd');
-                        selected.push(0);
-                    }
-                    else{
-                        $scope.getUserInfoById(selected[0],'pwd');
-                    }
-                    $scope.apply();
-                }
-            }
-        };
-
-        /*
          * 事件绑定
          */
         $scope.bindEvent = function () {
             // 分页事件
-            $(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
-            $('.j-body').on('click','.j-navPager .item', function(ev){
-                var it = $(ev.currentTarget);
+            angular.element(".j-body").off( "click", ".j-navPager .item").off( "click", ".j-navPager .prev").off( "click", ".j-navPager .next");
+            angular.element('.j-body').on('click','.j-navPager .item', function(ev){
+                var it = angular.element(ev.currentTarget);
                 $scope.gotoPage(parseInt(it.text()));
             })
             .on('click','.j-navPager .prev', function(ev){
@@ -329,30 +196,163 @@ angular.module('myappApp')
 
         };
 
+        /*
+         *  跳转页面
+         */
+        $scope.gotoPage = function( targetPage ){
+            if(!targetPage || targetPage > $scope.pager.pagesNum || targetPage < 1){
+                $scope.jumpNum = '';
+                $scope.apply();
+                return false;
+            }
 
-        // test
-        $scope.test = function (){
+            $scope.pager.curPage = parseInt(targetPage);
+            $scope.selected = [];
+            // 获取数据
+            $scope.query();
 
         };
 
+        /*
+         * 点击添加用户
+         */
+        $scope.clickAdd = function(){
+            $scope.selected = [];
+            $scope.modalTitle = '添加';
+            $scope.actionType = 'add';
+            // angular.element('#J_username').removeAttr('readonly');
+            $scope.clickShowModal(angular.element('#J_userAddModal'));
+            // $scope.getRoleList();
+            $scope.userForm = {'userstatus':'1','roleselect':'','isIpLimited':1,'isTimeLimited':1,'groupselect':'','issend':'1'};
+            $scope.apply();
+        };
+
+        /*
+         * 点击修改用户
+         */
+        $scope.clickEdit = function(){
+            if($scope.selected ){
+                if($scope.selected.length===0){
+                    $scope.modalTitle = '友情提示';
+                    $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
+                    $scope.oprType = 'closeModal';
+                    $scope.apply();
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
+                }
+                else if(($scope.selected.indexOf(0)>-1) ? ($scope.selected.length > 2) : ($scope.selected.length > 1)){
+                    $scope.modalTitle = '友情提示';
+                    $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
+                    $scope.oprType = 'closeModal';
+                    $scope.apply();
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
+                }else {
+                    $scope.modalTitle = '修改';
+                    $scope.actionType = 'update';
+                    $scope.userForm.roleapply = '';
+                    // angular.element('#J_username').attr('readonly','readonly');
+                    if($scope.selected.indexOf(0)>-1){
+                        var idx = $scope.selected.indexOf(0);
+                        $scope.selected.splice(idx,1);
+                        $scope.getUserInfoById($scope.selected[0]);
+                        $scope.selected.push(0);
+                    }
+                    else{
+                        $scope.getUserInfoById($scope.selected[0]);
+                    }
+                    $scope.apply();
+                }
+            }
+        };
+
+        /*
+         * 点击删除用户
+         */
+        $scope.clickDelete = function(ev){
+            var it = $(ev.currentTarget);
+            if(it.hasClass('btn-custom-disabled')){
+                return false;
+            }
+            if($scope.selected ){
+                if($scope.selected.length > 0){
+                    $scope.modalTitle = '注销用户';
+                    $scope.modalInfo = '注销为不可逆操作，请确定是否注销此用户';
+                    $scope.oprType = 'delUser';
+                    $scope.apply();
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
+                }
+                else if($scope.selected.length===0){
+                    $scope.modalTitle = '友情提示';
+                    $scope.modalInfo='您还没有选择用户，请选择一个或多个用户进行注销';
+                    $scope.oprType = 'closeModal';
+                    $scope.apply();
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
+                }
+            }
+        };
+
+        /*
+         * 点击重置密码
+         */
+        $scope.clickResetPwd = function(ev){
+            var it = angular.element(ev.currentTarget);
+            if(it.hasClass('btn-custom-disabled')){
+                return false;
+            }
+            if($scope.selected ){
+                if($scope.selected.length===0){
+                    $scope.modalTitle = '友情提示';
+                    $scope.modalInfo='您还没有选择用户，请选择一个用户进行修改';
+                    $scope.oprType = 'closeModal';
+                    $scope.apply();
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
+                }
+                else if(($scope.selected.indexOf(0)>-1) ? ($scope.selected.length > 2) : ($scope.selected.length > 1)){
+                    $scope.modalTitle = '友情提示';
+                    $scope.modalInfo='您选中了多个用户，只能对一个用户进行修改';
+                    $scope.oprType = 'closeModal';
+                    $scope.apply();
+                    $scope.clickShowModal(angular.element('#J_userOprConfirm'));
+                }
+                else{
+                    if($scope.selected.indexOf(0)>-1){
+                        var idx = $scope.selected.indexOf(0);
+                        $scope.selected.splice(idx,1);
+                        $scope.getUserInfoById($scope.selected[0],'pwd');
+                        $scope.selected.push(0);
+                    }
+                    else{
+                        $scope.getUserInfoById($scope.selected[0],'pwd');
+                    }
+                    $scope.apply();
+                }
+            }
+        };
+
+
 	    //格式化时间选择器
 	    $scope.formatTime = function () {
-	    	$('.j-form-time').datetimepicker({
-	    		language: 'zh-CN',
-    	        autoclose: true,
-    	        todayBtn: false,
-    	        startDate: "00:00:00",
-    	        minuteStep: 5,
-    	        weekStart: 1,
-				todayHighlight: 1,
-				startView: 1,
-				minView: 0,
-				maxView: 1,
-				keyboardNavigation: false,
-				forceParse: true,
-		        showMeridian: true,
-		        formatViewType:'time'
-    		});
+	    	var start = {
+                format: 'YYYY-MM-DD hh:mm:ss',
+                minDate: $.nowDate(0), //设定最小日期为当前日期
+                isinitVal:false,
+                festival:true,
+                ishmsVal:false,
+                maxDate: '2099-06-30 23:59:59', //最大日期
+                choosefun: function(elem,datas){
+                    end.minDate = datas; //开始日选好后，重置结束日的最小日期
+                }
+            },
+            end = {
+                format: 'YYYY-MM-DD hh:mm:ss',
+                minDate: $.nowDate(0), //设定最小日期为当前日期
+                festival:true,
+                maxDate: '2099-06-16 23:59:59', //最大日期
+                choosefun: function(elem,datas){
+                    start.maxDate = datas; //将结束日的初始值设定为开始日的最大日期
+                }
+            };
+            $('#J_beginTime').jeDate(start);
+            $('#J_endTime').jeDate(end);
 
 	    };
 
@@ -405,13 +405,13 @@ angular.module('myappApp')
 
             AjaxServer.ajaxInfo( config , function (data){
             	it.removeClass('btn-custom-disabled').removeAttr('disabled');
-                if(!!data && typeof(data.error)==='string'){
+                if(data && typeof(data.error)==='string'){
                 	$scope.successMsg = '';
                 	$scope.errorMsg = data.error;
                 	$scope.apply();
                 }
 
-                if(!!data && typeof(data.result)==='string'){
+                if(data && typeof(data.result)==='string'){
                 	if(!flag){
 		                if(data.result.indexOf('修改密码成功')>-1){
 		                	$scope.successMsg = '修改密码成功';
@@ -424,7 +424,7 @@ angular.module('myappApp')
                 		$scope.formatModals();
                         $scope.userShowTag = true;
                         $scope.getUserInfoListByConditions('update');
-                        $scope.clearChecked();
+                        $scope.selected = [];
 	                	$scope.apply();
                 	}
 
@@ -513,7 +513,9 @@ angular.module('myappApp')
         	return true;
         }
 
-		//不能选择审核中用户
+		/*
+         *  不能选择审核中用户
+         */
 		$scope.changeTitle = function ( ev ,auditFlag ) {
 			var it = $(ev.currentTarget);
 			if(auditFlag === 0){
@@ -521,96 +523,84 @@ angular.module('myappApp')
 			}
 		}
 
-  		/*/!*
+  		/**
   		 * 根据userId查询用户信息
-  		 *!/
+         * 其实如果修改的信息和列表中显示的字段一致，
+         * 可以直接通过列表索引$index取到用户信息
+  		 */
   		$scope.getUserInfoById = function( id , type){
+            var stopFlag = true,
+                theUser = null;
   			if(!id){
   				return false;
   			}
-  			config = {
-  					'method': 'get',
-  					'data':'',
-  					'url':  apiGetUserList + '/' + id
-  			};
-  			AjaxServer.ajaxInfo( config , function( data ){
-  				//判断用户是否有权修改
-  				if(!!data){
-	  				if(typeof(data.result)==='string' && data.result.indexOf('fail')>-1){
-	  					$scope.oprType = 'closeModal';
-	  					$scope.modalTitle = '友情提示';
-	  					$scope.modalInfo='无权限修改，请联系管理员核对';
-		                $scope.apply();
-		                $scope.clickShowModal(angular.element('#J_userOprConfirm'));
-	  				}
-	  				else if(typeof(data.error)==='string' && data.error.indexOf('fail')>-1){
-	  					$scope.oprType = 'closeModal';
-	  					$scope.modalTitle = '友情提示';
-	  					$scope.modalInfo='用户还在审核中，请联系审核管理员';
-		                $scope.apply();
-		                $scope.clickShowModal(angular.element('#J_userOprConfirm'));
-	  				}
-	  				else if(typeof(data.error)==='string' && data.error.indexOf('delete')>-1){
-	  					$scope.oprType = 'closeModal';
-	  					$scope.modalTitle = '友情提示';
-	  					$scope.modalInfo='用户已经注销';
-		                $scope.apply();
-		                $scope.clickShowModal(angular.element('#J_userOprConfirm'));
-	  				}
-	  				else{
-	  					if(typeof(type)==='string' && type.indexOf('pwd')>-1){
-	  						//弹窗
-	  						$scope.clickShowModal(angular.element('#J_userHashModal'));
-			                //修改前的数据
-							$scope.userPwdForm.username = data.userName;
-							$scope.apply();
-	  					}else{
-	  						//弹窗
-			  				$scope.clickShowModal(angular.element('#J_userAddModal'));
-			                //修改前的数据
-							$scope.userForm.username = data.userName;
-							$scope.getPartRoleList( $scope.actionType , data.roleId);
-							$scope.getBusinessGroupOptions( data.roleId, $scope.actionType , data.businessGroupId);
+            if($scope.allUserList && $scope.allUserList.length > 0){
+                angular.forEach($scope.allUserList,function(v,k){
+                    if(stopFlag && v.id === id){
+                        theUser = $scope.allUserList[k];
+                        stopFlag = false;
+                        // return false;  // 注意：这里return false跳不出循环
+                    }
+                });
+            }
+            
+            // 判断用户是否有权修改
+            if(theUser.roleId === $rootScope.roleId){
+                $scope.sysError='无权限修改，请联系管理员核对';
+            }
+            else if(theUser.auditFlag === 0){
+                $scope.sysError='用户还在审核中，请联系审核管理员';
+            }
+            else if(theUser.status === -1){
+                $scope.sysError='用户已经注销';
+            }
+            else{
+                if(typeof(type)==='string' && type.indexOf('pwd')>-1){
+                    //弹窗
+                    $scope.clickShowModal(angular.element('#J_userHashModal'));
+                    //修改前的数据
+                    $scope.userPwdForm.username = theUser.userName;
+                }
+                else{
+                    //弹窗
+                    $scope.clickShowModal(angular.element('#J_userAddModal'));
+                    //修改前的数据
+                    $scope.userForm.username = theUser.userName;
+                    // $scope.getRoleList();
+                    $scope.getBusinessGroupOptions( theUser.roleId, $scope.actionType , theUser.businessGroupId);
 
-							$scope.handleBusinessGroupId = data.businessGroupId;
-							$scope.userForm.rolename = (!!data.role) ? data.role.name : '暂无';
-							$scope.userForm.roleselect = data.roleId;
-						    $scope.userForm.emails = data.emailAddress;
-						    $scope.userForm.issend = data.isSend.toString();
-						    $scope.userForm.telnum = data.phone;
-						    $scope.userForm.userstatus = data.status.toString();
-						    $scope.userForm.isTimeLimited = data.timeFlag;
-						    $scope.userForm.isIpLimited = data.accessIpFlag;
-						    $scope.userForm.roledesc = data.describe;
-						    //Ip限制
-						    if(data.accessIpFlag){
-						    	$scope.userForm.ip = '';
-						    }
-						    else{
-						    	$scope.userForm.ip = data.accessIP;
-						    }
-						    //时间限制
-						    if(data.timeFlag){
-						    	$scope.userForm.beginTime = '';
-								$scope.userForm.endTime = '';
-						    }
-						    else{
-						    	$scope.userForm.beginTime = data.beginTime;
-								$scope.userForm.endTime = data.endTime;
-						    }
-						    $scope.apply();
-	  					}
-	  				}
-  				}
-			},
-			function( status ){
-                var errorMessage = status ? '因为系统内部错误请求失败' : '因为网络原因请求失败';
-                console.log(errorMessage);
-                $scope.errorMsg = errorMessage;
-                $scope.successMsg = '';
-                $scope.apply();
-			});
-  		};*/
+                    $scope.handleBusinessGroupId = theUser.businessGroupId;
+                    $scope.userForm.rolename = (theUser.role) ? theUser.role.name : '暂无';
+                    $scope.userForm.roleselect = theUser.roleId;
+                    $scope.userForm.emails = theUser.emailAddress;
+                    $scope.userForm.issend = theUser.isSend.toString();
+                    $scope.userForm.telnum = theUser.phone;
+                    $scope.userForm.userstatus = theUser.status.toString();
+                    $scope.userForm.isTimeLimited = theUser.timeFlag;
+                    $scope.userForm.isIpLimited = theUser.accessIpFlag;
+                    $scope.userForm.roledesc = theUser.describe;
+                    // Ip限制
+                    if(theUser.accessIpFlag){
+                        $scope.userForm.ip = '';
+                    }
+                    else{
+                        $scope.userForm.ip = theUser.accessIP;
+                    }
+                    // 时间限制
+                    if(theUser.timeFlag){
+                        $scope.userForm.beginTime = '';
+                        $scope.userForm.endTime = '';
+                    }
+                    else{
+                        $scope.userForm.beginTime = theUser.beginTime;
+                        $scope.userForm.endTime = theUser.endTime;
+                    }
+                    
+                }
+            }
+
+            $scope.apply();
+  		};
 
   		/*
 		 * 添加或修改用户
@@ -618,14 +608,14 @@ angular.module('myappApp')
   		$scope.addUser = function(type,ev){
   			var id = null,
   				it = $(ev.currentTarget);
-  			if(selected.indexOf(0)>-1){
-		    	var idx = selected.indexOf(0);
-		    	selected.splice(idx,1);
-		    	id = selected[0];
-		    	selected.push(0);
+  			if($scope.selected.indexOf(0)>-1){
+		    	var idx = $scope.selected.indexOf(0);
+		    	$scope.selected.splice(idx,1);
+		    	id = $scope.selected[0];
+		    	$scope.selected.push(0);
 		    }
   			else{
-  				id = selected[0];
+  				id = $scope.selected[0];
   			}
 
             if(typeof(type)==='string' && type.indexOf('add')>-1){
@@ -743,8 +733,8 @@ angular.module('myappApp')
 				'accessIP':$scope.userForm.ip,
 				'accessIpFlag':$scope.userForm.isIpLimited,
 				'timeFlag':$scope.userForm.isTimeLimited,
-				'beginTime':(!!$scope.userForm.beginTime) ? $scope.userForm.beginTime : null,
-				'endTime':(!!$scope.userForm.endTime) ? $scope.userForm.endTime : null,
+				'beginTime':($scope.userForm.beginTime) ? $scope.userForm.beginTime : null,
+				'endTime':($scope.userForm.endTime) ? $scope.userForm.endTime : null,
 				'businessGroupId':$scope.userForm.groupselect || 0,
 				'phone': $scope.userForm.telnum,
 				'status': $scope.userForm.userstatus,
@@ -774,14 +764,14 @@ angular.module('myappApp')
   			//请求数据
   			AjaxServer.ajaxInfo( config , function( data ){
   				it.removeClass('btn-custom-disabled').removeAttr('disabled');
-  				if(!!data && !!data.error){
+  				if(data && data.error){
                 	$scope.successMsg = '';
                 	$scope.errorMsg = data.error;
                 	$scope.apply();
                 }
-  				if(!!data && typeof(data.result)==='string'){
+  				if(data && typeof(data.result)==='string'){
 
-	                if($.trim(type)==='add'){
+	                if(type==='add'){
 	                    if(data.result.indexOf('create user success,wait audit')>-1){
 	      					$scope.successMsg = '用户添加成功，待管理员审核';
 	                        $scope.errorMsg = '';
@@ -804,7 +794,7 @@ angular.module('myappApp')
 	                    }
 	                }
 
-	                if($.trim(type)==='update'){
+	                if(type==='update'){
 	                    if(data.result.indexOf('update success')>-1){
 	      					$scope.successMsg = '';
 	      					$scope.errorMsg = '';
@@ -812,7 +802,7 @@ angular.module('myappApp')
 	      					$scope.formatModals();
 	      					$scope.userShowTag = true;
 	                        $scope.getUserInfoListByConditions(type);
-	                        $scope.clearChecked();
+	                        $scope.selected = [];
 	      				}
 	                    if(data.result.indexOf('update fail')>-1){
 	                        $scope.successMsg = '';
@@ -830,25 +820,27 @@ angular.module('myappApp')
                 $scope.apply();
 			} );
   		};
+
   		/*
-  		 * 向输入框输入内容清除提示内容
+  		 * 清除提示内容
   		 */
   		$scope.clearErrMessage = function(){
   			$scope.successMsg = '';
   			$scope.errorMsg = '';
   		}
+
   	   /*
 		* 删除用户
 		*/
   		$scope.delUser = function(){
   			config = {
   	  				'method':'post',
-  	  				'data':$.extend([],selected),
+  	  				'data':$.extend([],$scope.selected),
   	  				'responseType':'json',
   	  				'url':apiDelUserList
   	  			 };
   			AjaxServer.ajaxInfo( config , function( data ){
-  				if(!!data && typeof(data.result)==='string'){
+  				if(data && typeof(data.result)==='string'){
 	  				if(data.result.indexOf('delete success')>-1){
 	      				$scope.successMsg = '';
 	                    $scope.errorMsg = '';
@@ -859,7 +851,7 @@ angular.module('myappApp')
 	                    return false;
 	                }
 	  				$scope.formatModals();
-	  				$scope.getUserList();
+	  				$scope.query();
 	                $scope.apply();
   				}
 			},
@@ -876,34 +868,25 @@ angular.module('myappApp')
   		 * 响应模态框确定按钮
   		 */
   		$scope.confirmOpr = function(){
-  			if($.trim($scope.oprType) === 'closeModal'){
+  			if($scope.oprType === 'closeModal'){
   				$scope.formatModals();
   			}
 
-            if(!!selected && selected.length!==0){
-                if($.trim($scope.oprType) === 'delUser'){
+            if($scope.selected && $scope.selected.length > 0){
+                if($scope.oprType === 'delUser'){
       				$scope.delUser();
       			}
-                if($.trim($scope.actionType) === 'update' && selected.length > 1){
+                if($scope.actionType === 'update' && $scope.selected.length > 1){
                     $scope.formatModals();
       			}
       			//清空选中的多选框id数组
-      			$scope.clearChecked();
+      			$scope.selected = [];
             }
             else{
                 $scope.formatModals();
             }
-
 			$scope.apply();
   		};
-
-  		/*
-  		 * 删除后获取用户列表
-  		 */
-  		$scope.getUserList = function(){
-  			$scope.getRoleList();
-  	        $scope.getUserInfoListByConditions();
-  		}
 
   		 /*
   		 *  响应多选框的状态变化，保存选中的id
@@ -912,70 +895,64 @@ angular.module('myappApp')
   	        var checkbox = $event.target;
   	        var action = (checkbox.checked?'add':'remove');
   	        var id = parseInt(itemId);
-  	        if($.trim(action) === 'add' && selected.indexOf(id) === -1){
-  	        	if(id===0){    // id为0表示全选
-  	        		selected = [];
+  	        if(action === 'add' && $scope.selected.indexOf(id) === -1){
+  	        	if(id === 0){    // id为0表示全选
+  	        		$scope.selected = [];
   	        		var ids;
-  	        		if(!!itemArr && itemArr.length!==0){
-  	        			for(var i = 0; i < itemArr.length; i++){
-  		        			ids = itemArr[i].id || itemArr[i].nameId || itemArr[i].jobId;
-  		        			if( itemArr[i].status!='-1' && itemArr[i].auditFlag == 1  &&  itemArr[i].roleId>=0  && !!selected && selected.indexOf(parseInt(ids))===-1){
-  		        				selected.push(parseInt(ids));
+  	        		if(itemArr && itemArr.length > 0){
+  	        			for(var i = 0,len = itemArr.length; i < len; i++){
+  		        			ids = itemArr[i].id;
+  		        			if( itemArr[i].status !== '-1' && itemArr[i].auditFlag === 1  &&  itemArr[i].roleId >=  0  && $scope.selected && $scope.selected.indexOf(parseInt(ids)) === -1){
+  		        				$scope.selected.push(parseInt(ids));
   		        			}
   		        		}
   	        		}
   	        	}
-  	            selected.push(id);
-  	            //console.log(selected);
+  	            $scope.selected.push(id);
+  	            //console.log($scope.selected);
+                //
   	            //判断是否一个个全选了
-  	            if(!!itemArr && itemArr.length!==0){
-  	            	if(!!selected && selected.length >= itemArr.length){
-  	                	if(selected.indexOf(0)===-1){
-  	                		selected.push(0);
+  	            if(itemArr && itemArr.length!==0){
+  	            	if($scope.selected && $scope.selected.length >= itemArr.length){
+  	                	if($scope.selected.indexOf(0) === -1){
+  	                		$scope.selected.push(0);
   	                	}
   	                }
   	            }
-  	            //console.log(selected);
+  	            //console.log($scope.selected);
   	        }
-  	        if($.trim(action) === 'remove' && !!selected && selected.indexOf(id) !== -1){
+  	        if(action === 'remove' && $scope.selected && $scope.selected.indexOf(id) > -1){
   	        	$scope.spliceZero();
-  	            var idx = selected.indexOf(id);
-  	            if(id===0){  // id为0表示全不选
-  	            	selected.splice(0,selected.length);
+  	            var idx = $scope.selected.indexOf(id);
+  	            if(id === 0){  // id为0表示全不选
+  	            	$scope.selected = [];
   	            }
-  		        selected.splice(idx,1);
-  	            //console.log(selected);
+  		        $scope.selected.splice(idx,1);
+  	            //console.log($scope.selected);
   	        }
-  	        $scope.selected = selected;
+
   	    };
 
   		/*
   		 *  判断多选框是否选中
   		 */
 	    $scope.isSelected = function( id ){
-	        return selected.indexOf(id) >= 0;
+	        return $scope.selected.indexOf(id) >= 0;
 	    };
 
 	    /*
 	     * 去除复选框中id为0
 	     */
 	    $scope.spliceZero = function(){
-	    	var index= 0;
-	    	if(!!selected && selected.length!==0){
-	    		for(var i=0;i<selected.length;i++){
-					index = selected.indexOf(0);
+	    	var index = -1;
+	    	if($scope.selected && $scope.selected.length>0){
+	    		for(var i=0,l=$scope.selected.length;i<l;i++){
+					index = $scope.selected.indexOf(0);
 					if(index>-1){
-						selected.splice(index,1);
+						$scope.selected.splice(index,1);
 					}
 				}
 	    	}
-	    };
-
-	    /*
-	     * 清空复选框的id数组
-	     */
-	    $scope.clearChecked = function(){
-	    	selected.splice(0,selected.length);
 	    };
 
   		/*
@@ -997,17 +974,17 @@ angular.module('myappApp')
 	     *  初始化模态框
 	     */
 	    $scope.formatModals = function(){
-	    	var modalArr = [ angular.element('#J_userAddModal'),angular.element('#J_userEditModal'),angular.element('#J_userOprConfirm'),angular.element('#J_userHashModal') ];
+	    	var modalArr = [ angular.element('#J_userAddModal'),angular.element('#J_userOprConfirm'),angular.element('#J_userHashModal') ];
 	    	$scope.hideModal(modalArr);
             $scope.businessGroupOptions = [];
             $scope.handleBusinessGroupId = '';
             $scope.handleBusinessGroupShow = false;
             $scope.userPwdForm = {'newPwd':'','repeatPwd':''};
-            $scope.customScroll();
   			$scope.errorMsg = '';
   			$scope.successMsg = '';
-  			$scope.apply();
+  			$scope.customScroll();
   			$scope.formatTime();
+            $scope.apply();
   		};
 
   		/*
@@ -1022,7 +999,7 @@ angular.module('myappApp')
 	     *  响应关闭模态框按钮
 	     */
   		$scope.hideModal = function( modalArr ){
-  			if(!!modalArr && modalArr.length !== 0){
+  			if(modalArr && modalArr.length > 0){
   				for(var i = 0; i < modalArr.length; i++){
   					modalArr[i].modal('hide');
   				}

@@ -8,9 +8,11 @@
 	background-color: #1084c1;
 }
 .mCS-my-theme.mCSB_scrollTools .mCSB_draggerRail{
-	width: 6px;
-	border: none;
-	background-color: transparent;
+	width: 2px;
+	border: 0;
+	background-color: #5bc0de;
+	opacity: 0.5;
+	filter:"alpha(opacity=50)";
 }
 
 /* 自定义模态框滚动条 */
@@ -24,6 +26,6 @@
 }
 .mCS-my-theme-x.mCSB_scrollTools .mCSB_draggerRail{
 	height: 6px;
-	border: none;
+	border: 0;
 	background-color: transparent;
 }

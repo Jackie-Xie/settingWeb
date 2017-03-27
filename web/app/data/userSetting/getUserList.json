@@ -26,8 +26,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":307,
@@ -56,8 +56,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":306,
@@ -86,8 +86,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":1,
@@ -116,8 +116,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":2,
@@ -146,8 +146,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":3,
@@ -176,8 +176,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":318,
@@ -206,8 +206,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":0,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":317,
@@ -245,8 +245,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":0,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":316,
@@ -275,8 +275,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":315,
@@ -314,8 +314,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":314,
@@ -344,8 +344,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":313,
@@ -383,8 +383,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":312,
@@ -413,8 +413,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":311,
@@ -443,8 +443,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":310,
@@ -473,8 +473,8 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     },
     {
         "id":309,
@@ -503,7 +503,7 @@
         "loginTime":null,
         "loginIP":null,
         "auditFlag":1,
-        "accessIpFlag":0,
-        "timeFlag":0
+        "accessIpFlag":1,
+        "timeFlag":1
     }
 ]
