@@ -61,22 +61,18 @@
                 </div>
                 <div class="form-group error-msg text-center" ng-if="!userForm.isIpLimited && !userForm.ip">若不填写客户端IP，则默认该用户不能访问系统</div>
                 <div class="form-group text-center">
-                    <div class="input-group date j-form-time col-lg-12" data-date="" data-date-format="hh:ii:ss" data-link-format="hh:ii:ss" data-link-field="J_beginTime">
-                         <label class="control-label col-lg-3" for="J_beginTime">访问开始时间：</label>
-                         <div class="col-lg-7" ng-class="{'disabled-input':userForm.isTimeLimited}">
-                             <input class="form-control" id="J_beginTime" ng-model="userForm.beginTime" type="text" autocomplete="off" ng-change="clearErrMessage()" placeholder="请选择开始时间" ng-disabled="userForm.isTimeLimited" readonly >
-                         </div>
-                         <label class="control-label col-lg-2 checkbox-inline text-left">
-	                         <input id="J_isTimeLimited" type="checkbox" ng-checked="userForm.isTimeLimited" ng-click="updateTimeLimited()"><label class="custom-checkbox" for="J_isTimeLimited"></label>&nbsp;&nbsp;不限制
-	                     </label>
+                     <label class="control-label col-lg-3" for="J_beginTime">访问开始时间：</label>
+                     <div class="col-lg-7" ng-class="{'disabled-input':userForm.isTimeLimited}">
+                         <input class="form-control workinput wicon mr25" id="J_beginTime" ng-model="userForm.beginTime" type="text" autocomplete="off" ng-change="clearErrMessage()" placeholder="请选择开始时间" ng-disabled="userForm.isTimeLimited" >
                      </div>
+                     <label class="control-label col-lg-2 checkbox-inline text-left">
+                         <input id="J_isTimeLimited" type="checkbox" ng-checked="userForm.isTimeLimited" ng-click="updateTimeLimited()"><label class="custom-checkbox" for="J_isTimeLimited"></label>&nbsp;&nbsp;不限制
+                     </label>
                 </div>
                 <div class="form-group text-center">
-                    <div class="">
-                         <label class="control-label col-lg-3" for="J_endTime">访问结束时间：</label>
-                         <div class="col-lg-7" ng-class="{'disabled-input':userForm.isTimeLimited}">
-                             <input class="form-control" id="J_endTime" ng-model="userForm.endTime" type="text" autocomplete="off" ng-change="clearErrMessage()" placeholder="请选择结束时间" ng-disabled="userForm.isTimeLimited" readonly >
-                         </div>
+                     <label class="control-label col-lg-3" for="J_endTime">访问结束时间：</label>
+                     <div class="col-lg-7" ng-class="{'disabled-input':userForm.isTimeLimited}">
+                         <input class="form-control workinput wicon mr25" id="J_endTime" ng-model="userForm.endTime" type="text" autocomplete="off" ng-change="clearErrMessage()" placeholder="请选择结束时间" ng-disabled="userForm.isTimeLimited" >
                      </div>
                 </div>
                 <div class="form-group error-msg text-center" ng-if="!userForm.isTimeLimited && !userForm.beginTime && !userForm.endTime">若不选择访问时间，则默认该用户不能访问系统</div>
@@ -104,7 +100,7 @@
                 <div class="form-group text-center">
                 	<label for="J_roledesc" class="control-label col-lg-3">角色描述：</label>
                 	<div class="col-lg-9">
-                        <textarea class="form-control" name="roleDesc" id="J_roledesc" ng-model="userForm.roledesc"></textarea>
+                        <textarea class="form-control" rows="3" name="roleDesc" id="J_roledesc" ng-model="userForm.roledesc"></textarea>
                   </div>
                 </div>
             </form>
