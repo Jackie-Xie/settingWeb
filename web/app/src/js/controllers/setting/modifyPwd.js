@@ -19,8 +19,9 @@ angular.module('myappApp')
         $scope.init = function () {
             $scope.errorMsg = '';
   			$scope.successMsg = '';
+            $scope.flag = '';
             $scope.pathStr = $location.path();
-            $scope.userModifyForm = {};
+            $scope.userModifyForm = {'userName':'', 'hash': '', 'newhash': '', 'repeatPwd':''};
             $scope.userModifyForm.username = $rootScope.userName;
             $scope.selfValid();
         };
@@ -68,6 +69,7 @@ angular.module('myappApp')
             // 清除提示
             $scope.errorMsg = '';
             $scope.successMsg = '';
+            $scope.flag = '';
             $scope.apply();
 
             // 原密码
@@ -109,6 +111,26 @@ angular.module('myappApp')
                     });
                     $scope.apply();
                     return false;
+                }
+                else if($scope.userModifyForm.oldPwd && $scope.userModifyForm.newPwd === $scope.userModifyForm.oldPwd){
+                    $scope.flag = 'oldPwd';
+                    $scope.validate.newPwd = angular.extend({},validNotObj,{
+                        error:{
+                            required:false,
+                            format:false,
+                            same:true
+                        }
+                    });
+                }
+                else if($scope.userModifyForm.newPwd === $scope.userModifyForm.username){
+                    $scope.flag = 'userName';
+                    $scope.validate.newPwd = angular.extend({},validNotObj,{
+                        error:{
+                            required:false,
+                            format:false,
+                            same:true
+                        }
+                    });
                 }
                 else if(!Validate.validComplexHash($scope.userModifyForm.newPwd)){
                     $scope.validate.newPwd = angular.extend({},validNotObj,{

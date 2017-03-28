@@ -6,22 +6,61 @@
     <div class="row">
         <div class="col-lg-12">
             <form class="form-horizontal" name="setUserPwdForm" method="post">
-                <div class="form-group text-center">
+                <div class="form-group">
                     <label class="control-label col-lg-3" for="J_userPwdName">用户名：</label>
                     <div class="col-lg-9">
-                        <input class="form-control" type="text" autocomplete="off" id="J_userPwdName" ng-model="userPwdForm.username" readonly>
+                        <input class="form-control" type="text" autocomplete="off" id="J_userPwdName"
+                               ng-model="userPwdForm.username" readonly>
                     </div>
                 </div>
-                <div class="form-group text-center">
+                <div class="form-group mgb5">
                     <label class="control-label col-lg-3" for="J_userPwdUpdate_new"><span class="txt-impt">*</span>新密码：</label>
-                    <div class="col-lg-9">
-                        <input class="form-control" type="password" name="setNewPwd" autocomplete="off" id="J_userPwdUpdate_new" ng-model="userPwdForm.newPwd" ng-change="clearErrMessage()">
+                    <div class="col-lg-9 has-feedback" ng-class="{'has-success':validate.pwd.newPwd.dirty && validate.pwd.newPwd.valid,'has-error':validate.pwd.newPwd.dirty && validate.pwd.newPwd.invalid}">
+                        <input class="form-control" type="password" name="setNewPwd" autocomplete="off"
+                               id="J_userPwdUpdate_new" ng-model="userPwdForm.newPwd"
+                               ng-change="validatePwdForm('newPwd')">
+                        <span ng-if="validate.pwd.newPwd.dirty && validate.pwd.newPwd.valid">
+                           <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                        </span>
+                        <span ng-if="validate.pwd.newPwd.dirty && validate.pwd.newPwd.invalid">
+                           <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                        </span>
+                        <div class="error-msg">
+                           <span ng-if="validate.pwd.newPwd.dirty && validate.pwd.newPwd.error.required">
+                               新密码不能为空
+                           </span>
+                           <span ng-if="validate.pwd.newPwd.dirty && validate.pwd.newPwd.error.format">
+                               密码是8-25位字母和数字的组合
+                           </span>
+                           <span ng-if="validate.pwd.newPwd.dirty && validate.pwd.newPwd.error.same">
+                               新密码不能和用户名相同
+                           </span>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group text-center">
+                <div class="form-group mgb5">
                     <label class="control-label col-lg-3" for="J_userPwdUpdate_repeat"><span class="txt-impt">*</span>确认密码：</label>
-                    <div class="col-lg-9">
-                        <input class="form-control" type="password" name="setRepeatPwd" autocomplete="off" id="J_userPwdUpdate_repeat" ng-model="userPwdForm.repeatPwd" ng-change="clearErrMessage()">
+                    <div class="col-lg-9 has-feedback" ng-class="{'has-success':validate.pwd.repeatPwd.dirty && validate.pwd.repeatPwd.valid,'has-error':validate.pwd.repeatPwd.dirty && validate.pwd.repeatPwd.invalid}">
+                        <input class="form-control" type="password" name="setRepeatPwd" autocomplete="off"
+                               id="J_userPwdUpdate_repeat" ng-model="userPwdForm.repeatPwd"
+                               ng-change="validatePwdForm('repeatPwd')">
+                        <span ng-if="validate.pwd.repeatPwd.dirty && validate.pwd.repeatPwd.valid">
+                           <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                        </span>
+                        <span ng-if="validate.pwd.repeatPwd.dirty && validate.pwd.repeatPwd.invalid">
+                           <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                        </span>
+                        <div class="error-msg">
+                           <span ng-if="validate.pwd.repeatPwd.dirty && validate.pwd.repeatPwd.error.required">
+                               请输入确认密码
+                           </span>
+                           <span ng-if="validate.pwd.repeatPwd.dirty && validate.pwd.repeatPwd.error.format">
+                               密码是8-25位字母和数字的组合
+                           </span>
+                           <span ng-if="validate.pwd.repeatPwd.dirty && validate.pwd.repeatPwd.error.same">
+                               两次密码输入不一致
+                           </span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -29,14 +68,21 @@
     </div>
 </div>
 <div class="modal-footer">
-	<div class="alert-section">
-	    <div class="alert alert-danger text-left pl50" role="alert" ng-show="errorMsg!='' && successMsg==''">
-			{{errorMsg}}
-		</div>
-		<div class="alert alert-success text-center" role="alert" ng-show="successMsg!='' && errorMsg==''">
-			{{successMsg}}
-		</div>
-	</div>
-    <button class="btn btn-info btn-md" data-text="确定" ng-click="modifyHash($event,'modal')">确定</button>
-    <button class="btn btn-warning btn-md" data-text="取消" data-dismiss="modal" aria-hidden="true">取消</button>
+    <div class="alert-section">
+        <div class="alert alert-danger text-left pl50" role="alert" ng-show="errorMsg!='' && successMsg==''">
+            {{errorMsg}}
+        </div>
+        <div class="alert alert-success text-center" role="alert" ng-show="successMsg!='' && errorMsg==''">
+            {{successMsg}}
+        </div>
+    </div>
+    <button class="btn btn-info btn-md" data-text="确定" ng-if="oprType !== 'closeModal'" ng-click="modifyHash($event)">
+        确定
+    </button>
+    <button class="btn btn-warning btn-md" data-text="确定" data-dismiss="modal" aria-hidden="true"
+            ng-if="oprType === 'closeModal'">确定
+    </button>
+    <button class="btn btn-warning btn-md" data-text="取消" data-dismiss="modal" aria-hidden="true"
+            ng-if="oprType !== 'closeModal'">取消
+    </button>
 </div>

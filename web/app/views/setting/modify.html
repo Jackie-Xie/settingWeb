@@ -50,6 +50,10 @@
                        <span ng-if="validate.newPwd.dirty && validate.newPwd.error.format">
                            密码是8-25位字母和数字的组合
                        </span>
+                       <span ng-if="validate.newPwd.dirty && validate.newPwd.error.same">
+                           <span ng-if="flag==='userName'">新密码不能和用户名相同</span>
+                           <span ng-if="flag==='oldPwd'">新密码不能和原密码相同</span>
+                       </span>
                    </div>
                </div>
            </div>

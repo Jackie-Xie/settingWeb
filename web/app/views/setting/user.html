@@ -57,9 +57,10 @@
         <!-- 操作按钮 b -->
         <form class="col-lg-6 form-btn text-right" method="post">
             <a role="button" class="btn btn-success btn-md" ng-class="{'btn-custom-disabled':selected.indexOf(1)>-1}" ng-disabled="selected.indexOf(1)>-1" ng-click="clickResetPwd($event)">重置密码</a>
-            <a role="button" class="btn btn-info btn-md" ng-click="clickAdd()">添加</a>
-            <a role="button" class="btn btn-warning btn-md" ng-click="clickEdit()">修改</a>
-            <a role="button" class="btn btn-danger btn-md" ng-class="{'btn-custom-disabled':selected.indexOf(1)>-1||selected.indexOf(2)>-1||selected.indexOf(3)>-1}" ng-disabled="selected.indexOf(1)>-1||selected.indexOf(2)>-1||selected.indexOf(3)>-1" ng-click="clickDelete($event)">注销</a>
+            <a role="button" class="btn btn-primary btn-md" ng-click="clickAdd()">添加</a>
+            <a role="button" class="btn btn-info btn-md" ng-click="clickEdit()">修改</a>
+            <a role="button" class="btn btn-warning btn-md" ng-class="{'btn-custom-disabled':selected.indexOf(1)>-1||selected.indexOf(2)>-1||selected.indexOf(3)>-1}" ng-disabled="selected.indexOf(1)>-1||selected.indexOf(2)>-1||selected.indexOf(3)>-1" ng-click="clickDelete($event,'cancel')">注销</a>
+            <a role="button" class="btn btn-danger btn-md" ng-class="{'btn-custom-disabled':selected.indexOf(1)>-1||selected.indexOf(2)>-1||selected.indexOf(3)>-1}" ng-disabled="selected.indexOf(1)>-1||selected.indexOf(2)>-1||selected.indexOf(3)>-1" ng-click="clickDelete($event,'del')">删除</a>
         </form>
         <!-- 操作按钮 e -->
 
