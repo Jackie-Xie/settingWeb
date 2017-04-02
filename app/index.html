@@ -9,12 +9,14 @@
         <base target="_self">
         <meta name="description" content="">
         <!-- lib css files -->
-        <link rel="stylesheet" href="src/css/lib/bootstrap_3.3.6.min.css">
-        <link rel="stylesheet" href="src/js/plugin/datetimepicker/bootstrap-datetimepicker.min.css">
+        <link rel="stylesheet" href="src/css/lib/bootstrap_3.3.6.min.css" />
+        <link rel="stylesheet" href="src/js/plugin/datetimepicker/bootstrap-datetimepicker.min.css" />
         <link rel="stylesheet" href="src/js/plugin/malihu-custom-scrollbar/jquery.mCustomScrollbar.css" />
+        <link rel="stylesheet" href="src/js/plugin/jeDate/jedate.css" />
         <!-- app css files s -->
         <link rel="stylesheet" href="src/css/main.css">
         <!-- common -->
+        <link rel="stylesheet" href="src/css/mod/common/header.css">
         <link rel="stylesheet" href="src/css/mod/common/layout.css">
         <link rel="stylesheet" href="src/css/mod/common/sideNav.css">
         <link rel="stylesheet" href="src/css/mod/common/pagination.css">
@@ -49,32 +51,37 @@
         <script src="src/js/lib/angular/angular-sanitize/angular-sanitize.js"></script>
         <script src="src/js/lib/angular/angular-touch/angular-touch.js"></script>
         <script src="src/js/plugin/underscore/underscore.1.8.3.min.js"></script>
-        <script src="src/js/plugin/datetimepicker/bootstrap-datetimepicker.js"></script>
+        <script src="src/js/plugin/datetimepicker/bootstrap-datetimepicker.min.js"></script>
         <script src="src/js/plugin/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
         <script src="src/js/plugin/malihu-custom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
         <script src="src/js/plugin/autocomplete/jquery.autocomplete.js"></script>
+        <script src="src/js/plugin/jeDate/jquery.jedate.min.js"></script>
+        <script src="src/js/plugin/md5/index.js"></script>
 		<!-- app js files s-->
         <script src="src/js/app.js"></script>
         <!-- public -->
-        <script src="src/js/controllers/pub/header.js"></script>
         <script src="src/js/services/ajaxInfo.js"></script>
+        <script src="src/js/services/pageService.js"></script>
+        <script src="src/js/services/clientStore.js"></script>
         <script src="src/js/services/validate.js"></script>
+        <script src="src/js/controllers/pub/header.js"></script>
+        <script src="src/js/controllers/pub/sideNav.js"></script>
+        <script src="src/js/directives/errorAlert.js"></script>
+        <!-- login -->
+        <script src="src/js/controllers/login/index.js"></script>
         <!-- setting -->
         <script src="src/js/controllers/setting/userSetting.js"></script>
-        <script src="src/js/controllers/setting/linkSetting.js"></script>
-        <script src="src/js/controllers/setting/alarmSetting.js"></script>
+        <script src="src/js/controllers/setting/modifyPwd.js"></script>
         <script src="src/js/controllers/setting/roleSetting.js"></script>
-        <script src="src/js/controllers/setting/auditAnaly.js"></script>
         <!-- safety -->
         <script src="src/js/controllers/setting/safety.js"></script>
         <!-- audit -->
         <script src="src/js/controllers/setting/audit.js"></script>
+        <script src="src/js/controllers/setting/auditAnaly.js"></script>
         <script src="src/js/controllers/setting/activeUser.js"></script>
         <script src="src/js/controllers/setting/systemAlarm.js"></script>
         <!-- assess -->
         <script src="src/js/controllers/setting/assess.js"></script>
-        <!-- login -->
-        <script src="src/js/controllers/login/index.js"></script>
-        <!-- 测试状态 e -->
+
 	</body>
 </html>

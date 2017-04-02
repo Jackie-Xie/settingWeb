@@ -934,22 +934,23 @@ angular.module('myappApp')
                 it.removeClass('disabled').text('确定');
                 if(flag){
                     var u = {
-                        "id":$scope.actionType==='add'? 1 : uid,
+                        "id":$scope.actionType==='add'? 100000 : uid,
                         "roleId": postData.roleId,
-                        "userName":$scope.actionType==='add'? postData.userName : '修改的名字',
-                        "status":postData.status,
+                        "userName":$scope.actionType==='update'? postData.userName : '用户名字',
+                        "status":parseInt(postData.status),
+                        "auditFlag":1,
                         "phone":postData.phone,
                         "emailAddress":postData.emailAddress,
                         "describe":postData.describe,
                         "createTime":now.valueOf(),
                         "role":{
                             "id":postData.roleId,
-                            "name":"修改的角色",
+                            "name":"什么角色",
                             "describe":"管理"
                         },
                         "businessGroupId":postData.businessGroupId,
                         businessGroup:{
-                            'cnName': '修改的单位'
+                            'cnName': '什么单位'
                         },
                         "isSend":postData.isSend
                     };
@@ -963,7 +964,9 @@ angular.module('myappApp')
                                 $scope.apply();
                             }
                         });
-                        return false;
+                        if(!stopFlag){
+                            return false;
+                        }
                     }
 
                     // 添加用户操作
@@ -1021,50 +1024,49 @@ angular.module('myappApp')
             // 实际上要发送请求删除或注销用户，这里模拟下
             var flag = Math.floor(Math.random()*2);
             $timeout(function(){
-                var stopFlag = true;
                 it.removeClass('disabled').text('确定');
-                if($scope.oprType === 'delUser'){
-                    if(flag){
-                        angular.forEach($scope.userInfoList,function(v,k){
-                            if(stopFlag && v.id === postData[0]){
-                                $scope.userInfoList.splice(k,1);
-                                stopFlag = false;
-                            }
-                        });
-                        $scope.errorMsg = '';
-                        $scope.successMsg = '删除成功';
-                    }else{
-                        $scope.errorMsg = '删除失败';
-                        $scope.successMsg = '';
-                        $scope.oprType = 'closeModal';
-                        return false;
-                    }
-                    $scope.apply();
+                if(flag){
+                    angular.forEach(postData,function(v,k){
+                        $scope.delOrCancelOne(v);
+                    });
+                    $scope.errorMsg = '';
+                    $scope.successMsg = $scope.oprType === 'delUser' ? '删除成功' : '注销成功';
+                }else{
+                    $scope.errorMsg =  $scope.oprType === 'delUser' ? '删除失败' : '注销失败';
+                    $scope.successMsg = '';
+                    $scope.oprType = 'closeModal';
+                    return false;
                 }
-                else{
-                    if(flag){
-                        angular.forEach($scope.userInfoList,function(v,k){
-                            if(stopFlag && v.id === postData[0]){
-                                $scope.userInfoList[k].status = -1;
-                                stopFlag = false;
-                            }
-                        });
-                        $scope.errorMsg = '';
-                        $scope.successMsg = '注销成功';
-                    }else{
-                        $scope.errorMsg = '注销失败';
-                        $scope.successMsg = '';
-                        $scope.oprType = 'closeModal';
-                        return false;
-                    }
-                    $scope.apply();
-                }
+                $scope.apply();
                 angular.element('#J_userOprConfirm').modal('hide');
                 $scope.formatModals();
                 // $scope.query();  // 从新获取则模拟效果不见,这里先注释
             },500);
 
   		};
+
+        /*
+         * 删除或注销一个用户
+         */
+        $scope.delOrCancelOne = function( id ){
+            var stopFlag = true;
+            if($scope.oprType === 'delUser'){
+                angular.forEach($scope.userInfoList,function(v,k){
+                    if(stopFlag && v.id === id){
+                        $scope.userInfoList.splice(k,1);
+                        stopFlag = false;
+                    }
+                });
+            }
+            else{
+                angular.forEach($scope.userInfoList,function(v,k){
+                    if(stopFlag && v.id === id){
+                        $scope.userInfoList[k].status = -1;
+                        stopFlag = false;
+                    }
+                });
+            }
+        }
 
   		/*
   		 * 响应模态框确定按钮
