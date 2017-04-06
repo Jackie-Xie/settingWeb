@@ -45,7 +45,7 @@ angular.module('myappApp')
 
 	    };
 
-        /*
+        /**
          * 查询
          */
         $scope.query = function( flag ){
@@ -57,7 +57,7 @@ angular.module('myappApp')
             $scope.getUserInfoListByConditions();
         };
 
-        /*
+        /**
          * 按条件查询获取用户列表数据
          */
         $scope.getUserInfoListByConditions = function (){
@@ -98,7 +98,7 @@ angular.module('myappApp')
             });
         };
 
-        /*
+        /**
          * 获取角色选项
          */
         $scope.getRoleList = function(){
@@ -112,7 +112,7 @@ angular.module('myappApp')
             });
         };
 
-        /*
+        /**
          * 获取单位选项
          */
         $scope.getBusinessGroupOptions = function(roleId , type , businessGroupId){
@@ -132,7 +132,9 @@ angular.module('myappApp')
                         angular.forEach(data,function(n,i){
                             BusinessGroupObj = {
                                 'id':data[i].id,
-                                'bgname':data[i].cnName || data[i].name
+                                'bgname':data[i].cnName || data[i].name,
+                                'name': data[i].name,
+                                'cnName': data[i].cnName
                             };
                             //如果单位所在省或省ID没有
                             if(data[i].provinceId || data[i].province){
@@ -151,7 +153,7 @@ angular.module('myappApp')
             });
         };
 
-        /*
+        /**
          * 获取用户状态选项
          */
         $scope.getStatusOptions = function(){
@@ -171,7 +173,7 @@ angular.module('myappApp')
             ];
         };
 
-        /*
+        /**
          * 事件绑定
          */
         $scope.bindEvent = function () {
@@ -196,7 +198,7 @@ angular.module('myappApp')
 
         };
 
-        /*
+        /**
          *  跳转页面
          */
         $scope.gotoPage = function( targetPage ){
@@ -213,7 +215,7 @@ angular.module('myappApp')
 
         };
 
-        /*
+        /**
          * 点击添加用户
          */
         $scope.clickAdd = function(){
@@ -225,7 +227,7 @@ angular.module('myappApp')
             $scope.apply();
         };
 
-        /*
+        /**
          * 点击修改用户
          */
         $scope.clickEdit = function(){
@@ -252,7 +254,7 @@ angular.module('myappApp')
             }
         };
 
-        /*
+        /**
          * 点击删除或注销用户
          */
         $scope.clickDelete = function(ev,type){
@@ -276,7 +278,7 @@ angular.module('myappApp')
             }
         };
 
-        /*
+        /**
          * 点击重置密码
          */
         $scope.clickResetPwd = function(ev){
@@ -308,7 +310,9 @@ angular.module('myappApp')
         };
 
 
-	    //格式化时间选择器
+        /**
+         * 格式化时间选择器
+         */
 	    $scope.formatTime = function () {
 	    	var start = {
                 format: 'hh:mm:ss',
@@ -353,7 +357,7 @@ angular.module('myappApp')
 
 	    };
 
-	    /*
+	    /**
 	     * IP是否限制
 	     */
 	    $scope.updateIpLimited = function () {
@@ -365,7 +369,7 @@ angular.module('myappApp')
   			$scope.apply();
 	    };
 
-	    /*
+	    /**
 	     * 时间限制
 	     */
 	    $scope.updateTimeLimited = function () {
@@ -378,7 +382,7 @@ angular.module('myappApp')
   			$scope.apply();
 	    };
 
-        /*
+        /**
          * 重置密码表单验证
          */
         $scope.validatePwdForm = function ( type ){
@@ -491,10 +495,47 @@ angular.module('myappApp')
             return true;
         };
 
-        /*
+        /**
          * 添加用户表单验证
          */
         $scope.validateUserForm = function ( type ){
+            var validDirtyObj = angular.extend({},validFormatObj,{dirty:true}),
+                validNotObj = angular.extend({},validDirtyObj,{valid:false,invalid:true});
+
+             // 清除提示
+             $scope.errorMsg = '';
+             $scope.successMsg = '';
+             $scope.apply();
+
+             // 新密码
+             if(type.indexOf('newPwd')>-1 || type.indexOf('all')>-1){
+                 $scope.validate.pwd.newPwd = angular.extend({},validDirtyObj);
+                 if(!$scope.userPwdForm.newPwd){
+                     $scope.validate.pwd.newPwd = angular.extend({},validNotObj,{
+                         error:{
+                         required:true,
+                         format:false,
+                         same:false
+                         }
+                     });
+                     $scope.apply();
+                     return false;
+                 }
+                 else if($scope.userPwdForm.newPwd === $scope.userPwdForm.username){
+                     $scope.validate.pwd.newPwd = angular.extend({},validNotObj,{
+                     error:{
+                     required:false,
+                     format:false,
+                     same:true
+                     }
+                 });
+             }
+
+
+
+             $scope.apply();
+             return true;
+
             if(typeof($scope.actionType)==='string' && $scope.actionType.indexOf('add')>-1){
                 //输入表单验证
                 if(!Validate.validEmpty( $scope.userForm.username )){
@@ -504,7 +545,7 @@ angular.module('myappApp')
                 }
                 //验证非法字符
                 var returnText = Validate.validSign($scope.userForm.username);
-                if(!!returnText && !returnText.status){
+                if(returnText && !returnText.status){
                     $scope.errorMsg = returnText.error;
                     $scope.apply();
                     return false;
@@ -602,116 +643,10 @@ angular.module('myappApp')
             }
             return true;
 
-            /*var validDirtyObj = angular.extend({},validFormatObj,{dirty:true}),
-                validNotObj = angular.extend({},validDirtyObj,{valid:false,invalid:true});
 
-            // 清除提示
-            $scope.errorMsg = '';
-            $scope.successMsg = '';
-            $scope.apply();
-
-            // 新密码
-            if(type.indexOf('newPwd')>-1 || type.indexOf('all')>-1){
-                $scope.validate.pwd.newPwd = angular.extend({},validDirtyObj);
-                if(!$scope.userPwdForm.newPwd){
-                    $scope.validate.pwd.newPwd = angular.extend({},validNotObj,{
-                        error:{
-                            required:true,
-                            format:false,
-                            same:false
-                        }
-                    });
-                    $scope.apply();
-                    return false;
-                }
-                else if($scope.userPwdForm.newPwd === $scope.userPwdForm.username){
-                    $scope.validate.pwd.newPwd = angular.extend({},validNotObj,{
-                        error:{
-                            required:false,
-                            format:false,
-                            same:true
-                        }
-                    });
-                }
-                else if(!Validate.validComplexHash($scope.userPwdForm.newPwd)){
-                    $scope.validate.pwd.newPwd = angular.extend({},validNotObj,{
-                        error:{
-                            required:false,
-                            format:true,
-                            same:false
-                        }
-                    });
-                    if($scope.userPwdForm.repeatPwd && $scope.userPwdForm.repeatPwd !== $scope.userPwdForm.newPwd){
-                        $scope.validate.pwd.repeatPwd = angular.extend({},validNotObj,{
-                            error:{
-                                required:false,
-                                format:false,
-                                same:true
-                            }
-                        });
-                    }
-                    $scope.apply();
-                    return false;
-                }
-                else if($scope.userPwdForm.repeatPwd && $scope.userPwdForm.repeatPwd !== $scope.userPwdForm.newPwd){
-                    $scope.validate.pwd.repeatPwd = angular.extend({},validNotObj,{
-                        error:{
-                            required:false,
-                            format:false,
-                            same:true
-                        }
-                    });
-                    $scope.apply();
-                    return false;
-                }
-                else if($scope.userPwdForm.repeatPwd && $scope.userPwdForm.repeatPwd === $scope.userPwdForm.newPwd){
-                    $scope.validate.pwd.repeatPwd.valid = true;
-                    $scope.validate.pwd.repeatPwd.invalid = false;
-                    $scope.validate.pwd.repeatPwd.error.same= false;
-                }
-            }
-            // 确认新密码
-            if(type.indexOf('repeatPwd')>-1 || type.indexOf('all')>-1){
-                $scope.validate.pwd.repeatPwd = angular.extend({},validDirtyObj);
-                if(!$scope.userPwdForm.repeatPwd){
-                    $scope.validate.pwd.repeatPwd = angular.extend({},validNotObj,{
-                        error:{
-                            required:true,
-                            format:false,
-                            same:false
-                        }
-                    });
-                    $scope.apply();
-                    return false;
-                }
-                else if(!Validate.validComplexHash($scope.userPwdForm.repeatPwd)){
-                    $scope.validate.pwd.repeatPwd = angular.extend({},validNotObj,{
-                        error:{
-                            required:false,
-                            format:true,
-                            same:false
-                        }
-                    });
-                    $scope.apply();
-                    return false;
-                }
-                else if($scope.userPwdForm.newPwd && $scope.userPwdForm.repeatPwd !== $scope.userPwdForm.newPwd){
-                    $scope.validate.pwd.repeatPwd = angular.extend({},validNotObj,{
-                        error:{
-                            required:false,
-                            format:false,
-                            same:true
-                        }
-                    });
-                    $scope.apply();
-                    return false;
-                }
-            }
-            $scope.apply();
-            return true;*/
         };
 
-        /*
+        /**
          * 自定义验证
          */
         $scope.selfValid = function (){
@@ -742,10 +677,10 @@ angular.module('myappApp')
                     $scope.validate[k][i] = angular.extend({}, validFormatObj);
                 });
             });
-            console.log($scope.validate);
+            // console.log($scope.validate);
         };
 
-        /*
+        /**
 	     * 点击发送请求重置密码
 	     */
 	    $scope.modifyHash = function( ev ){
@@ -790,15 +725,70 @@ angular.module('myappApp')
 
         };
 
-		/*
+		/**
          *  不能选择审核中用户
          */
-		$scope.changeTitle = function ( ev ,auditFlag ) {
-			var it = angular.element(ev.currentTarget);
-			if(auditFlag === 0){
-				it.attr('title','不能选择审核中用户');
-			}
-		};
+        $scope.changeTitle = function ( ev ,auditFlag ) {
+            var it = angular.element(ev.currentTarget);
+            if(auditFlag === 0){
+                it.attr('title','不能选择审核中用户');
+            }
+        };
+
+        /**
+         *  根据roleId获取角色名称
+         */
+        $scope.getRoleById = function ( rid ) {
+            var stopFlag = true,
+                role = null;
+            if($scope.roleList && $scope.roleList.length > 0){
+                angular.forEach($scope.roleList,function(v,k){
+                    if(stopFlag && v.id === parseInt(rid)){
+                        role = $scope.roleList[k];
+                        stopFlag = false;
+                    }
+                });
+            }
+            return role;
+        };
+
+        /**
+         *  根据businessId获取单位名称
+         */
+        $scope.getBusinessGroupById = function ( bid ) {
+            var stopFlag = true,
+                businessGroup = null;
+            if($scope.businessGroupOptions && $scope.businessGroupOptions.length > 0){
+                angular.forEach($scope.businessGroupOptions,function(v,k){
+                    if(stopFlag && v.id === parseInt(bid)){
+                        businessGroup = $scope.businessGroupOptions[k];
+                        stopFlag = false;
+                    }
+                });
+            }
+            return businessGroup;
+        };
+
+        /**
+         *  获取新增用户的id
+         */
+        $scope.getAddUserId = function () {
+            var maxId = 0;
+            if($scope.allUserList && $scope.allUserList.length > 0){
+                angular.forEach($scope.allUserList,function(v,k){
+                    if($scope.allUserList[k+1]){
+                        if(v.id >= $scope.allUserList[k+1].id){
+                            maxId = $scope.allUserList[k].id;
+                        }
+                        else{
+                            maxId = $scope.allUserList[k+1].id;
+                        }
+                    }
+                });
+            }
+
+            return maxId + 1;
+        };
 
   		/**
   		 * 根据userId查询用户信息
@@ -811,6 +801,7 @@ angular.module('myappApp')
   			if(!id){
   				return false;
   			}
+
             if($scope.allUserList && $scope.allUserList.length > 0){
                 angular.forEach($scope.allUserList,function(v,k){
                     if(stopFlag && v.id === id){
@@ -856,6 +847,8 @@ angular.module('myappApp')
                     $scope.userForm.isTimeLimited = theUser.timeFlag;
                     $scope.userForm.isIpLimited = theUser.accessIpFlag;
                     $scope.userForm.roledesc = theUser.describe;
+                    $scope.userForm.auditFlag = theUser.auditFlag;
+                    $scope.userForm.createTime = theUser.createTime;
                     // Ip限制
                     if(theUser.accessIpFlag){
                         $scope.userForm.ip = '';
@@ -879,7 +872,7 @@ angular.module('myappApp')
             $scope.apply();
   		};
 
-  		/*
+  		/**
 		 * 添加或修改用户
 		 */
   		$scope.addUser = function(ev){
@@ -907,17 +900,17 @@ angular.module('myappApp')
   			var postData = {
                 'userName': $scope.actionType==='add' ? $scope.userForm.username : undefined,
                 'hash': $scope.actionType==='add' ? $scope.userForm.pwd : undefined,
-				'roleId': $scope.userForm.roleselect,
+				'roleId': parseInt($scope.userForm.roleselect),
 				'emailAddress': $scope.userForm.emails,
-				'isSend': $scope.userForm.issend,
+				'isSend': parseInt($scope.userForm.issend),
 				'accessIP':$scope.userForm.ip,
 				'accessIpFlag':$scope.userForm.isIpLimited,
 				'timeFlag':$scope.userForm.isTimeLimited,
-				'beginTime':($scope.userForm.beginTime) ? $scope.userForm.beginTime : null,
-				'endTime':($scope.userForm.endTime) ? $scope.userForm.endTime : null,
-				'businessGroupId':$scope.userForm.groupselect || 0,
+				'beginTime':($scope.userForm.beginTime) ? $scope.userForm.beginTime : '00:00:00',
+				'endTime':($scope.userForm.endTime) ? $scope.userForm.endTime : '23:59:59',
+				'businessGroupId':parseInt($scope.userForm.groupselect) || 0,
 				'phone': $scope.userForm.telnum,
-				'status': $scope.actionType==='add' ? $scope.userForm.userstatus : 0,
+				'status': $scope.actionType==='add' ? 0 : parseInt($scope.userForm.userstatus),
 				'describe': $scope.userForm.roledesc
   			};
 
@@ -934,25 +927,20 @@ angular.module('myappApp')
                 it.removeClass('disabled').text('确定');
                 if(flag){
                     var u = {
-                        "id":$scope.actionType==='add'? 100000 : uid,
+                        "id": $scope.actionType==='add'? $scope.getAddUserId() : uid,
                         "roleId": postData.roleId,
-                        "userName":$scope.actionType==='update'? postData.userName : '用户名字',
-                        "status":parseInt(postData.status),
-                        "auditFlag":1,
-                        "phone":postData.phone,
-                        "emailAddress":postData.emailAddress,
-                        "describe":postData.describe,
-                        "createTime":now.valueOf(),
-                        "role":{
-                            "id":postData.roleId,
-                            "name":"什么角色",
-                            "describe":"管理"
-                        },
-                        "businessGroupId":postData.businessGroupId,
-                        businessGroup:{
-                            'cnName': '什么单位'
-                        },
-                        "isSend":postData.isSend
+                        "userName": $scope.actionType==='add'? postData.userName : $scope.userForm.username,
+                        "status": postData.status,
+                        "auditFlag": $scope.actionType==='add'? 0 : $scope.userForm.auditFlag,
+                        "phone": postData.phone,
+                        "emailAddress": postData.emailAddress,
+                        "describe": postData.describe,
+                        "createTime": $scope.actionType==='add'? now.valueOf() : $scope.userForm.createTime,
+                        "role": $scope.getRoleById(postData.roleId),
+                        "businessGroupId": postData.businessGroupId,
+                        "businessGroup": $scope.getBusinessGroupById(postData.businessGroupId),
+                        "isSend": postData.isSend,
+
                     };
                     // 判断用户名是否存在
                     if($scope.actionType === 'add' && $scope.allUserList && $scope.allUserList.length > 0){
@@ -1003,7 +991,7 @@ angular.module('myappApp')
 
   		};
 
-  		/*
+  		/**
   		 * 清除提示内容
   		 */
   		$scope.clearErrMessage = function(){
@@ -1011,7 +999,7 @@ angular.module('myappApp')
   			$scope.errorMsg = '';
   		};
 
-  	   /*
+  	   /**
 		* 删除或注销用户
 		*/
   		$scope.delOrCancelUser = function(ev){
@@ -1045,7 +1033,7 @@ angular.module('myappApp')
 
   		};
 
-        /*
+        /**
          * 删除或注销一个用户
          */
         $scope.delOrCancelOne = function( id ){
@@ -1068,7 +1056,7 @@ angular.module('myappApp')
             }
         }
 
-  		/*
+  		/**
   		 * 响应模态框确定按钮
   		 */
   		$scope.confirmOpr = function(ev){
@@ -1089,7 +1077,7 @@ angular.module('myappApp')
 			$scope.apply();
   		};
 
-  		 /*
+        /**
   		 *  响应多选框的状态变化，保存选中的id
   		 */
   		$scope.updateSelection = function($event, itemId, itemArr){
@@ -1134,14 +1122,14 @@ angular.module('myappApp')
 
   	    };
 
-  		/*
+  		/**
   		 *  判断多选框是否选中
   		 */
 	    $scope.isSelected = function( id ){
 	        return $scope.selected.indexOf(id) >= 0;
 	    };
 
-	    /*
+	    /**
 	     * 去除复选框中id为0
 	     */
 	    $scope.spliceZero = function(){
@@ -1156,7 +1144,7 @@ angular.module('myappApp')
 	    	}
 	    };
 
-  		/*
+  		/**
   		 * 自定义滚动条
   		 */
   		$scope.customScroll = function(){
@@ -1171,7 +1159,7 @@ angular.module('myappApp')
   			});
   		};
 
-	    /*
+	    /**
 	     *  初始化模态框
 	     */
 	    $scope.formatModals = function(){
@@ -1190,7 +1178,7 @@ angular.module('myappApp')
             $scope.apply();
   		};
 
-  		/*
+  		/**
 	     *  响应弹出模态框按钮
 	     */
   		$scope.clickShowModal = function( modal ){
@@ -1198,7 +1186,7 @@ angular.module('myappApp')
   			modal.modal('show');
   		};
 
-  		/*
+  		/**
 	     *  响应关闭模态框按钮
 	     */
   		$scope.hideModal = function( modalArr ){

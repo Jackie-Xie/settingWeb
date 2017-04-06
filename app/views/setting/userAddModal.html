@@ -77,9 +77,9 @@
                 </div>
                 <div class="form-group error-msg text-center" ng-if="!userForm.isTimeLimited && !userForm.beginTime && !userForm.endTime">若不选择访问时间，则默认该用户不能访问系统</div>
                 <div class="form-group text-center">
-                    <label class="control-label col-lg-3" for="J_telnum"><span class="txt-impt">*</span>联系方式：</label>
+                    <label class="control-label col-lg-3" for="J_telNum"><span class="txt-impt">*</span>联系方式：</label>
                     <div class="col-lg-9">
-                        <input class="form-control" type="text" autocomplete="off" id="J_telnum" ng-model="userForm.telnum" ng-change="clearErrMessage()" required>
+                        <input class="form-control" type="text" autocomplete="off" id="J_telNum" ng-model="userForm.telnum" ng-change="clearErrMessage()" required>
                     </div>
                 </div>
                 <div class="form-group text-center">
@@ -98,9 +98,9 @@
                     </div>
                 </div>
                 <div class="form-group text-center">
-                	<label for="J_roledesc" class="control-label col-lg-3">角色描述：</label>
+                	<label for="J_roleDesc" class="control-label col-lg-3">角色描述：</label>
                 	<div class="col-lg-9">
-                        <textarea class="form-control" rows="3" name="roleDesc" id="J_roledesc" ng-model="userForm.roledesc"></textarea>
+                        <textarea class="form-control" rows="3" name="roleDesc" id="J_roleDesc" ng-model="userForm.roledesc"></textarea>
                   </div>
                 </div>
             </form>
